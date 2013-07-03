@@ -41,36 +41,14 @@ void MySceneEditor::drawOverlay()
         // draw outline of selected node
         CCSize cs = mSelectedNode->getContentSize();
 
-        CCPoint bl, br, tl, tr;
-
-        float w = cs.width;
-        float h = cs.height;
-
-        bl = ccp(0, 0);
-        br = ccp(w, 0);
-        tl = ccp(0, h);
-        tr = ccp(w, h);
-
-        bl = mSelectedNode->convertToWorldSpace(bl);
-        br = mSelectedNode->convertToWorldSpace(br);
-        tl = mSelectedNode->convertToWorldSpace(tl);
-        tr = mSelectedNode->convertToWorldSpace(tr);
-
-        const CCPoint points[] = {bl, br, tr, tl};
+        const CCPoint points[] = {
+            mSelectedNode->convertToWorldSpace(ccp(0,        0)),
+            mSelectedNode->convertToWorldSpace(ccp(cs.width, 0)),
+            mSelectedNode->convertToWorldSpace(ccp(cs.width, cs.height)),
+            mSelectedNode->convertToWorldSpace(ccp(0,        cs.height))
+        };
 
         ccDrawPoly(points, 4, true);
-
-#if 0
-        QPainter painter;
-
-        painter.setRenderHint(QPainter::Antialiasing, true);
-        painter.setPen(QPen(Qt::green, 2));
-
-        painter.drawLine(QPointF(bl.x, bl.y), QPointF(br.x, br.y));
-        painter.drawLine(QPointF(br.x, br.y), QPointF(tr.x, tr.y));
-        painter.drawLine(QPointF(tr.x, tr.y), QPointF(tl.x, tl.y));
-        painter.drawLine(QPointF(tl.x, tl.y), QPointF(bl.x, bl.y));
-#endif
     }
 }
 
