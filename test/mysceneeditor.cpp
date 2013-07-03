@@ -10,6 +10,7 @@ USING_NS_CC;
 MySceneEditor* MySceneEditor::__instance = 0;
 
 MySceneEditor::MySceneEditor()
+    : mSelectedNode(0)
 {
 }
 

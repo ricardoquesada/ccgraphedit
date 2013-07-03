@@ -31,6 +31,10 @@ protected:
 
     cocos2d::CCNode* PickNode(cocos2d::CCNode* node, const cocos2d::CCPoint& point);
     bool PointInPolygon(const kmVec3* polygon, int numVerts, const kmVec3& point);
+
+protected:
+
+    cocos2d::CCNode* mSelectedNode;
 };
 
 #endif // MYSCENEEDITOR_H

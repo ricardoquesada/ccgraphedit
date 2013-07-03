@@ -47,7 +47,7 @@ void MyQGLWidget::resizeGL(int w, int h)
         glClearColor(0, 0, 0, 1);
 
         std::vector<std::string> searchPaths;
-        searchPaths.push_back(std::string("/Users/jgraham/dev_casino3/Assets/ccbResources/Bingo/resources-auto"));
+        searchPaths.push_back(std::string("../../../../../cocos2d/template/multi-platform-cpp/proj.ios"));
         CCFileUtils* fileUtils = CCFileUtils::sharedFileUtils();
         fileUtils->setSearchPaths(searchPaths);
 
@@ -59,7 +59,9 @@ void MyQGLWidget::resizeGL(int w, int h)
         CCScene* scene = CCScene::create();
         director->pushScene(scene);
 
-        CCSprite* sprite = CCSprite::create("bingo_called_bingo.png");
+#define INCLUDE_SOME_DEMO_SPRITES
+#ifdef INCLUDE_SOME_DEMO_SPRITES
+        CCSprite* sprite = CCSprite::create("Icon-144.png");
         if (sprite)
         {
             sprite->setPosition(ccp(w/2, h/2));
@@ -68,6 +70,7 @@ void MyQGLWidget::resizeGL(int w, int h)
             CCRepeatForever* action = CCRepeatForever::create(CCSequence::create(CCScaleTo::create(.5f, -1, 1), CCScaleTo::create(.5f, 1, 1), 0));
             sprite->runAction(action);
         }
+#endif
 
         setMouseTracking(true);
     }
