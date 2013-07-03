@@ -67,8 +67,11 @@ void MyQGLWidget::resizeGL(int w, int h)
             sprite->setPosition(ccp(w/2, h/2));
             scene->addChild(sprite);
 
-            CCRepeatForever* action = CCRepeatForever::create(CCSequence::create(CCScaleTo::create(.5f, -1, 1), CCScaleTo::create(.5f, 1, 1), 0));
-            sprite->runAction(action);
+            //CCRepeatForever* action = CCRepeatForever::create(CCSequence::create(CCScaleTo::create(.5f, -1, 1), CCScaleTo::create(.5f, 1, 1), 0));
+            //sprite->runAction(action);
+
+            CCRepeatForever* action2 = CCRepeatForever::create(CCRotateBy::create(4, 360));
+            sprite->runAction(action2);
         }
 #endif
 
@@ -87,17 +90,17 @@ void MyQGLWidget::paintGL()
 void MyQGLWidget::mousePressEvent(QMouseEvent* event)
 {
     MySceneEditor::instance()->mousePressed(event->localPos().x(), this->height() - event->localPos().y());
-    qDebug("mousePressEvent %.2f, %.2f", event->localPos().x(), this->height() - event->localPos().y());
+    //qDebug("mousePressEvent %.2f, %.2f", event->localPos().x(), this->height() - event->localPos().y());
 }
 
 void MyQGLWidget::mouseReleaseEvent(QMouseEvent* event)
 {
     MySceneEditor::instance()->mouseRelease(event->localPos().x(), this->height() - event->localPos().y());
-    qDebug("mouseReleaseEvent %.2f, %.2f", event->localPos().x(), this->height() - event->localPos().y());
+    //qDebug("mouseReleaseEvent %.2f, %.2f", event->localPos().x(), this->height() - event->localPos().y());
 }
 
 void MyQGLWidget::mouseMoveEvent(QMouseEvent* event)
 {
     MySceneEditor::instance()->mouseMoved(event->localPos().x(), this->height() - event->localPos().y());
-    qDebug("mouseMoveEvent %.2f, %.2f", event->localPos().x(), this->height() - event->localPos().y());
+    //qDebug("mouseMoveEvent %.2f, %.2f", event->localPos().x(), this->height() - event->localPos().y());
 }

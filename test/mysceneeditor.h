@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 
 class kmVec3;
+class QGLWidget;
 
 class MySceneEditor
 {

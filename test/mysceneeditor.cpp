@@ -4,6 +4,8 @@
 #include "kazmath/vec3.h"
 
 #include <QDebug>
+#include <QPainter>
+#include <QPen>
 
 USING_NS_CC;
 
@@ -16,25 +18,60 @@ MySceneEditor::MySceneEditor()
 
 void MySceneEditor::mousePressed(float x, float y)
 {
-    CCNode* node = PickNode(ccp(x, y));
-    qDebug("Pressed: picked node %p\n", node);
+    //CCNode* node = PickNode(ccp(x, y));
+    //qDebug("Pressed: picked node %p", node);
 }
 
 void MySceneEditor::mouseRelease(float x, float y)
 {
-    CCNode* node = PickNode(ccp(x, y));
-    qDebug("Released: picked node %p\n", node);
+    mSelectedNode = PickNode(ccp(x, y));
+    qDebug("Released: picked node %p", mSelectedNode);
 }
 
 void MySceneEditor::mouseMoved(float x, float y)
 {
-    CCNode* node = PickNode(ccp(x, y));
-    qDebug("Moved: picked node %p\n", node);
+    //CCNode* node = PickNode(ccp(x, y));
+    //qDebug("Moved: picked node %p", node);
 }
 
 void MySceneEditor::drawOverlay()
 {
+    if (mSelectedNode)
+    {
+        // draw outline of selected node
+        CCSize cs = mSelectedNode->getContentSize();
 
+        CCPoint bl, br, tl, tr;
+
+        float w = cs.width;
+        float h = cs.height;
+
+        bl = ccp(0, 0);
+        br = ccp(w, 0);
+        tl = ccp(0, h);
+        tr = ccp(w, h);
+
+        bl = mSelectedNode->convertToWorldSpace(bl);
+        br = mSelectedNode->convertToWorldSpace(br);
+        tl = mSelectedNode->convertToWorldSpace(tl);
+        tr = mSelectedNode->convertToWorldSpace(tr);
+
+        const CCPoint points[] = {bl, br, tr, tl};
+
+        ccDrawPoly(points, 4, true);
+
+#if 0
+        QPainter painter;
+
+        painter.setRenderHint(QPainter::Antialiasing, true);
+        painter.setPen(QPen(Qt::green, 2));
+
+        painter.drawLine(QPointF(bl.x, bl.y), QPointF(br.x, br.y));
+        painter.drawLine(QPointF(br.x, br.y), QPointF(tr.x, tr.y));
+        painter.drawLine(QPointF(tr.x, tr.y), QPointF(tl.x, tl.y));
+        painter.drawLine(QPointF(tl.x, tl.y), QPointF(bl.x, bl.y));
+#endif
+    }
 }
 
 //
