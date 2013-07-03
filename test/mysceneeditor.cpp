@@ -79,6 +79,24 @@ CCNode* MySceneEditor::PickNode(CCNode* node, const CCPoint& point)
     kmGLGetMatrix(KM_GL_MODELVIEW, &matrixMV);
 
     CCSize s = node->getContentSize();
+
+//#define USE_INVERSE_TRANSFORM
+#ifdef USE_INVERSE_TRANSFORM
+    kmVec3 p;
+    p.x = point.x;
+    p.y = point.y;
+    p.z = 0;
+
+    kmVec3 localPoint;
+    kmVec3InverseTransform(&localPoint, &p, &matrixMV);
+
+    bool outside = localPoint.x < 0 ||
+                   localPoint.y < 0 ||
+                   localPoint.x > s.width ||
+                   localPoint.y > s.height;
+
+    return outside ? 0 : node;
+#else
     kmVec3 verts[4] = {{0, s.height, 0}, {s.width, s.height, 0}, {s.width, 0, 0}, {0, 0, 0}};
     for (int i = 0; i < 4; ++i)
         kmVec3Transform(&verts[i], &verts[i], &matrixMV);
@@ -90,6 +108,7 @@ CCNode* MySceneEditor::PickNode(CCNode* node, const CCPoint& point)
     bool inside = PointInPolygon(verts, 4, p);
 
     return inside ? node : 0;
+#endif
 }
 
 bool MySceneEditor::PointInPolygon(const kmVec3* polygon, int numVerts, const kmVec3& point)
