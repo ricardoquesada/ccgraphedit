@@ -31,9 +31,6 @@ SOURCES += \
 main.cpp\
 mainwindow.cpp \
 myqglwidget.cpp \
-myeglview.cpp \
-myglthread.cpp \
-myqglwidgetthreaded.cpp \
 mysceneeditor.cpp \
 ../cocos2d/cocos2dx/ccFPSImages.c \
 ../cocos2d/cocos2dx/CCCamera.cpp \
@@ -160,9 +157,6 @@ mysceneeditor.cpp \
 HEADERS  += \
 mainwindow.h \
 myqglwidget.h \
-myeglview.h \
-myglthread.h \
-myqglwidgetthreaded.h \
 mysceneeditor.h
 
 FORMS += mainwindow.ui

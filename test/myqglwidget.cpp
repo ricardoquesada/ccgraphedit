@@ -1,5 +1,4 @@
 #include "myqglwidget.h"
-#include "myeglview.h"
 #include "mysceneeditor.h"
 
 #include <QDebug>
