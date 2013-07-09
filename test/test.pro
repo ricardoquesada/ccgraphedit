@@ -15,6 +15,7 @@ TARGET   = test
 TEMPLATE = app
 
 OBJECTIVE_SOURCES += \
+Display.mm \
 ../cocos2d/cocos2dx/platform/mac/CCWindow.mm \
 ../cocos2d/cocos2dx/platform/mac/CCApplication.mm \
 ../cocos2d/cocos2dx/platform/mac/CCCommon.mm \

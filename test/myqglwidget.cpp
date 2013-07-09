@@ -9,6 +9,8 @@
 
 #include <vector>
 
+#include "Display.h"
+
 USING_NS_CC;
 
 MyQGLWidget::MyQGLWidget()
@@ -27,8 +29,11 @@ void MyQGLWidget::initializeGL()
 
 void MyQGLWidget::resizeGL(int w, int h)
 {
-    w >>= 1;
-    h >>= 1;
+    if (Display::IsRetinaDisplay())
+    {
+        w >>= 1;
+        h >>= 1;
+    }
 
     if (!mLazyInit)
     {
