@@ -4,7 +4,7 @@
 #include "platform/CCEGLViewProtocol.h"
 
 class MyEGLView
-    : public cocos2d::CCEGLViewProtocol
+    : public cocos2d::EGLViewProtocol
 {
 public:
 

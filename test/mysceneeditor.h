@@ -26,16 +26,16 @@ public:
 
     void drawOverlay();
 
-    cocos2d::CCNode* PickNode(const cocos2d::CCPoint& point);
+    cocos2d::Node* PickNode(const cocos2d::Point& point);
 
 protected:
 
-    cocos2d::CCNode* PickNode(cocos2d::CCNode* node, const cocos2d::CCPoint& point);
+    cocos2d::Node* PickNode(cocos2d::Node* node, const cocos2d::Point& point);
     bool PointInPolygon(const kmVec3* polygon, int numVerts, const kmVec3& point);
 
 protected:
 
-    cocos2d::CCNode* mSelectedNode;
+    cocos2d::Node* mSelectedNode;
 };
 
 #endif // MYSCENEEDITOR_H

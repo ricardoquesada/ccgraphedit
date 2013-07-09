@@ -39,9 +39,9 @@ void MySceneEditor::drawOverlay()
     if (mSelectedNode)
     {
         // draw outline of selected node
-        CCSize cs = mSelectedNode->getContentSize();
+        Size cs = mSelectedNode->getContentSize();
 
-        const CCPoint points[] = {
+        const Point points[] = {
             mSelectedNode->convertToWorldSpace(ccp(0,        0)),
             mSelectedNode->convertToWorldSpace(ccp(cs.width, 0)),
             mSelectedNode->convertToWorldSpace(ccp(cs.width, cs.height)),
@@ -56,35 +56,35 @@ void MySceneEditor::drawOverlay()
 // Protected Methods
 //
 
-CCNode* MySceneEditor::PickNode(const CCPoint& point)
+Node* MySceneEditor::PickNode(const Point& point)
 {
     kmGLMatrixMode(KM_GL_MODELVIEW);
 
     kmGLPushMatrix();
     kmGLLoadIdentity();
 
-    CCScene* root = CCDirector::sharedDirector()->getRunningScene();
-    CCNode* node = PickNode(root, point);
+    Scene* root = Director::sharedDirector()->getRunningScene();
+    Node* node = PickNode(root, point);
 
     kmGLPopMatrix();
 
     return node;
 }
 
-CCNode* MySceneEditor::PickNode(CCNode* node, const CCPoint& point)
+Node* MySceneEditor::PickNode(Node* node, const Point& point)
 {
     if (!node)
         return 0;
 
     node->transform();
 
-    CCArray* children = node->getChildren();
+    Array* children = node->getChildren();
     if (children)
     {
-        CCObject* object;
+        Object* object;
         CCARRAY_FOREACH(children, object)
         {
-            CCNode* child = (CCNode*)object;
+            Node* child = (Node*)object;
             child = PickNode(child, point);
             if (child)
                 return child;
@@ -94,7 +94,7 @@ CCNode* MySceneEditor::PickNode(CCNode* node, const CCPoint& point)
     kmMat4 matrixMV;
     kmGLGetMatrix(KM_GL_MODELVIEW, &matrixMV);
 
-    CCSize s = node->getContentSize();
+    Size s = node->getContentSize();
 
 //#define USE_INVERSE_TRANSFORM
 #ifdef USE_INVERSE_TRANSFORM

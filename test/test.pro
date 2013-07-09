@@ -4,14 +4,18 @@
 #
 #-------------------------------------------------
 
-QT       += core gui opengl
+QT += core gui opengl
+CONFIG += c++11
+#QMAKE_CXXFLAGS += -stdlib=libc++
+#QMAKE_CXXFLAGS += -mmacosx-version-min=10.7
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = test
+TARGET   = test
 TEMPLATE = app
 
-OBJECTIVE_SOURCES += ../cocos2d/cocos2dx/platform/mac/CCWindow.m \
+OBJECTIVE_SOURCES += \
+../cocos2d/cocos2dx/platform/mac/CCWindow.mm \
 ../cocos2d/cocos2dx/platform/mac/CCApplication.mm \
 ../cocos2d/cocos2dx/platform/mac/CCCommon.mm \
 ../cocos2d/cocos2dx/platform/mac/CCDevice.mm \
@@ -23,13 +27,14 @@ OBJECTIVE_SOURCES += ../cocos2d/cocos2dx/platform/mac/CCWindow.m \
 ../cocos2d/cocos2dx/platform/mac/CCThread.mm \
 ../cocos2d/cocos2dx/platform/mac/EAGLView.mm
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    myqglwidget.cpp \
-    myeglview.cpp \
-    myglthread.cpp \
-    myqglwidgetthreaded.cpp \
-    mysceneeditor.cpp \
+SOURCES += \
+main.cpp\
+mainwindow.cpp \
+myqglwidget.cpp \
+myeglview.cpp \
+myglthread.cpp \
+myqglwidgetthreaded.cpp \
+mysceneeditor.cpp \
 ../cocos2d/cocos2dx/ccFPSImages.c \
 ../cocos2d/cocos2dx/CCCamera.cpp \
 ../cocos2d/cocos2dx/CCConfiguration.cpp \
@@ -61,6 +66,8 @@ SOURCES += main.cpp\
 ../cocos2d/cocos2dx/cocoa/CCSet.cpp \
 ../cocos2d/cocos2dx/cocoa/CCString.cpp \
 ../cocos2d/cocos2dx/cocoa/CCZone.cpp \
+../cocos2d/cocos2dx/cocoa/CCData.cpp \
+../cocos2d/cocos2dx/cocoa/CCDataVisitor.cpp \
 ../cocos2d/cocos2dx/draw_nodes/CCDrawNode.cpp \
 ../cocos2d/cocos2dx/draw_nodes/CCDrawingPrimitives.cpp \
 ../cocos2d/cocos2dx/effects/CCGrabber.cpp \
@@ -130,9 +137,12 @@ SOURCES += main.cpp\
 ../cocos2d/cocos2dx/support/zip_support/ZipUtils.cpp \
 ../cocos2d/cocos2dx/support/zip_support/ioapi.cpp \
 ../cocos2d/cocos2dx/support/zip_support/unzip.cpp \
+../cocos2d/cocos2dx/support/component/CCComponent.cpp \
+../cocos2d/cocos2dx/support/component/CCComponentContainer.cpp \
 ../cocos2d/cocos2dx/text_input_node/CCIMEDispatcher.cpp \
 ../cocos2d/cocos2dx/text_input_node/CCTextFieldTTF.cpp \
 ../cocos2d/cocos2dx/textures/CCTexture2D.cpp \
+../cocos2d/cocos2dx/textures/CCTextureETC.cpp \
 ../cocos2d/cocos2dx/textures/CCTextureAtlas.cpp \
 ../cocos2d/cocos2dx/textures/CCTextureCache.cpp \
 ../cocos2d/cocos2dx/textures/CCTexturePVR.cpp \
@@ -144,18 +154,20 @@ SOURCES += main.cpp\
 ../cocos2d/cocos2dx/tilemap_parallax_nodes/CCTileMapAtlas.cpp \
 ../cocos2d/cocos2dx/touch_dispatcher/CCTouch.cpp \
 ../cocos2d/cocos2dx/touch_dispatcher/CCTouchDispatcher.cpp \
-../cocos2d/cocos2dx/touch_dispatcher/CCTouchHandler.cpp
+../cocos2d/cocos2dx/touch_dispatcher/CCTouchHandler.cpp \
+../cocos2d/cocos2dx/keyboard_dispatcher/CCKeyboardDispatcher.cpp
 
-HEADERS  += mainwindow.h \
-    myqglwidget.h \
-    myeglview.h \
-    myglthread.h \
-    myqglwidgetthreaded.h \
-    mysceneeditor.h
+HEADERS  += \
+mainwindow.h \
+myqglwidget.h \
+myeglview.h \
+myglthread.h \
+myqglwidgetthreaded.h \
+mysceneeditor.h
 
-FORMS    += mainwindow.ui
+FORMS += mainwindow.ui
 
-DEFINES += CC_TARGET_OS_MAC QT_MAC_USE_COCOA USE_FILE32API COCOS2D_DEBUG
+DEFINES += CC_TARGET_OS_MAC QT_MAC_USE_COCOA USE_FILE32API COCOS2D_DEBUG KEYBOARD_SUPPORT
 
 INCLUDEPATH += \
 "../cocos2d/cocos2dx" \
@@ -167,6 +179,7 @@ INCLUDEPATH += \
 "../cocos2d/extensions" \
 "../cocos2d/cocos2dx/cocoa" \
 "../cocos2d/cocos2dx/touch_dispatcher" \
+"../cocos2d/cocos2dx/keyboard_dispatcher" \
 "../cocos2d/cocos2dx/textures" \
 "../cocos2d/cocos2dx/text_input_node"
 
@@ -178,4 +191,7 @@ LIBS += \
     -framework OpenAL \
     -framework CoreGraphics \
     -lz \
-    "../cocos2d/cocos2dx/platform/third_party/mac/libraries/libwebp.a"
+   "/usr/lib/libc++.dylib" \
+    "../cocos2d/cocos2dx/platform/third_party/mac/libraries/libwebp.a" #\
+    #"../libs/libcocos2dx.a"
+

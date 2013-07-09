@@ -14,26 +14,27 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    QWidget* placeholder = ui->cocosView->findChild<QWidget*>(QString("placeholder"));
+    if (placeholder)
+    {
+        QWidget* parent = dynamic_cast<QWidget*>(placeholder->parent());
+
 #ifdef THREADED
-    mQGLWidget = new MyQGLWidgetThreaded(this);
+        mQGLWidget = new MyQGLWidgetThreaded(parent);
 #else
-    mQGLWidget = new MyQGLWidget(this);
+        mQGLWidget = new MyQGLWidget(parent);
 #endif
-    mQGLWidget->move(50, 50);
-    mQGLWidget->resize(480, 320);
-    mQGLWidget->show();
+        //mQGLWidget->move(50, 50);
+        mQGLWidget->resize(480, 320);
+        mQGLWidget->show();
 
 #ifdef THREADED
-    mQGLWidget->startRendering();
+        mQGLWidget->startRendering();
 #endif
 
-//    QScrollArea* scrollArea = findChild<QScrollArea>("scrollArea");
-//    if (scrollArea)
-//    {
-//        scrollArea->
-//    }
-
-    //ui->formLayout->addWidget(mQGLWidget);
+        // remove the placeholder from the layout
+        parent->layout()->removeWidget(placeholder);
+    }
 }
 
 MainWindow::~MainWindow()

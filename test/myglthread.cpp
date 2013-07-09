@@ -32,12 +32,12 @@ void MyGLThread::run()
     {
         mbInitialized = true;
 
-        CCEGLView* view = CCEGLView::sharedOpenGLView();
+        EGLView* view = EGLView::sharedOpenGLView();
         view->setFrameSize(mWidth, mHeight);
 
-        CCDirector* director = CCDirector::sharedDirector();
+        Director* director = Director::sharedDirector();
         director->setContentScaleFactor(1);
-        director->setProjection(kCCDirectorProjection2D);
+        director->setProjection(kDirectorProjection2D);
         director->setDisplayStats(true);
         director->setOpenGLView(view);
 
@@ -45,26 +45,26 @@ void MyGLThread::run()
 
         std::vector<std::string> searchPaths;
         searchPaths.push_back(std::string("/Users/jgraham/dev_casino3/Assets/ccbResources/Bingo/resources-auto"));
-        CCFileUtils* fileUtils = CCFileUtils::sharedFileUtils();
+        FileUtils* fileUtils = FileUtils::sharedFileUtils();
         fileUtils->setSearchPaths(searchPaths);
 
-        CCScene* scene = CCScene::create();
+        Scene* scene = Scene::create();
         director->pushScene(scene);
 
-        CCSprite* sprite = CCSprite::create("bingo_called_bingo.png");
+        Sprite* sprite = Sprite::create("bingo_called_bingo.png");
         if (sprite)
         {
             sprite->setPosition(ccp(mWidth/2, mHeight/2));
             scene->addChild(sprite);
 
-            CCRepeatForever* action = CCRepeatForever::create(CCSequence::create(CCScaleTo::create(.5f, -1, 1), CCScaleTo::create(.5f, 1, 1), 0));
+            RepeatForever* action = RepeatForever::create(Sequence::create(ScaleTo::create(.5f, -1, 1), ScaleTo::create(.5f, 1, 1), 0));
             sprite->runAction(action);
         }
     }
 
     while (mbRender)
     {
-        CCDirector::sharedDirector()->drawScene();
+        Director::sharedDirector()->drawScene();
     }
 }
 

@@ -35,12 +35,12 @@ void MyQGLWidget::resizeGL(int w, int h)
     {
         mLazyInit = true;
 
-        CCEGLView* view = CCEGLView::sharedOpenGLView();
+        EGLView* view = EGLView::sharedOpenGLView();
         view->setFrameSize(w, h);
 
-        CCDirector* director = CCDirector::sharedDirector();
+        Director* director = Director::sharedDirector();
         director->setContentScaleFactor(1);
-        director->setProjection(kCCDirectorProjection2D);
+        director->setProjection(kDirectorProjection2D);
         director->setDisplayStats(true);
         director->setOpenGLView(view);
 
@@ -48,7 +48,7 @@ void MyQGLWidget::resizeGL(int w, int h)
 
         std::vector<std::string> searchPaths;
         searchPaths.push_back(std::string("../../../../../cocos2d/template/multi-platform-cpp/proj.ios"));
-        CCFileUtils* fileUtils = CCFileUtils::sharedFileUtils();
+        FileUtils* fileUtils = FileUtils::sharedFileUtils();
         fileUtils->setSearchPaths(searchPaths);
 
         connect(&mTimer, SIGNAL(timeout()), this, SLOT(updateGL()));
@@ -56,21 +56,21 @@ void MyQGLWidget::resizeGL(int w, int h)
 
         CCLOG("QT: Initialized cocos director\n");
 
-        CCScene* scene = CCScene::create();
+        Scene* scene = Scene::create();
         director->pushScene(scene);
 
 #define INCLUDE_SOME_DEMO_SPRITES
 #ifdef INCLUDE_SOME_DEMO_SPRITES
-        CCSprite* sprite = CCSprite::create("Icon-144.png");
+        Sprite* sprite = Sprite::create("Icon-144.png");
         if (sprite)
         {
             sprite->setPosition(ccp(w/2, h/2));
             scene->addChild(sprite);
 
-            //CCRepeatForever* action = CCRepeatForever::create(CCSequence::create(CCScaleTo::create(.5f, -1, 1), CCScaleTo::create(.5f, 1, 1), 0));
+            //RepeatForever* action = RepeatForever::create(Sequence::create(ScaleTo::create(.5f, -1, 1), ScaleTo::create(.5f, 1, 1), 0));
             //sprite->runAction(action);
 
-            CCRepeatForever* action2 = CCRepeatForever::create(CCRotateBy::create(4, 360));
+            RepeatForever* action2 = RepeatForever::create(RotateBy::create(4, 360));
             sprite->runAction(action2);
         }
 #endif
@@ -83,7 +83,7 @@ void MyQGLWidget::resizeGL(int w, int h)
 
 void MyQGLWidget::paintGL()
 {
-    CCDirector::sharedDirector()->drawScene();
+    Director::sharedDirector()->drawScene();
     MySceneEditor::instance()->drawOverlay();
 }
 
