@@ -158,7 +158,8 @@ mysceneeditor.cpp \
 HEADERS  += \
 mainwindow.h \
 myqglwidget.h \
-mysceneeditor.h
+mysceneeditor.h \
+    Singleton.h
 
 FORMS += mainwindow.ui
 

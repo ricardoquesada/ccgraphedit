@@ -1,7 +1,10 @@
 #include "myqglwidget.h"
 #include "mysceneeditor.h"
+#include "mainwindow.h"
 
 #include <QDebug>
+#include <QStandardItemModel>
+#include <QTreeView>
 
 #include "cocos2d.h"
 #include "CCDirector.h"
@@ -76,6 +79,20 @@ void MyQGLWidget::resizeGL(int w, int h)
 
             RepeatForever* action2 = RepeatForever::create(RotateBy::create(4, 360));
             sprite->runAction(action2);
+        }
+
+        QTreeView* tv = MainWindow::instance()->SceneGraph();
+        if (tv)
+        {
+            // columns are node, type
+            QStandardItemModel* model = new QStandardItemModel(0, 2);
+            model->setHorizontalHeaderItem(0, new QStandardItem(QString("Node")));
+            model->setHorizontalHeaderItem(1, new QStandardItem(QString("Class")));
+
+            model->appendRow(new QStandardItem(QString("Scene")));
+            model->setItem(0, 1, new QStandardItem(QString("CCScene")));
+
+            tv->setModel(model);
         }
 #endif
 

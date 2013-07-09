@@ -38,18 +38,60 @@ void MySceneEditor::drawOverlay()
 {
     if (mSelectedNode)
     {
-        // draw outline of selected node
-        Size cs = mSelectedNode->getContentSize();
+        Rect rc;
+        rc.origin = PointZero;
+        rc.size   = mSelectedNode->getContentSize();
+        drawRect(mSelectedNode, rc);
 
-        const Point points[] = {
-            mSelectedNode->convertToWorldSpace(ccp(0,        0)),
-            mSelectedNode->convertToWorldSpace(ccp(cs.width, 0)),
-            mSelectedNode->convertToWorldSpace(ccp(cs.width, cs.height)),
-            mSelectedNode->convertToWorldSpace(ccp(0,        cs.height))
-        };
+        drawOrigin(mSelectedNode, mSelectedNode->getAnchorPointInPoints());
 
-        ccDrawPoly(points, 4, true);
+        drawHandles(mSelectedNode);
     }
+}
+
+void MySceneEditor::drawOrigin(Node* node, const Point& origin, float size)
+{
+    const Point lines[] = {
+        node->convertToWorldSpace(ccp(origin.x, origin.y + size)),
+        node->convertToWorldSpace(ccp(origin.x, origin.y - size)),
+        node->convertToWorldSpace(ccp(origin.x - size, origin.y)),
+        node->convertToWorldSpace(ccp(origin.x + size, origin.y))
+    };
+    ccDrawLine(lines[0], lines[1]);
+    ccDrawLine(lines[2], lines[3]);
+}
+
+void MySceneEditor::drawRect(Node* node, const Rect& rect, bool solid, const ccColor4F* color)
+{
+    float l(rect.origin.x), b(rect.origin.y);
+    float r(l + rect.size.width), t(b + rect.size.height);
+
+    const Point points[] = {
+        node->convertToWorldSpace(ccp(l, b)),
+        node->convertToWorldSpace(ccp(r, b)),
+        node->convertToWorldSpace(ccp(r, t)),
+        node->convertToWorldSpace(ccp(l, t))
+    };
+    if (solid)
+    {
+        ccColor4F temp = {1,1,1,1};
+        if (!color)
+            color = &temp;
+        ccDrawSolidPoly(points, 4, *color);
+    }
+    else
+        ccDrawPoly(points, 4, true);
+}
+
+void MySceneEditor::drawHandles(Node* node)
+{
+    const float kHandleSize = 5;
+    #define RectAtPoint(p,hs) Rect(p.x-hs,p.y-hs,hs+hs,hs+hs)
+    Size size = node->getContentSize();
+    drawRect(node, RectAtPoint(Point(0,         0), kHandleSize),           true);
+    drawRect(node, RectAtPoint(Point(size.width,0), kHandleSize),           true);
+    drawRect(node, RectAtPoint(Point(size.width,size.height), kHandleSize), true);
+    drawRect(node, RectAtPoint(Point(0,         size.height), kHandleSize), true);
 }
 
 //
