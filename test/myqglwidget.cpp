@@ -48,15 +48,10 @@ void MyQGLWidget::resizeGL(int w, int h)
         Director* director = Director::sharedDirector();
         director->setContentScaleFactor(1);
         director->setProjection(kDirectorProjection2D);
-        director->setDisplayStats(true);
+        //director->setDisplayStats(true);
         director->setOpenGLView(view);
 
         glClearColor(0, 0, 0, 1);
-
-        std::vector<std::string> searchPaths;
-        searchPaths.push_back(std::string("../../../../../cocos2d/template/multi-platform-cpp/proj.ios"));
-        FileUtils* fileUtils = FileUtils::sharedFileUtils();
-        fileUtils->setSearchPaths(searchPaths);
 
         connect(&mTimer, SIGNAL(timeout()), this, SLOT(updateGL()));
         mTimer.start();
@@ -66,38 +61,12 @@ void MyQGLWidget::resizeGL(int w, int h)
         Scene* scene = Scene::create();
         director->pushScene(scene);
 
-#define INCLUDE_SOME_DEMO_SPRITES
-#ifdef INCLUDE_SOME_DEMO_SPRITES
-        Sprite* sprite = Sprite::create("Icon-144.png");
-        if (sprite)
-        {
-            sprite->setPosition(ccp(w/2, h/2));
-            scene->addChild(sprite);
-
-            //RepeatForever* action = RepeatForever::create(Sequence::create(ScaleTo::create(.5f, -1, 1), ScaleTo::create(.5f, 1, 1), 0));
-            //sprite->runAction(action);
-
-            RepeatForever* action2 = RepeatForever::create(RotateBy::create(4, 360));
-            sprite->runAction(action2);
-        }
-
-        QTreeView* tv = MainWindow::instance()->SceneGraph();
-        if (tv)
-        {
-            // columns are node, type
-            QStandardItemModel* model = new QStandardItemModel(0, 2);
-            model->setHorizontalHeaderItem(0, new QStandardItem(QString("Node")));
-            model->setHorizontalHeaderItem(1, new QStandardItem(QString("Class")));
-
-            model->appendRow(new QStandardItem(QString("Scene")));
-            model->setItem(0, 1, new QStandardItem(QString("CCScene")));
-
-            tv->setModel(model);
-        }
-#endif
-
         setMouseTracking(true);
     }
+
+    EGLView* view = EGLView::sharedOpenGLView();
+    view->setFrameSize(w, h);
+    view->setDesignResolutionSize(w, h, kResolutionNoBorder);
 
     CCLOG("QT: setting frame size to %d, %d\n", w, h);
 }

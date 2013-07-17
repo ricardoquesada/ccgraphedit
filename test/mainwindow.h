@@ -24,8 +24,8 @@ public:
     DECLARE_SINGLETON(MainWindow)
 
     Ui::MainWindow* UI();
-    QTreeView* SceneGraph();
-    QTableView* Properties();
+
+    void AddFiles(const char* root, const char* path, bool directory);
 
 protected:
 

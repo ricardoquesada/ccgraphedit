@@ -2,6 +2,7 @@
 #include "cocos2d.h"
 #include "kazmath/GL/matrix.h"
 #include "kazmath/vec3.h"
+#include "fileutil.h"
 
 #include <QDebug>
 #include <QPainter>
@@ -9,27 +10,43 @@
 
 USING_NS_CC;
 
-MySceneEditor* MySceneEditor::__instance = 0;
+IMPLEMENT_SINGLETON(MySceneEditor)
 
 MySceneEditor::MySceneEditor()
     : mSelectedNode(0)
+    , mDragging(false)
 {
+}
+
+void MySceneEditor::AddNode(Node* parent, Node* node)
+{
+    if (!parent)
+        parent = Director::sharedDirector()->getRunningScene();
+    parent->addChild(node);
 }
 
 void MySceneEditor::mousePressed(float x, float y)
 {
+    printf("id = %d and %d\n", kMessageSomeMessage, getHashCodeByString("some string key"));
     //CCNode* node = PickNode(ccp(x, y));
     //qDebug("Pressed: picked node %p", node);
+    mSelectedNode = PickNode(ccp(x, y));
+    mDragging = true;
 }
 
 void MySceneEditor::mouseRelease(float x, float y)
 {
-    mSelectedNode = PickNode(ccp(x, y));
-    qDebug("Released: picked node %p", mSelectedNode);
+    mDragging = false;
+    //qDebug("Released: picked node %p", mSelectedNode);
 }
 
 void MySceneEditor::mouseMoved(float x, float y)
 {
+    if (mSelectedNode && mDragging)
+    {
+        Point p = mSelectedNode->getParent()->convertToNodeSpace(ccp(x, y));
+        mSelectedNode->setPosition(p);
+    }
     //CCNode* node = PickNode(ccp(x, y));
     //qDebug("Moved: picked node %p", node);
 }
@@ -94,6 +111,12 @@ void MySceneEditor::drawHandles(Node* node)
     drawRect(node, RectAtPoint(Point(0,         size.height), kHandleSize), true);
 }
 
+// Add a search path to cocos file utils
+void MySceneEditor::AddSearchPath(const char* path)
+{
+    FileUtils::sharedFileUtils()->addSearchPath(path);
+}
+
 //
 // Protected Methods
 //
@@ -124,7 +147,7 @@ Node* MySceneEditor::PickNode(Node* node, const Point& point)
     if (children)
     {
         Object* object;
-        CCARRAY_FOREACH(children, object)
+        CCARRAY_FOREACH_REVERSE(children, object)
         {
             Node* child = (Node*)object;
             child = PickNode(child, point);

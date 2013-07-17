@@ -26,7 +26,14 @@ Display.mm \
 ../cocos2d/cocos2dx/platform/mac/CCFileUtilsMac.mm \
 ../cocos2d/cocos2dx/platform/mac/CCImage.mm \
 ../cocos2d/cocos2dx/platform/mac/CCThread.mm \
-../cocos2d/cocos2dx/platform/mac/EAGLView.mm
+../cocos2d/cocos2dx/platform/mac/EAGLView.mm \
+../cocos2d/CocosDenshion/mac/CDAudioManager.mm \
+../cocos2d/CocosDenshion/mac/CDOpenALSupport.mm \
+../cocos2d/CocosDenshion/mac/CDXMacOSXSupport.mm \
+../cocos2d/CocosDenshion/mac/CocosDenshion.mm \
+../cocos2d/CocosDenshion/mac/SimpleAudioEngine.mm \
+../cocos2d/CocosDenshion/mac/SimpleAudioEngine_objc.mm \
+../cocos2d/extensions/GUI/CCEditBox/CCEditBoxImplMac.mm
 
 SOURCES += \
 main.cpp\
@@ -70,6 +77,45 @@ mysceneeditor.cpp \
 ../cocos2d/cocos2dx/draw_nodes/CCDrawingPrimitives.cpp \
 ../cocos2d/cocos2dx/effects/CCGrabber.cpp \
 ../cocos2d/cocos2dx/effects/CCGrid.cpp \
+../cocos2d/extensions/CCBReader/CCBAnimationManager.cpp \
+../cocos2d/extensions/CCBReader/CCBFileLoader.cpp \
+../cocos2d/extensions/CCBReader/CCBKeyframe.cpp \
+../cocos2d/extensions/CCBReader/CCBReader.cpp \
+../cocos2d/extensions/CCBReader/CCBSequence.cpp \
+../cocos2d/extensions/CCBReader/CCBSequenceProperty.cpp \
+../cocos2d/extensions/CCBReader/CCBValue.cpp \
+../cocos2d/extensions/CCBReader/CCControlButtonLoader.cpp \
+../cocos2d/extensions/CCBReader/CCControlLoader.cpp \
+../cocos2d/extensions/CCBReader/CCLabelBMFontLoader.cpp \
+../cocos2d/extensions/CCBReader/CCLabelTTFLoader.cpp \
+../cocos2d/extensions/CCBReader/CCLayerColorLoader.cpp \
+../cocos2d/extensions/CCBReader/CCLayerGradientLoader.cpp \
+../cocos2d/extensions/CCBReader/CCLayerLoader.cpp \
+../cocos2d/extensions/CCBReader/CCMenuItemImageLoader.cpp \
+../cocos2d/extensions/CCBReader/CCMenuItemLoader.cpp \
+../cocos2d/extensions/CCBReader/CCNode+CCBRelativePositioning.cpp \
+../cocos2d/extensions/CCBReader/CCNodeLoader.cpp \
+../cocos2d/extensions/CCBReader/CCNodeLoaderLibrary.cpp \
+../cocos2d/extensions/CCBReader/CCParticleSystemQuadLoader.cpp \
+../cocos2d/extensions/CCBReader/CCScale9SpriteLoader.cpp \
+../cocos2d/extensions/CCBReader/CCScrollViewLoader.cpp \
+../cocos2d/extensions/CCBReader/CCSpriteLoader.cpp \
+../cocos2d/extensions/GUI/CCControlExtension/CCControl.cpp \
+../cocos2d/extensions/GUI/CCControlExtension/CCControlButton.cpp \
+../cocos2d/extensions/GUI/CCControlExtension/CCControlColourPicker.cpp \
+../cocos2d/extensions/GUI/CCControlExtension/CCControlSaturationBrightnessPicker.cpp \
+../cocos2d/extensions/GUI/CCControlExtension/CCControlHuePicker.cpp \
+../cocos2d/extensions/GUI/CCControlExtension/CCControlPotentiometer.cpp \
+../cocos2d/extensions/GUI/CCControlExtension/CCControlSlider.cpp \
+../cocos2d/extensions/GUI/CCControlExtension/CCControlStepper.cpp \
+../cocos2d/extensions/GUI/CCControlExtension/CCControlUtils.cpp \
+../cocos2d/extensions/GUI/CCControlExtension/CCInvocation.cpp \
+../cocos2d/extensions/GUI/CCControlExtension/CCScale9Sprite.cpp \
+../cocos2d/extensions/GUI/CCEditBox/CCEditBox.cpp \
+../cocos2d/extensions/GUI/CCScrollView/CCScrollView.cpp \
+../cocos2d/extensions/GUI/CCScrollView/CCSorting.cpp \
+../cocos2d/extensions/GUI/CCScrollView/CCTableView.cpp \
+../cocos2d/extensions/GUI/CCScrollView/CCTableViewCell.cpp \
 ../cocos2d/cocos2dx/kazmath/src/GL/mat4stack.c \
 ../cocos2d/cocos2dx/kazmath/src/GL/matrix.c \
 ../cocos2d/cocos2dx/kazmath/src/aabb.c \
@@ -153,15 +199,20 @@ mysceneeditor.cpp \
 ../cocos2d/cocos2dx/touch_dispatcher/CCTouch.cpp \
 ../cocos2d/cocos2dx/touch_dispatcher/CCTouchDispatcher.cpp \
 ../cocos2d/cocos2dx/touch_dispatcher/CCTouchHandler.cpp \
-../cocos2d/cocos2dx/keyboard_dispatcher/CCKeyboardDispatcher.cpp
+../cocos2d/cocos2dx/keyboard_dispatcher/CCKeyboardDispatcher.cpp \
+    dialogimportccb.cpp \
+    fileutil.cpp
 
 HEADERS  += \
 mainwindow.h \
 myqglwidget.h \
 mysceneeditor.h \
-    Singleton.h
+    Singleton.h \
+    dialogimportccb.h \
+    fileutil.h
 
-FORMS += mainwindow.ui
+FORMS += mainwindow.ui \
+    dialogimportccb.ui
 
 DEFINES += CC_TARGET_OS_MAC QT_MAC_USE_COCOA USE_FILE32API COCOS2D_DEBUG KEYBOARD_SUPPORT
 
@@ -177,7 +228,8 @@ INCLUDEPATH += \
 "../cocos2d/cocos2dx/touch_dispatcher" \
 "../cocos2d/cocos2dx/keyboard_dispatcher" \
 "../cocos2d/cocos2dx/textures" \
-"../cocos2d/cocos2dx/text_input_node"
+"../cocos2d/cocos2dx/text_input_node" \
+"../cocos2d/CocosDenshion/include"
 
 LIBS += \
     -framework AppKit \
@@ -186,6 +238,7 @@ LIBS += \
     -framework QuartzCore \
     -framework OpenAL \
     -framework CoreGraphics \
+    -framework AudioToolbox \
     -lz \
    "/usr/lib/libc++.dylib" \
     "../cocos2d/cocos2dx/platform/third_party/mac/libraries/libwebp.a" #\
