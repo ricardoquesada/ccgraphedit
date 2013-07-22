@@ -5,15 +5,17 @@
 #include "fileutil.h"
 #include "mysceneeditor.h"
 #include "cocos2d.h"
+#include <QStandardItemModel>
 
 USING_NS_CC;
 
 IMPLEMENT_SINGLETON(MainWindow)
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    mQGLWidget(0)
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+    , mQGLWidget(0)
+    , mItemModelSceneGraph(0)
 {
     ui->setupUi(this);
 
@@ -21,6 +23,27 @@ MainWindow::MainWindow(QWidget *parent) :
     mQGLWidget->show();
     ui->splitter->insertWidget(1, mQGLWidget);
 
+    // setup the headers for the scene graph tree view
+    QTreeView* tv = ui->scenegraph;
+    if (tv)
+    {
+        // columns are node, type
+        mItemModelSceneGraph = new QStandardItemModel(0, 2);
+        mItemModelSceneGraph->setHorizontalHeaderItem(0, new QStandardItem(QString("Node")));
+        mItemModelSceneGraph->setHorizontalHeaderItem(1, new QStandardItem(QString("Class")));
+        tv->setModel(mItemModelSceneGraph);
+    }
+
+    // setup menu bar
+    QMenuBar* pMenuBar = new QMenuBar(this);
+    setMenuBar(pMenuBar);
+
+    QMenu* menu = new QMenu("File", this);
+    menu->addAction(new QAction("New Graph", this));
+    menuBar()->addMenu(menu);
+
+    // build a file list
+    FileUtil::EnumerateDirectoryT("/Users/jgraham/dev_casino3/Assets/ccbResources", 0, this, &MainWindow::AddFiles);
 
 #define INCLUDE_SOME_DEMO_SPRITES
 #ifdef INCLUDE_SOME_DEMO_SPRITES
@@ -37,34 +60,9 @@ MainWindow::MainWindow(QWidget *parent) :
         sprite->runAction(action2);
 
         editor->AddNode(0, sprite);
+        AddNode(sprite, "Sprite", "Sprite");
     }
 #endif
-
-
-    //        QTreeView* tv = MainWindow::instance()->SceneGraph();
-    //        if (tv)
-    //        {
-    //            // columns are node, type
-    //            QStandardItemModel* model = new QStandardItemModel(0, 2);
-    //            model->setHorizontalHeaderItem(0, new QStandardItem(QString("Node")));
-    //            model->setHorizontalHeaderItem(1, new QStandardItem(QString("Class")));
-
-    //            model->appendRow(new QStandardItem(QString("Scene")));
-    //            model->setItem(0, 1, new QStandardItem(QString("CCScene")));
-
-    //            tv->setModel(model);
-    //        }
-
-
-
-    QMenuBar* pMenuBar = new QMenuBar(this);
-    setMenuBar(pMenuBar);
-
-    QMenu* menu = new QMenu("File", this);
-    menu->addAction(new QAction("New Graph", this));
-    menuBar()->addMenu(menu);
-
-    FileUtil::EnumerateDirectoryT("/Users/jgraham/dev_casino3/Assets/ccbResources", 0, this, &MainWindow::AddFiles);
 }
 
 MainWindow::~MainWindow()
@@ -80,4 +78,13 @@ Ui::MainWindow* MainWindow::UI()
 void MainWindow::AddFiles(const char* root, const char* path, bool directory)
 {
     printf("%s %s\n", directory ? "Directory" : "File", path);
+}
+
+void MainWindow::AddNode(const Node* node, const char* nodeName, const char* className)
+{
+    if (mItemModelSceneGraph)
+    {
+        mItemModelSceneGraph->appendRow(new QStandardItem(QString(nodeName)));
+        mItemModelSceneGraph->setItem(0, 1, new QStandardItem(QString(className)));
+    }
 }

@@ -27,7 +27,6 @@ void MySceneEditor::AddNode(Node* parent, Node* node)
 
 void MySceneEditor::mousePressed(float x, float y)
 {
-    printf("id = %d and %d\n", kMessageSomeMessage, getHashCodeByString("some string key"));
     //CCNode* node = PickNode(ccp(x, y));
     //qDebug("Pressed: picked node %p", node);
     mSelectedNode = PickNode(ccp(x, y));

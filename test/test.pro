@@ -40,6 +40,8 @@ main.cpp\
 mainwindow.cpp \
 myqglwidget.cpp \
 mysceneeditor.cpp \
+../cocos2d/cocos2dx/CCClassRegistry.cpp \
+../cocos2d/cocos2dx/CCEndian.cpp \
 ../cocos2d/cocos2dx/ccFPSImages.c \
 ../cocos2d/cocos2dx/CCCamera.cpp \
 ../cocos2d/cocos2dx/CCConfiguration.cpp \
