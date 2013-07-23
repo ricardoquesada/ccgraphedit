@@ -15,8 +15,6 @@ public:
 
     MySceneEditor();
 
-    void AddNode(cocos2d::Node* parent, cocos2d::Node* node);
-
     // mouse input methods
     void mousePressed(float x, float y);
     void mouseRelease(float x, float y);
@@ -31,8 +29,8 @@ public:
     // pick the cocos node under point
     cocos2d::Node* PickNode(const cocos2d::Point& point);
 
-    // Add a search path to cocos file utils
-    void AddSearchPath(const char* path);
+    // retrieve the currently selected scene graph node
+    cocos2d::Node* GetSelectedNode() const;
 
 protected:
 

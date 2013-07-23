@@ -16,13 +16,6 @@ MySceneEditor::MySceneEditor()
 {
 }
 
-void MySceneEditor::AddNode(Node* parent, Node* node)
-{
-    if (!parent)
-        parent = Director::sharedDirector()->getRunningScene();
-    parent->addChild(node);
-}
-
 void MySceneEditor::mousePressed(float x, float y)
 {
     //CCNode* node = PickNode(ccp(x, y));
@@ -112,16 +105,6 @@ void MySceneEditor::drawHandles(Node* node)
     drawRect(node, RectAtPoint(Point(0,         size.height), kHandleSize), true);
 }
 
-// Add a search path to cocos file utils
-void MySceneEditor::AddSearchPath(const char* path)
-{
-    FileUtils::sharedFileUtils()->addSearchPath(path);
-}
-
-//
-// Protected Methods
-//
-
 Node* MySceneEditor::PickNode(const Point& point)
 {
     kmGLMatrixMode(KM_GL_MODELVIEW);
@@ -136,6 +119,15 @@ Node* MySceneEditor::PickNode(const Point& point)
 
     return node;
 }
+
+Node* MySceneEditor::GetSelectedNode() const
+{
+    return mSelectedNode;
+}
+
+//
+// Protected Methods
+//
 
 Node* MySceneEditor::PickNode(Node* node, const Point& point)
 {

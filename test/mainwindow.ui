@@ -42,8 +42,11 @@
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
        </property>
+       <property name="itemsExpandable">
+        <bool>true</bool>
+       </property>
        <attribute name="headerVisible">
-        <bool>false</bool>
+        <bool>true</bool>
        </attribute>
       </widget>
       <widget class="QTableWidget" name="properties"/>

@@ -14,6 +14,7 @@
 
 #include <QStandardItemModel>
 #include <QMenuBar>
+#include <QAbstractListModel>
 
 USING_NS_CC;
 USING_NS_CC_EXT;
@@ -39,8 +40,8 @@ MainWindow::MainWindow(QWidget *parent)
     {
         // columns are node, type
         mItemModelSceneGraph = new QStandardItemModel(0, 2);
-//        mItemModelSceneGraph->setHorizontalHeaderItem(0, new QStandardItem(QString("Node")));
-//        mItemModelSceneGraph->setHorizontalHeaderItem(1, new QStandardItem(QString("Class")));
+        mItemModelSceneGraph->setHorizontalHeaderItem(0, new QStandardItem(QString("Name")));
+        mItemModelSceneGraph->setHorizontalHeaderItem(1, new QStandardItem(QString("Class")));
         tv->setModel(mItemModelSceneGraph);
     }
 
@@ -53,22 +54,19 @@ MainWindow::MainWindow(QWidget *parent)
 //    menu->addAction("New Node", this, SLOT(newNode()));
 //    menu->addAction("Import CocosBuilder File", this, SLOT(importCCB()));
 
+    // Add the root scene node to the graph
+    AddNode(nullptr, Director::sharedDirector()->getRunningScene(), "Scene", "Scene");
+
 #define INCLUDE_SOME_DEMO_SPRITES
 #ifdef INCLUDE_SOME_DEMO_SPRITES
-    MySceneEditor* editor = MySceneEditor::instance();
-    editor->AddSearchPath("../../../../../cocos2d/template/multi-platform-cpp/proj.ios");
-
+    FileUtils::sharedFileUtils()->addSearchPath("../../../../../cocos2d/template/multi-platform-cpp/proj.ios");
     Sprite* sprite = Sprite::create("Icon-144.png");
     if (sprite)
     {
         sprite->setPosition(ccp(500, 500));
-
-        //RepeatForever* action = RepeatForever::create(Sequence::create(ScaleTo::create(.5f, -1, 1), ScaleTo::create(.5f, 1, 1), 0));
-        //sprite->runAction(action);
         RepeatForever* action2 = RepeatForever::create(RotateBy::create(4, 360));
         sprite->runAction(action2);
-
-        AddNode(sprite, "Sprite", "Sprite");
+        AddNode(nullptr, sprite, "Sprite", "Sprite");
     }
 #endif
 }
@@ -89,14 +87,43 @@ void MainWindow::AddFiles(const char* root, const char* path, bool directory)
         FileUtils::sharedFileUtils()->addSearchPath(path);
 }
 
-void MainWindow::AddNode(Node* node, const char* nodeName, const char* className)
+void MainWindow::AddNode(Node* parent, Node* node, const char* nodeName, const char* className)
 {
-    MySceneEditor::instance()->AddNode(0, node);
+    // add the node to the graph
+    // avoid special case where we are adding the root scene node
+    Node* const root = Director::sharedDirector()->getRunningScene();
+    if (node != root)
+    {
+        if (!parent)
+            parent = root;
+        parent->addChild(node);
+    }
+
     if (mItemModelSceneGraph)
     {
-        mItemModelSceneGraph->appendRow(new QStandardItem(QString(nodeName)));
-        mItemModelSceneGraph->setItem(0, 1, new QStandardItem(QString(className)));
+        QStandardItem* item = new QStandardItem(QString(nodeName));
+
+        // Find the parent so that we can append to it in the tree view
+        tNodeToTreeviewEntryMap::iterator it = mNodeToTreeviewEntryMap.find(parent);
+        if (it == mNodeToTreeviewEntryMap.end())
+        {
+            mItemModelSceneGraph->appendRow(item);
+            //mItemModelSceneGraph->setItem(0, 1, new QStandardItem(QString(className)));
+            qDebug("adding %p to root", item);
+        }
+        else
+        {
+            tTreeviewEntry& entry = (*it).second;
+            QStandardItem* parent = entry.mItem;
+            parent->appendRow(item);
+            qDebug("adding %p to parent %p", item, parent);
+        }
+
+        item->setData(QVariant((qlonglong)node));
+        mNodeToTreeviewEntryMap.insert(tNodeToTreeviewEntryMap::value_type(node, tTreeviewEntry(item, node)));
     }
+
+    ui->hierarchy->expandAll();
 }
 
 //
@@ -117,19 +144,35 @@ void MainWindow::importCCB()
     Node* node = ccbReader->readNodeGraphFromFile(dialog->ccbPath().toUtf8());
     if (node)
     {
-        MySceneEditor::instance()->AddNode(0, node);
+        AddNode(0, node, "", "");
     }
 }
+
+//
+// Toolbar Actions
+//
 
 void MainWindow::on_actionCCSprite_triggered()
 {
     Size size = Director::sharedDirector()->getWinSize();
 
+    Node* parent = nullptr;
+
+    QModelIndexList nodes = ui->hierarchy->selectionModel()->selectedIndexes();
+    if (!nodes.empty())
+    {
+        QModelIndexList::Iterator it = nodes.begin();
+        QModelIndex& index = *it;
+        QStandardItem* item = mItemModelSceneGraph->itemFromIndex(index);
+        QVariant var = item->data();
+        parent = (Node*)var.toLongLong();
+    }
+
     Sprite* sprite = Sprite::create("Icon-144.png");
     if (sprite)
     {
         sprite->setPosition(ccp(.5f * size.width, .5f * size.height));
-        AddNode(sprite, "Sprite", "Sprite");
+        AddNode(parent, sprite, "Sprite", "Sprite");
     }
 }
 

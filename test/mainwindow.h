@@ -7,6 +7,7 @@
 #include "Singleton.h"
 
 class QStandardItemModel;
+class QStandardItem;
 
 namespace Ui {
     class MainWindow;
@@ -31,7 +32,7 @@ public:
     Ui::MainWindow* UI();
 
     void AddFiles(const char* root, const char* path, bool directory);
-    void AddNode(cocos2d::Node* node, const char* nodeName, const char* className);
+    void AddNode(cocos2d::Node* parent, cocos2d::Node* node, const char* nodeName, const char* className);
 
 public slots:
 
@@ -43,6 +44,19 @@ protected:
     MyQGLWidget* mQGLWidget;
 
     QStandardItemModel* mItemModelSceneGraph;
+
+    struct tTreeviewEntry
+    {
+        tTreeviewEntry(QStandardItem* item, cocos2d::Node* node)
+            : mItem(item)
+            , mNode(node)
+        {}
+        QStandardItem* mItem;
+        cocos2d::Node* mNode;
+    };
+
+    typedef std::map<cocos2d::Node*, tTreeviewEntry> tNodeToTreeviewEntryMap;
+    tNodeToTreeviewEntryMap mNodeToTreeviewEntryMap;
 
 private slots:
 
