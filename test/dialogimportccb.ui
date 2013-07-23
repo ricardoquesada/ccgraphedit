@@ -29,7 +29,7 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
+  <widget class="QLineEdit" name="pathCCB">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -52,7 +52,7 @@
     <string>CCB File Path</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="browseCCB">
    <property name="geometry">
     <rect>
      <x>260</x>
@@ -65,7 +65,7 @@
     <string>Browse</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
+  <widget class="QLineEdit" name="pathResources">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -75,7 +75,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="browseResources">
    <property name="geometry">
     <rect>
      <x>260</x>

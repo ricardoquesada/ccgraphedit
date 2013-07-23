@@ -26,43 +26,30 @@
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QSplitter" name="splitter">
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QTreeView" name="scenegraph"/>
-      <widget class="QScrollArea" name="scrollArea">
-       <property name="widgetResizable">
-        <bool>true</bool>
+      <property name="childrenCollapsible">
+       <bool>false</bool>
+      </property>
+      <widget class="QTreeView" name="hierarchy">
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
        </property>
-       <widget class="QWidget" name="scrollAreaWidgetContents">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>415</width>
-          <height>941</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QTreeView" name="properties"/>
-         </item>
-        </layout>
-       </widget>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
       </widget>
+      <widget class="QTableWidget" name="properties"/>
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1338</width>
-     <height>22</height>
-    </rect>
-   </property>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
@@ -74,6 +61,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionCCNode"/>
+   <addaction name="actionCCSprite"/>
   </widget>
   <action name="actionCCNode">
    <property name="text">
@@ -83,8 +72,20 @@
     <string>Create CCNode</string>
    </property>
   </action>
+  <action name="actionCCSprite">
+   <property name="text">
+    <string>CCSprite</string>
+   </property>
+   <property name="toolTip">
+    <string>Create CCSprite</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections/>
+ <slots>
+  <slot>createCCNode()</slot>
+  <slot>createCCSprite()</slot>
+ </slots>
 </ui>

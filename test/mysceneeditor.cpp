@@ -5,8 +5,6 @@
 #include "fileutil.h"
 
 #include <QDebug>
-#include <QPainter>
-#include <QPen>
 
 USING_NS_CC;
 
@@ -43,8 +41,12 @@ void MySceneEditor::mouseMoved(float x, float y)
 {
     if (mSelectedNode && mDragging)
     {
-        Point p = mSelectedNode->getParent()->convertToNodeSpace(ccp(x, y));
-        mSelectedNode->setPosition(p);
+        Node* parent = mSelectedNode->getParent();
+        if (parent)
+        {
+            Point p = parent->convertToNodeSpace(ccp(x, y));
+            mSelectedNode->setPosition(p);
+        }
     }
     //CCNode* node = PickNode(ccp(x, y));
     //qDebug("Moved: picked node %p", node);
@@ -140,6 +142,8 @@ Node* MySceneEditor::PickNode(Node* node, const Point& point)
     if (!node)
         return 0;
 
+    kmGLPushMatrix();
+
     node->transform();
 
     Array* children = node->getChildren();
@@ -151,12 +155,17 @@ Node* MySceneEditor::PickNode(Node* node, const Point& point)
             Node* child = (Node*)object;
             child = PickNode(child, point);
             if (child)
+            {
+                kmGLPopMatrix();
                 return child;
+            }
         }
     }
 
     kmMat4 matrixMV;
     kmGLGetMatrix(KM_GL_MODELVIEW, &matrixMV);
+
+    kmGLPopMatrix();
 
     Size s = node->getContentSize();
 

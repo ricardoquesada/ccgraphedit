@@ -31,7 +31,11 @@ public:
     Ui::MainWindow* UI();
 
     void AddFiles(const char* root, const char* path, bool directory);
-    void AddNode(const cocos2d::Node* node, const char* nodeName, const char* className);
+    void AddNode(cocos2d::Node* node, const char* nodeName, const char* className);
+
+public slots:
+
+    void importCCB();
 
 protected:
 
@@ -39,6 +43,11 @@ protected:
     MyQGLWidget* mQGLWidget;
 
     QStandardItemModel* mItemModelSceneGraph;
+
+private slots:
+
+    void on_actionCCSprite_triggered();
+    void on_actionCCNode_triggered();
 };
 
 #endif // MAINWINDOW_H
