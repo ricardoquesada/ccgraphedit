@@ -38,18 +38,20 @@
       <property name="childrenCollapsible">
        <bool>false</bool>
       </property>
-      <widget class="QTreeView" name="hierarchy">
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="itemsExpandable">
-        <bool>true</bool>
-       </property>
-       <attribute name="headerVisible">
-        <bool>true</bool>
-       </attribute>
+      <widget class="QTreeWidget" name="hierarchy">
+       <column>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </column>
       </widget>
-      <widget class="QTableWidget" name="properties"/>
+      <widget class="QTreeWidget" name="properties">
+       <column>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </column>
+      </widget>
      </widget>
     </item>
    </layout>

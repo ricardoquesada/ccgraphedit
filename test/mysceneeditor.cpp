@@ -120,6 +120,11 @@ Node* MySceneEditor::PickNode(const Point& point)
     return node;
 }
 
+void MySceneEditor::SetSelectedNode(Node* node)
+{
+    mSelectedNode = node;
+}
+
 Node* MySceneEditor::GetSelectedNode() const
 {
     return mSelectedNode;

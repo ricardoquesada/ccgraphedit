@@ -6,15 +6,23 @@
 #include "fileutil.h"
 #include "mysceneeditor.h"
 #include "dialogimportccb.h"
+#include "nodeitem.h"
+#include "widgetpoint.h"
+#include "componentnode.h"
+#include "componentsprite.h"
 
 #include "cocos2d.h"
 #include "CCFileUtils.h"
+#include "CCClassRegistry.h"
 #include "CCBReader/CCBReader.h"
 #include "CCBReader/CCNodeLoaderLibrary.h"
 
 #include <QStandardItemModel>
 #include <QMenuBar>
 #include <QAbstractListModel>
+#include <QLineEdit>
+#include <QCheckBox>
+#include <QMessageBox>
 
 USING_NS_CC;
 USING_NS_CC_EXT;
@@ -25,37 +33,36 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , mQGLWidget(0)
-    , mItemModelSceneGraph(0)
 {
     ui->setupUi(this);
+
+    // register the components
+    RegisterComponent(Node::kClassId, new ComponentNode);
+    RegisterComponent(Sprite::kClassId, new ComponentSprite);
 
     // add our cocos2dx opengl widget to the splitter in the correct place
     mQGLWidget = new MyQGLWidget;
     mQGLWidget->show(); // this must come before adding to the graph since it initializes cocos2d.
     ui->splitter->insertWidget(1, mQGLWidget);
 
-    // setup the headers for the scene graph tree view
-    QTreeView* tv = ui->hierarchy;
-    if (tv)
+    if (ui->hierarchy)
     {
-        // columns are node, type
-        mItemModelSceneGraph = new QStandardItemModel(0, 2);
-        mItemModelSceneGraph->setHorizontalHeaderItem(0, new QStandardItem(QString("Name")));
-        mItemModelSceneGraph->setHorizontalHeaderItem(1, new QStandardItem(QString("Class")));
-        tv->setModel(mItemModelSceneGraph);
+        QStringList labels;
+        labels << "Scene Graph";
+        ui->hierarchy->setHeaderLabels(labels);
+
+        connect(ui->hierarchy->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this, SLOT(selectNode()));
     }
 
-    // setup menu bar
-//    QMenuBar* pMenuBar = new QMenuBar(this);
-//    setMenuBar(pMenuBar);
-
-//    QMenu* menu = new QMenu("File", this);
-//    menuBar()->addMenu(menu);
-//    menu->addAction("New Node", this, SLOT(newNode()));
-//    menu->addAction("Import CocosBuilder File", this, SLOT(importCCB()));
+    if (ui->properties)
+    {
+        QStringList labels;
+        labels << "Properties" << "Value";
+        ui->properties->setHeaderLabels(labels);
+    }
 
     // Add the root scene node to the graph
-    AddNode(nullptr, Director::sharedDirector()->getRunningScene(), "Scene", "Scene");
+    AddNode(nullptr, Director::sharedDirector()->getRunningScene(), "Scene");
 
 #define INCLUDE_SOME_DEMO_SPRITES
 #ifdef INCLUDE_SOME_DEMO_SPRITES
@@ -66,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent)
         sprite->setPosition(ccp(500, 500));
         RepeatForever* action2 = RepeatForever::create(RotateBy::create(4, 360));
         sprite->runAction(action2);
-        AddNode(nullptr, sprite, "Sprite", "Sprite");
+        AddNode(nullptr, sprite, "Sprite");
     }
 #endif
 }
@@ -87,8 +94,15 @@ void MainWindow::AddFiles(const char* root, const char* path, bool directory)
         FileUtils::sharedFileUtils()->addSearchPath(path);
 }
 
-void MainWindow::AddNode(Node* parent, Node* node, const char* nodeName, const char* className)
+void MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
 {
+    tNodeToNodeItemMap::iterator it = mNodeToNodeItemMap.find(node);
+    if (it != mNodeToNodeItemMap.end())
+    {
+        QMessageBox::information(nullptr, QString("Error"), QString("Node cannot be added twice"), QMessageBox::Ok);
+        return;
+    }
+
     // add the node to the graph
     // avoid special case where we are adding the root scene node
     Node* const root = Director::sharedDirector()->getRunningScene();
@@ -99,31 +113,46 @@ void MainWindow::AddNode(Node* parent, Node* node, const char* nodeName, const c
         parent->addChild(node);
     }
 
-    if (mItemModelSceneGraph)
+    if (ui->hierarchy)
     {
-        QStandardItem* item = new QStandardItem(QString(nodeName));
-
         // Find the parent so that we can append to it in the tree view
-        tNodeToTreeviewEntryMap::iterator it = mNodeToTreeviewEntryMap.find(parent);
-        if (it == mNodeToTreeviewEntryMap.end())
+        QTreeWidgetItem* parentItem;
+        tNodeToNodeItemMap::iterator it = mNodeToNodeItemMap.find(parent);
+        if (it == mNodeToNodeItemMap.end())
         {
-            mItemModelSceneGraph->appendRow(item);
-            //mItemModelSceneGraph->setItem(0, 1, new QStandardItem(QString(className)));
-            qDebug("adding %p to root", item);
+            parentItem = ui->hierarchy->invisibleRootItem();
         }
         else
         {
-            tTreeviewEntry& entry = (*it).second;
-            QStandardItem* parent = entry.mItem;
-            parent->appendRow(item);
-            qDebug("adding %p to parent %p", item, parent);
+            NodeItem* item = (*it).second;
+            parentItem = item->SceneItem();
         }
 
-        item->setData(QVariant((qlonglong)node));
-        mNodeToTreeviewEntryMap.insert(tNodeToTreeviewEntryMap::value_type(node, tTreeviewEntry(item, node)));
-    }
+        String* className = CCClassRegistry::instance()->getClassName(node->classId());
 
-    ui->hierarchy->expandAll();
+        NodeItem* item = new NodeItem;
+
+        QTreeWidgetItem* sceneItem = new QTreeWidgetItem;
+        sceneItem->setText(0, QString(className->getCString()));
+
+        item->SetNode(node);
+        item->SetSceneItem(sceneItem);
+
+        parentItem->addChild(sceneItem);
+
+        mNodeToNodeItemMap.insert(tNodeToNodeItemMap::value_type(node, item));
+    }
+}
+
+void MainWindow::RegisterComponent(uint32_t classId, ComponentBase* component)
+{
+    mClassToComponentMap.insert(tClassToComponentMap::value_type(classId, component));
+}
+
+ComponentBase* MainWindow::FindComponent(uint32_t classId)
+{
+    tClassToComponentMap::iterator it = mClassToComponentMap.find(classId);
+    return it == mClassToComponentMap.end() ? nullptr : (*it).second;
 }
 
 //
@@ -144,8 +173,15 @@ void MainWindow::importCCB()
     Node* node = ccbReader->readNodeGraphFromFile(dialog->ccbPath().toUtf8());
     if (node)
     {
-        AddNode(0, node, "", "");
+        AddNode(0, node, "");
     }
+}
+
+void MainWindow::selectNode()
+{
+    Node* selectedNode = GetSelectedNodeInHierarchy();
+    MySceneEditor::instance()->SetSelectedNode(selectedNode);
+    SetPropertyViewForNode(selectedNode);
 }
 
 //
@@ -156,27 +192,69 @@ void MainWindow::on_actionCCSprite_triggered()
 {
     Size size = Director::sharedDirector()->getWinSize();
 
-    Node* parent = nullptr;
-
-    QModelIndexList nodes = ui->hierarchy->selectionModel()->selectedIndexes();
-    if (!nodes.empty())
-    {
-        QModelIndexList::Iterator it = nodes.begin();
-        QModelIndex& index = *it;
-        QStandardItem* item = mItemModelSceneGraph->itemFromIndex(index);
-        QVariant var = item->data();
-        parent = (Node*)var.toLongLong();
-    }
+    Node* parent = GetSelectedNodeInHierarchy();
 
     Sprite* sprite = Sprite::create("Icon-144.png");
     if (sprite)
     {
         sprite->setPosition(ccp(.5f * size.width, .5f * size.height));
-        AddNode(parent, sprite, "Sprite", "Sprite");
+        AddNode(parent, sprite, "Sprite");
     }
 }
 
 void MainWindow::on_actionCCNode_triggered()
 {
     qDebug("new node\n");
+}
+
+//
+// Protected Methods
+//
+
+Node* MainWindow::GetSelectedNodeInHierarchy()
+{
+    QList<QTreeWidgetItem*> nodes = ui->hierarchy->selectedItems();
+    if (nodes.empty())
+        return nullptr;
+
+    QTreeWidgetItem* widget = nodes.front();
+    QVariant var = widget->data(0, Qt::UserRole);
+    NodeItem* item = (NodeItem*)var.toLongLong();
+
+    return item->GetNode();
+}
+
+void MainWindow::SetPropertyViewForNode(Node* node)
+{
+    if (ui->properties)
+    {
+        tNodeToNodeItemMap::iterator it = mNodeToNodeItemMap.find(node);
+        if (it == mNodeToNodeItemMap.end())
+        {
+            QMessageBox::information(nullptr, QString("Error"), QString("Node cannot be found in the map"), QMessageBox::Ok);
+            return;
+        }
+
+        const NodeItem* item = (*it).second;
+
+        QTreeWidgetItem* root = ui->properties->invisibleRootItem();
+
+        // remove the child if there is one, we have it in a map for later
+        while (root->childCount())
+        {
+            if (root->child(0) == item->PropertyItem())
+                return;
+            root->takeChild(0);
+        }
+
+        ComponentBase* componentNode = FindComponent(node->classId());
+        if (componentNode)
+        {
+            componentNode->Populate(ui->properties, root, node);
+        }
+        else
+        {
+            QMessageBox::information(nullptr, QString("Error"), QString("Component cannot be found to populate node"), QMessageBox::Ok);
+        }
+    }
 }

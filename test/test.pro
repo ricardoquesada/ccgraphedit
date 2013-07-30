@@ -203,7 +203,14 @@ mysceneeditor.cpp \
 ../cocos2d/cocos2dx/touch_dispatcher/CCTouchHandler.cpp \
 ../cocos2d/cocos2dx/keyboard_dispatcher/CCKeyboardDispatcher.cpp \
     dialogimportccb.cpp \
-    fileutil.cpp
+    fileutil.cpp \
+    componentbase.cpp \
+    componentnode.cpp \
+    componentsprite.cpp \
+    nodeitem.cpp \
+    widgetpoint.cpp \
+    widgetnumber.cpp \
+    widgetmisc.cpp
 
 HEADERS  += \
 mainwindow.h \
@@ -211,7 +218,14 @@ myqglwidget.h \
 mysceneeditor.h \
     Singleton.h \
     dialogimportccb.h \
-    fileutil.h
+    fileutil.h \
+    componentbase.h \
+    componentnode.h \
+    componentsprite.h \
+    nodeitem.h \
+    widgetpoint.h \
+    widgetnumber.h \
+    widgetmisc.h
 
 FORMS += mainwindow.ui \
     dialogimportccb.ui

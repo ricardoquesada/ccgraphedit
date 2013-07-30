@@ -6,9 +6,6 @@
 #include <QTableView>
 #include "Singleton.h"
 
-class QStandardItemModel;
-class QStandardItem;
-
 namespace Ui {
     class MainWindow;
 }
@@ -17,6 +14,9 @@ namespace cocos2d {
 }
 
 class MyQGLWidget;
+class QTreeWidgetItem;
+class NodeItem;
+class ComponentBase;
 
 class MainWindow : public QMainWindow
 {
@@ -32,36 +32,36 @@ public:
     Ui::MainWindow* UI();
 
     void AddFiles(const char* root, const char* path, bool directory);
-    void AddNode(cocos2d::Node* parent, cocos2d::Node* node, const char* nodeName, const char* className);
+    void AddNode(cocos2d::Node* parent, cocos2d::Node* node, const char* nodeName);
+
+    void RegisterComponent(uint32_t classId, ComponentBase* component);
+    ComponentBase* FindComponent(uint32_t classId);
 
 public slots:
 
     void importCCB();
+    void selectNode();
 
 protected:
 
     Ui::MainWindow *ui;
     MyQGLWidget* mQGLWidget;
 
-    QStandardItemModel* mItemModelSceneGraph;
+    typedef std::map<cocos2d::Node*, NodeItem*> tNodeToNodeItemMap;
+    tNodeToNodeItemMap mNodeToNodeItemMap;
 
-    struct tTreeviewEntry
-    {
-        tTreeviewEntry(QStandardItem* item, cocos2d::Node* node)
-            : mItem(item)
-            , mNode(node)
-        {}
-        QStandardItem* mItem;
-        cocos2d::Node* mNode;
-    };
-
-    typedef std::map<cocos2d::Node*, tTreeviewEntry> tNodeToTreeviewEntryMap;
-    tNodeToTreeviewEntryMap mNodeToTreeviewEntryMap;
+    typedef std::map<uint32_t, ComponentBase*> tClassToComponentMap;
+    tClassToComponentMap mClassToComponentMap;
 
 private slots:
 
     void on_actionCCSprite_triggered();
     void on_actionCCNode_triggered();
+
+protected:
+
+    cocos2d::Node* GetSelectedNodeInHierarchy();
+    void SetPropertyViewForNode(cocos2d::Node* node);
 };
 
 #endif // MAINWINDOW_H

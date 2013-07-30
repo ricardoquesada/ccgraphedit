@@ -29,6 +29,9 @@ public:
     // pick the cocos node under point
     cocos2d::Node* PickNode(const cocos2d::Point& point);
 
+    // specify the selected node in the scene graph
+    void SetSelectedNode(cocos2d::Node* node);
+
     // retrieve the currently selected scene graph node
     cocos2d::Node* GetSelectedNode() const;
 
