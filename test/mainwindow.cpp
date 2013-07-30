@@ -72,18 +72,8 @@ MainWindow::MainWindow(QWidget *parent)
     // Add the root scene node to the graph
     AddNode(nullptr, Director::sharedDirector()->getRunningScene(), "Scene");
 
-#define INCLUDE_SOME_DEMO_SPRITES
-#ifdef INCLUDE_SOME_DEMO_SPRITES
+    // Add a path for our test sprite
     FileUtils::sharedFileUtils()->addSearchPath("../../../../../cocos2d/template/multi-platform-cpp/proj.ios");
-    Sprite* sprite = Sprite::create("Icon-144.png");
-    if (sprite)
-    {
-        sprite->setPosition(ccp(500, 500));
-        RepeatForever* action2 = RepeatForever::create(RotateBy::create(4, 360));
-        sprite->runAction(action2);
-        AddNode(nullptr, sprite, "Sprite");
-    }
-#endif
 }
 
 MainWindow::~MainWindow()
@@ -200,7 +190,8 @@ void MainWindow::setNodePosition(Node* node, Point& position)
         INodeDriver* driver = plugin->FindDriverByHash(kNodeDriverPosition);
         if (driver)
         {
-            widgetPoint* wp = dynamic_cast<widgetPoint*>(driver->Widget());
+            QWidget* widget = driver->Widget();
+            widgetPoint* wp = dynamic_cast<widgetPoint*>(widget);
             if (wp)
             {
                 wp->SetValue(position);
@@ -218,7 +209,6 @@ void MainWindow::pushWidget(QWidget* widget)
         ComponentBase* plugin = FindComponent(node->classId());
         if (plugin)
         {
-
             INodeDriver* driver = plugin->FindDriverByWidget(widget);
             if (driver)
             {
@@ -272,6 +262,8 @@ void MainWindow::SetPropertyViewForNode(Node* node)
 {
     if (ui->properties)
     {
+        QTreeWidgetItem* root = ui->properties->invisibleRootItem();
+
         tNodeToNodeItemMap::iterator it = mNodeToNodeItemMap.find(node);
         if (it == mNodeToNodeItemMap.end())
         {
@@ -280,9 +272,6 @@ void MainWindow::SetPropertyViewForNode(Node* node)
         }
 
         const NodeItem* item = (*it).second;
-
-        QTreeWidgetItem* root = ui->properties->invisibleRootItem();
-
         // remove the child if there is one, we have it in a map for later
         while (root->childCount())
         {
@@ -290,6 +279,10 @@ void MainWindow::SetPropertyViewForNode(Node* node)
                 return;
             root->takeChild(0);
         }
+
+        // Don't allow editing of the scene node (for now)
+        if (node == Director::sharedDirector()->getRunningScene())
+            return;
 
         ComponentBase* plugin = FindComponent(node->classId());
         if (plugin)
