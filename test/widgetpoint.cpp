@@ -15,8 +15,8 @@ widgetPoint::widgetPoint(QWidget* parent)
     const int kWidth = 10;
     labelx->setMaximumWidth(kWidth);
     labely->setMaximumWidth(kWidth);
-    mSpinX = new QSpinBox;
-    mSpinY = new QSpinBox;
+    mSpinX = new QDoubleSpinBox;
+    mSpinY = new QDoubleSpinBox;
     layout->addWidget(labelx);
     layout->addWidget(mSpinX);
     layout->addWidget(labely);
@@ -25,6 +25,6 @@ widgetPoint::widgetPoint(QWidget* parent)
 
 Point widgetPoint::Value() const
 {
-    return Point();
+    return ccp(mSpinX->value(), mSpinY->value());
 }
 

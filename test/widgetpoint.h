@@ -4,7 +4,7 @@
 #include "cocos2d.h"
 #include <QWidget>
 
-class QSpinBox;
+class QDoubleSpinBox;
 
 class widgetPoint
     : public QWidget
@@ -17,7 +17,7 @@ public:
 
 protected:
 
-    QSpinBox* mSpinX;
-    QSpinBox* mSpinY;
+    QDoubleSpinBox* mSpinX;
+    QDoubleSpinBox* mSpinY;
 };
 

@@ -2,5 +2,5 @@
 
 bool widgetBool::Value() const
 {
-    return false;
+    return checkState() != Qt::Unchecked;
 }

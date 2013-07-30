@@ -247,10 +247,10 @@ void MainWindow::SetPropertyViewForNode(Node* node)
             root->takeChild(0);
         }
 
-        ComponentBase* componentNode = FindComponent(node->classId());
-        if (componentNode)
+        ComponentBase* plugin = FindComponent(node->classId());
+        if (plugin)
         {
-            componentNode->Populate(ui->properties, root, node);
+            plugin->Populate(ui->properties, root, node);
         }
         else
         {

@@ -2,31 +2,25 @@
 #pragma once
 
 #include <QWidget>
-#include <QLineEdit>
+#include <QSpinBox>
 
 class widgetFloat
-    : public QLineEdit
+    : public QDoubleSpinBox
 {
 public:
     widgetFloat(QWidget* parent)
-        : QLineEdit(parent)
-    {
-        const int kWidth = 50;
-        setMaximumWidth(kWidth);
-    }
+        : QDoubleSpinBox(parent)
+    {}
     float Value() const;
 };
 
 class widgetInt
-    : public QLineEdit
+    : public QSpinBox
 {
 public:
     widgetInt(QWidget* parent)
-        : QLineEdit(parent)
-    {
-        const int kWidth = 50;
-        setMaximumWidth(kWidth);
-    }
+        : QSpinBox(parent)
+    {}
     int Value() const;
 };
 

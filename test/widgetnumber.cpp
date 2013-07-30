@@ -2,11 +2,11 @@
 
 float widgetFloat::Value() const
 {
-    return 0;
+    return value();
 }
 
 int widgetInt::Value() const
 {
-    return 0;
+    return value();
 }
 
