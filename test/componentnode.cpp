@@ -9,13 +9,13 @@ USING_NS_CC;
 
 void ComponentNode::Populate(QTreeWidget* tree, QTreeWidgetItem* parent, Node* node)
 {
-    CONNECT_FIELD(tree, parent, "position", widgetPoint, Node, Point, setPosition);
-    CONNECT_FIELD(tree, parent, "anchor point", widgetPoint, Node, Point, setAnchorPoint);
-    CONNECT_FIELD(tree, parent, "scale X", widgetFloat, Node, float, setScaleX);
-    CONNECT_FIELD(tree, parent, "scale Y", widgetFloat, Node, float, setScaleY);
-    CONNECT_FIELD(tree, parent, "rotation X", widgetFloat, Node, float, setRotationX);
-    CONNECT_FIELD(tree, parent, "rotation Y", widgetFloat, Node, float, setRotationY);
-    CONNECT_FIELD(tree, parent, "skew X", widgetFloat, Node, float, setSkewX);
-    CONNECT_FIELD(tree, parent, "skew Y", widgetFloat, Node, float, setSkewX);
-    CONNECT_FIELD(tree, parent, "tag", widgetInt, Node, int, setTag);
+    CONNECT_FIELD(tree, parent, "position", widgetPoint, Node, node, Point, setPosition);
+    CONNECT_FIELD(tree, parent, "anchor point", widgetPoint, Node, node, Point, setAnchorPoint);
+    CONNECT_FIELD(tree, parent, "scale X", widgetFloat, Node, node, float, setScaleX);
+    CONNECT_FIELD(tree, parent, "scale Y", widgetFloat, Node, node, float, setScaleY);
+    CONNECT_FIELD(tree, parent, "rotation X", widgetFloat, Node, node, float, setRotationX);
+    CONNECT_FIELD(tree, parent, "rotation Y", widgetFloat, Node, node, float, setRotationY);
+    CONNECT_FIELD(tree, parent, "skew X", widgetFloat, Node, node, float, setSkewX);
+    CONNECT_FIELD(tree, parent, "skew Y", widgetFloat, Node, node, float, setSkewX);
+    CONNECT_FIELD(tree, parent, "tag", widgetInt, Node, node, int, setTag);
 }

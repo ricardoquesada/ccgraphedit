@@ -23,8 +23,8 @@ widgetPoint::widgetPoint(QWidget* parent)
     layout->addWidget(mSpinX);
     layout->addWidget(labely);
     layout->addWidget(mSpinY);
-    connect(mSpinX, SIGNAL(valueChanged(double)), this, SLOT(valueChanged(double)));
-    connect(mSpinY, SIGNAL(valueChanged(double)), this, SLOT(valueChanged(double)));
+    connect(mSpinX, SIGNAL(valueChanged(double)), this, SLOT(triggerChange(double)));
+    connect(mSpinY, SIGNAL(valueChanged(double)), this, SLOT(triggerChange(double)));
 }
 
 Point widgetPoint::Value() const

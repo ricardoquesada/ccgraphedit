@@ -209,6 +209,25 @@ void MainWindow::setNodePosition(Node* node, Point& position)
     }
 }
 
+void MainWindow::pushWidget(QWidget* widget)
+{
+    QVariant var = widget->property("node");
+    Node* node = (Node*)var.toLongLong();
+    if (node)
+    {
+        ComponentBase* plugin = FindComponent(node->classId());
+        if (plugin)
+        {
+
+            INodeDriver* driver = plugin->FindDriverByWidget(widget);
+            if (driver)
+            {
+                driver->Push();
+            }
+        }
+    }
+}
+
 //
 // Toolbar Actions
 //

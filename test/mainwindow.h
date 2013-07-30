@@ -45,6 +45,7 @@ public slots:
     void selectNode();
 
     void setNodePosition(Node* node, Point& position);
+    void pushWidget(QWidget* widget);
 
 protected:
 

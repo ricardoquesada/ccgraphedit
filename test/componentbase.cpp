@@ -29,3 +29,9 @@ INodeDriver* ComponentBase::FindDriverByHash(uint32_t nameHash)
     tNameToDriverMap::iterator it = mNameToDriverMap.find(nameHash);
     return it == mNameToDriverMap.end() ? nullptr : (*it).second;
 }
+
+INodeDriver* ComponentBase::FindDriverByWidget(QWidget* widget)
+{
+    tWidgetToDriverMap::iterator it = mWidgetToDriverMap.find(widget);
+    return it == mWidgetToDriverMap.end() ? nullptr : (*it).second;
+}
