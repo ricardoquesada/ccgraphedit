@@ -17,14 +17,24 @@ widgetPoint::widgetPoint(QWidget* parent)
     labely->setMaximumWidth(kWidth);
     mSpinX = new QDoubleSpinBox;
     mSpinY = new QDoubleSpinBox;
+    mSpinX->setRange(FLT_MIN, FLT_MAX);
+    mSpinY->setRange(FLT_MIN, FLT_MAX);
     layout->addWidget(labelx);
     layout->addWidget(mSpinX);
     layout->addWidget(labely);
     layout->addWidget(mSpinY);
+    connect(mSpinX, SIGNAL(valueChanged(double)), this, SLOT(valueChanged(double)));
+    connect(mSpinY, SIGNAL(valueChanged(double)), this, SLOT(valueChanged(double)));
 }
 
 Point widgetPoint::Value() const
 {
     return ccp(mSpinX->value(), mSpinY->value());
+}
+
+void widgetPoint::SetValue(cocos2d::Point& value)
+{
+    mSpinX->setValue(value.x);
+    mSpinY->setValue(value.y);
 }
 

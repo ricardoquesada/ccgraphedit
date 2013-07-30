@@ -38,6 +38,10 @@ void MySceneEditor::mouseMoved(float x, float y)
         if (parent)
         {
             Point p = parent->convertToNodeSpace(ccp(x, y));
+            if (ccpLengthSQ(ccpSub(p, mSelectedNode->getPosition())) > FLT_EPSILON)
+            {
+                emit positionChanged(mSelectedNode, p);
+            }
             mSelectedNode->setPosition(p);
         }
     }

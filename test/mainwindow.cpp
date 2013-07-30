@@ -27,6 +27,11 @@
 USING_NS_CC;
 USING_NS_CC_EXT;
 
+namespace
+{
+    const uint32_t kNodeDriverPosition = fnv1_32("position");
+};
+
 IMPLEMENT_SINGLETON(MainWindow)
 
 MainWindow::MainWindow(QWidget *parent)
@@ -39,6 +44,9 @@ MainWindow::MainWindow(QWidget *parent)
     // register the components
     RegisterComponent(Node::kClassId, new ComponentNode);
     RegisterComponent(Sprite::kClassId, new ComponentSprite);
+
+    // connect any signals and slots
+    auto ret = connect(MySceneEditor::instance(), SIGNAL(positionChanged(Node*, Point&)), this, SLOT(setNodePosition(Node*,Point&)));
 
     // add our cocos2dx opengl widget to the splitter in the correct place
     mQGLWidget = new MyQGLWidget;
@@ -182,6 +190,23 @@ void MainWindow::selectNode()
     Node* selectedNode = GetSelectedNodeInHierarchy();
     MySceneEditor::instance()->SetSelectedNode(selectedNode);
     SetPropertyViewForNode(selectedNode);
+}
+
+void MainWindow::setNodePosition(Node* node, Point& position)
+{
+    ComponentBase* plugin = FindComponent(node->classId());
+    if (plugin)
+    {
+        INodeDriver* driver = plugin->FindDriverByHash(kNodeDriverPosition);
+        if (driver)
+        {
+            widgetPoint* wp = dynamic_cast<widgetPoint*>(driver->Widget());
+            if (wp)
+            {
+                wp->SetValue(position);
+            }
+        }
+    }
 }
 
 //

@@ -1,22 +1,24 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+
+#pragma once
 
 #include <QMainWindow>
 #include <QTreeView>
 #include <QTableView>
 #include "Singleton.h"
-
-namespace Ui {
-    class MainWindow;
-}
-namespace cocos2d {
-    class Node;
-}
+#include "CCGeometry.h"
 
 class MyQGLWidget;
 class QTreeWidgetItem;
 class NodeItem;
 class ComponentBase;
+namespace Ui {
+    class MainWindow;
+}
+
+NS_CC_BEGIN
+
+class MainWindow;
+class Node;
 
 class MainWindow : public QMainWindow
 {
@@ -42,6 +44,8 @@ public slots:
     void importCCB();
     void selectNode();
 
+    void setNodePosition(Node* node, Point& position);
+
 protected:
 
     Ui::MainWindow *ui;
@@ -64,4 +68,4 @@ protected:
     void SetPropertyViewForNode(cocos2d::Node* node);
 };
 
-#endif // MAINWINDOW_H
+NS_CC_END

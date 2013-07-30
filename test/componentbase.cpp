@@ -8,9 +8,10 @@ void ComponentBase::Populate(QTreeWidget* tree, QTreeWidgetItem* parent, Node* n
     // Does Nothing
 }
 
-void ComponentBase::AddNodeDriver(QWidget* widget, INodeDriver* driver)
+void ComponentBase::AddNodeDriver(QWidget* widget, uint32_t nameHash, INodeDriver* driver)
 {
     mWidgetToDriverMap.insert(tWidgetToDriverMap::value_type(widget, driver));
+    mNameToDriverMap.insert(tNameToDriverMap::value_type(nameHash, driver));
 }
 
 void ComponentBase::Push(QWidget* widget)
@@ -21,4 +22,10 @@ void ComponentBase::Push(QWidget* widget)
         INodeDriver* driver = (*it).second;
         driver->Push();
     }
+}
+
+INodeDriver* ComponentBase::FindDriverByHash(uint32_t nameHash)
+{
+    tNameToDriverMap::iterator it = mNameToDriverMap.find(nameHash);
+    return it == mNameToDriverMap.end() ? nullptr : (*it).second;
 }

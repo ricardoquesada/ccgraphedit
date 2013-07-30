@@ -14,6 +14,10 @@ public:
     widgetPoint(QWidget* parent);
 
     cocos2d::Point Value() const;
+    void SetValue(cocos2d::Point& value);
+
+Q_SIGNALS:
+    void valueChanged(double);
 
 protected:
 

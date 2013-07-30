@@ -1,14 +1,20 @@
-#ifndef MYSCENEEDITOR_H
-#define MYSCENEEDITOR_H
+
+#pragma once
 
 #include "cocos2d.h"
 #include "Singleton.h"
+#include <QObject>
 
-class kmVec3;
+struct kmVec3;
 class QGLWidget;
 
+NS_CC_BEGIN
+
 class MySceneEditor
+    : public QObject
 {
+    Q_OBJECT
+
 public:
 
     DECLARE_SINGLETON(MySceneEditor)
@@ -35,6 +41,10 @@ public:
     // retrieve the currently selected scene graph node
     cocos2d::Node* GetSelectedNode() const;
 
+signals:
+
+    void positionChanged(Node* node, Point& position);
+
 protected:
 
     cocos2d::Node* PickNode(cocos2d::Node* node, const cocos2d::Point& point);
@@ -46,4 +56,4 @@ protected:
     bool mDragging;
 };
 
-#endif // MYSCENEEDITOR_H
+NS_CC_END
