@@ -15,17 +15,19 @@ namespace cocos2d {
     class Node;
 }
 
-#define CONNECT_FIELD(tree, parent, name, widget, classT, node, var, method) \
+#define CONNECT_FIELD(tree, parent, name, widget, classT, node, var, setter, getter) \
     { \
         QTreeWidgetItem* item = new QTreeWidgetItem; \
         parent->addChild(item); \
         item->setText(0, QString(name)); \
         widget* w = new widget(tree); \
+    qDebug("%p created widget "#widget, w); \
         w->setProperty("node", QVariant((qlonglong)node)); \
-        tree->setItemWidget(item, 1, w); \
         classT* instance = dynamic_cast<classT*>(node); \
         assert(nullptr != instance); \
-        NodeDriverT<widget, classT, var>* driver = new NodeDriverT<widget, classT, var>((void (classT::*)(const var&))&classT::method, instance, w); \
+        w->SetValue(instance->getter()); \
+        tree->setItemWidget(item, 1, w); \
+        NodeDriverT<widget, classT, var>* driver = new NodeDriverT<widget, classT, var>((void (classT::*)(const var&))&classT::setter, instance, w); \
         AddNodeDriver(w, fnv1_32(name), driver); \
         QObject::connect(w, SIGNAL(widgetChanged(QWidget*)), MainWindow::instance(), SLOT(pushWidget(QWidget*))); \
     }
@@ -34,7 +36,8 @@ class INodeDriver
 {
 public:
     virtual void Push() = 0;
-    virtual QWidget* Widget() = 0;
+    virtual QWidget* Widget() const = 0;
+    virtual cocos2d::Node* Node() const = 0;
 };
 
 template <class widgetT, class nodeT, typename varT>
@@ -56,12 +59,17 @@ public:
         mSetter(mNode, mWidget->Value());
     }
 
-    QWidget* Widget()
+    QWidget* Widget() const
     {
         return mWidget;
     }
 
-    void setValue(const varT& value)
+    cocos2d::Node* Node() const
+    {
+        return mNode;
+    }
+
+    void SetValue(const varT& value)
     {
         mSetter(mNode, value);
     }

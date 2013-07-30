@@ -32,7 +32,7 @@ Point widgetPoint::Value() const
     return ccp(mSpinX->value(), mSpinY->value());
 }
 
-void widgetPoint::SetValue(cocos2d::Point& value)
+void widgetPoint::SetValue(const cocos2d::Point& value)
 {
     mSpinX->setValue(value.x);
     mSpinY->setValue(value.y);

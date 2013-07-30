@@ -26,6 +26,7 @@ public:
         connect(this, SIGNAL(valueChanged(double)), this, SLOT(triggerChange(double)));
     }
     float Value() const;
+    void SetValue(float value);
     //IMPLEMENT_CHANGED(double)
 signals:
     void widgetChanged(QWidget* widget);
@@ -50,6 +51,7 @@ public:
         connect(this, SIGNAL(valueChanged(int)), this, SLOT(triggerChange(int)));
     }
     int Value() const;
+    void SetValue(int value);
     //IMPLEMENT_CHANGED(double)
 signals:
     void widgetChanged(QWidget* widget);

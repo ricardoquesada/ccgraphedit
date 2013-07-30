@@ -51,6 +51,10 @@ void MySceneEditor::mouseMoved(float x, float y)
 
 void MySceneEditor::drawOverlay()
 {
+    // disallow drawing of the main scene
+    if (mSelectedNode == Director::sharedDirector()->getRunningScene())
+        return;
+
     if (mSelectedNode)
     {
         Rect rc;
