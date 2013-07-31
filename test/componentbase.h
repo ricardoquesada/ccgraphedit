@@ -15,12 +15,13 @@ namespace cocos2d {
     class Node;
 }
 
-#define CONNECT_FIELD(tree, parent, name, widget, classT, node, var, setter, getter) \
+#define CONNECT_FIELD(tree, parent, name, widget, classT, node, var, setter, getter, increment) \
     { \
         QTreeWidgetItem* item = new QTreeWidgetItem; \
         parent->addChild(item); \
         item->setText(0, QString(name)); \
         widget* w = new widget(tree); \
+        w->SetIncrement(increment); \
         w->setProperty("node", QVariant((qlonglong)node)); \
         item->setData(0, Qt::UserRole, QVariant((qlonglong)w)); \
         classT* instance = dynamic_cast<classT*>(node); \

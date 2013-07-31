@@ -15,7 +15,9 @@ class widgetFloat
     : public QDoubleSpinBox
 {
     Q_OBJECT
+
 public:
+
     widgetFloat(QWidget* parent)
         : QDoubleSpinBox(parent)
     {
@@ -25,12 +27,29 @@ public:
         connect(this, SIGNAL(valueChanged(double)), this, SLOT(triggerChange(double)));
     }
 
-    float Value() const;
-    void SetValue(float value, bool block = false);
+    void SetIncrement(float increment)
+    {
+        setSingleStep(increment);
+    }
+
+    float Value() const
+    {
+        return value();
+    }
+
+    void SetValue(float value, bool block = false)
+    {
+        bool b = blockSignals(block);
+        setValue(value);
+        blockSignals(b);
+    }
 
 signals:
+
     void widgetChanged(QWidget* widget);
+
 public slots:
+
     void triggerChange(double value)
     {
         emit widgetChanged(this);
@@ -41,7 +60,9 @@ class widgetInt
     : public QSpinBox
 {
     Q_OBJECT
+
 public:
+
     widgetInt(QWidget* parent)
         : QSpinBox(parent)
     {
@@ -51,12 +72,29 @@ public:
         connect(this, SIGNAL(valueChanged(int)), this, SLOT(triggerChange(int)));
     }
 
-    int Value() const;
-    void SetValue(int value, bool block = false);
+    void SetIncrement(int increment)
+    {
+        setSingleStep(increment);
+    }
+
+    int Value() const
+    {
+        return value();
+    }
+
+    void SetValue(int value, bool block = false)
+    {
+        bool b = blockSignals(block);
+        setValue(value);
+        blockSignals(b);
+    }
 
 signals:
+
     void widgetChanged(QWidget* widget);
+
 public slots:
+
     void triggerChange(int value)
     {
         emit widgetChanged(this);

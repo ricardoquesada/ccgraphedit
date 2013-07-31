@@ -207,10 +207,7 @@ mysceneeditor.cpp \
     componentbase.cpp \
     componentnode.cpp \
     componentsprite.cpp \
-    nodeitem.cpp \
-    widgetpoint.cpp \
-    widgetnumber.cpp \
-    widgetmisc.cpp
+    nodeitem.cpp
 
 HEADERS  += \
 mainwindow.h \
