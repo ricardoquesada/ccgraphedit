@@ -24,7 +24,9 @@ public:
 
     bool Value() const
     {
-        return checkState() != Qt::Unchecked;
+        bool b = checkState() == Qt::Checked;
+        qDebug("value returning %d\n", b);
+        return b;
     }
 
     void SetValue(bool value, bool block = false)
