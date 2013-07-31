@@ -8,10 +8,37 @@ void ComponentBase::Populate(QTreeWidget* tree, QTreeWidgetItem* parent, Node* n
     // Does Nothing
 }
 
-void ComponentBase::AddNodeDriver(QWidget* widget, uint32_t nameHash, INodeDriver* driver)
+void ComponentBase::AddNodeDriver(QTreeWidgetItem* item, QWidget* widget, uint32_t nameHash, INodeDriver* driver)
 {
+    mTreeWidgetItemsArray.push_back(item);
     mWidgetToDriverMap.insert(tWidgetToDriverMap::value_type(widget, driver));
     mNameToDriverMap.insert(tNameToDriverMap::value_type(nameHash, driver));
+}
+
+void ComponentBase::DestroyAll()
+{
+    // Only the item needs to be destroyed, the widget is owned by the tree widget once setItemWidget is called
+    {
+        tTreeWidgetItemsArray::iterator it(mTreeWidgetItemsArray.begin()), itEnd(mTreeWidgetItemsArray.end());
+        for (; it != itEnd; ++it)
+        {
+            QTreeWidgetItem* item = *it;
+            delete item;
+        }
+        mTreeWidgetItemsArray.clear();
+    }
+
+    {
+        tWidgetToDriverMap::iterator it(mWidgetToDriverMap.begin()), itEnd(mWidgetToDriverMap.end());
+        for (; it != itEnd; ++it)
+        {
+            INodeDriver* driver = (*it).second;
+            delete driver;
+        }
+        mWidgetToDriverMap.clear();
+    }
+
+    mNameToDriverMap.clear();
 }
 
 void ComponentBase::Push(QWidget* widget)

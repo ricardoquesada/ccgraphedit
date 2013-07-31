@@ -17,8 +17,8 @@ widgetPoint::widgetPoint(QWidget* parent)
     labely->setMaximumWidth(kWidth);
     mSpinX = new QDoubleSpinBox;
     mSpinY = new QDoubleSpinBox;
-    mSpinX->setRange(FLT_MIN, FLT_MAX);
-    mSpinY->setRange(FLT_MIN, FLT_MAX);
+    mSpinX->setRange(-FLT_MAX, FLT_MAX);
+    mSpinY->setRange(-FLT_MAX, FLT_MAX);
     layout->addWidget(labelx);
     layout->addWidget(mSpinX);
     layout->addWidget(labely);

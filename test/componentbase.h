@@ -21,14 +21,14 @@ namespace cocos2d {
         parent->addChild(item); \
         item->setText(0, QString(name)); \
         widget* w = new widget(tree); \
-    qDebug("%p created widget "#widget, w); \
         w->setProperty("node", QVariant((qlonglong)node)); \
+        item->setData(0, Qt::UserRole, QVariant((qlonglong)w)); \
         classT* instance = dynamic_cast<classT*>(node); \
         assert(nullptr != instance); \
         w->SetValue(instance->getter()); \
         tree->setItemWidget(item, 1, w); \
         NodeDriverT<widget, classT, var>* driver = new NodeDriverT<widget, classT, var>((void (classT::*)(const var&))&classT::setter, instance, w); \
-        AddNodeDriver(w, fnv1_32(name), driver); \
+        AddNodeDriver(item, w, fnv1_32(name), driver); \
         QObject::connect(w, SIGNAL(widgetChanged(QWidget*)), MainWindow::instance(), SLOT(pushWidget(QWidget*))); \
     }
 
@@ -87,7 +87,10 @@ public:
     virtual void Populate(QTreeWidget* tree, QTreeWidgetItem* parent, cocos2d::Node* node);
 
     // connect a widget with a node driver
-    void AddNodeDriver(QWidget* widget, uint32_t nameHash, INodeDriver* driver);
+    void AddNodeDriver(QTreeWidgetItem* item, QWidget* widget, uint32_t nameHash, INodeDriver* driver);
+
+    // destroy items and node drivers
+    void DestroyAll();
 
     // given a widget, push its value to a node setter
     void Push(QWidget* widget);
@@ -105,4 +108,7 @@ protected:
 
     typedef std::map<uint32_t, INodeDriver*> tNameToDriverMap;
     tNameToDriverMap mNameToDriverMap;
+
+    typedef std::vector<QTreeWidgetItem*> tTreeWidgetItemsArray;
+    tTreeWidgetItemsArray mTreeWidgetItemsArray;
 };

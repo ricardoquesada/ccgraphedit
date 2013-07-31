@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include "widgetbase.h"
 #include "cocos2d.h"
 #include <QWidget>
 
@@ -17,8 +16,6 @@ public:
 
     cocos2d::Point Value() const;
     void SetValue(const cocos2d::Point& value);
-
-    //IMPLEMENT_CHANGED(double)
 
 signals:
     void widgetChanged(QWidget* widget);

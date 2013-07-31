@@ -37,7 +37,8 @@ IMPLEMENT_SINGLETON(MainWindow)
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , mQGLWidget(0)
+    , mQGLWidget(nullptr)
+    , mSelectedNode(nullptr)
 {
     ui->setupUi(this);
 
@@ -46,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     RegisterComponent(Sprite::kClassId, new ComponentSprite);
 
     // connect any signals and slots
-    auto ret = connect(MySceneEditor::instance(), SIGNAL(positionChanged(Node*, Point&)), this, SLOT(setNodePosition(Node*,Point&)));
+    connect(MySceneEditor::instance(), SIGNAL(positionChanged(Node*, Point&)), this, SLOT(setNodePosition(Node*,Point&)));
 
     // add our cocos2dx opengl widget to the splitter in the correct place
     mQGLWidget = new MyQGLWidget;
@@ -179,7 +180,8 @@ void MainWindow::selectNode()
 {
     Node* selectedNode = GetSelectedNodeInHierarchy();
     MySceneEditor::instance()->SetSelectedNode(selectedNode);
-    SetPropertyViewForNode(selectedNode);
+    SetPropertyViewForNode(selectedNode, mSelectedNode);
+    mSelectedNode = selectedNode;
 }
 
 void MainWindow::setNodePosition(Node* node, Point& position)
@@ -238,7 +240,16 @@ void MainWindow::on_actionCCSprite_triggered()
 
 void MainWindow::on_actionCCNode_triggered()
 {
-    qDebug("new node\n");
+    Size size = Director::sharedDirector()->getWinSize();
+
+    Node* parent = GetSelectedNodeInHierarchy();
+
+    Node* node = Node::create();
+    if (node)
+    {
+        node->setPosition(ccp(.5f * size.width, .5f * size.height));
+        AddNode(parent, node, "Node");
+    }
 }
 
 //
@@ -258,7 +269,7 @@ Node* MainWindow::GetSelectedNodeInHierarchy()
     return item->GetNode();
 }
 
-void MainWindow::SetPropertyViewForNode(Node* node)
+void MainWindow::SetPropertyViewForNode(Node* node, Node* oldNode)
 {
     if (ui->properties)
     {
@@ -271,13 +282,16 @@ void MainWindow::SetPropertyViewForNode(Node* node)
             return;
         }
 
-        const NodeItem* item = (*it).second;
-        // remove the child if there is one, we have it in a map for later
+        // remove all children of the root node
         while (root->childCount())
-        {
-            if (root->child(0) == item->PropertyItem())
-                return;
             root->takeChild(0);
+
+        // destroy all for last node being displayed
+        if (oldNode)
+        {
+            ComponentBase* lastPlugin = FindComponent(oldNode->classId());
+            if (lastPlugin)
+                lastPlugin->DestroyAll();
         }
 
         // Don't allow editing of the scene node (for now)

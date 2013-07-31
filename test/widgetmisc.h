@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QCheckBox>
-#include "widgetbase.h"
 
 class widgetBool
     : public QCheckBox
@@ -17,7 +16,7 @@ public:
     }
     bool Value() const;
     void SetValue(bool value);
-    //IMPLEMENT_CHANGED(int)
+
 signals:
     void widgetChanged(QWidget* widget);
 public slots:

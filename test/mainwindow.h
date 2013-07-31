@@ -51,6 +51,7 @@ protected:
 
     Ui::MainWindow *ui;
     MyQGLWidget* mQGLWidget;
+    cocos2d::Node* mSelectedNode;
 
     typedef std::map<cocos2d::Node*, NodeItem*> tNodeToNodeItemMap;
     tNodeToNodeItemMap mNodeToNodeItemMap;
@@ -66,7 +67,7 @@ private slots:
 protected:
 
     cocos2d::Node* GetSelectedNodeInHierarchy();
-    void SetPropertyViewForNode(cocos2d::Node* node);
+    void SetPropertyViewForNode(cocos2d::Node* node, cocos2d::Node* oldNode);
 };
 
 NS_CC_END

@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QSpinBox>
-#include "widgetbase.h"
 #include "float.h"
 
 enum
@@ -25,9 +24,10 @@ public:
         setRange(-FLT_MAX, FLT_MAX);
         connect(this, SIGNAL(valueChanged(double)), this, SLOT(triggerChange(double)));
     }
+
     float Value() const;
     void SetValue(float value);
-    //IMPLEMENT_CHANGED(double)
+
 signals:
     void widgetChanged(QWidget* widget);
 public slots:
@@ -50,9 +50,10 @@ public:
         setRange(-INT_MAX, INT_MAX);
         connect(this, SIGNAL(valueChanged(int)), this, SLOT(triggerChange(int)));
     }
+
     int Value() const;
     void SetValue(int value);
-    //IMPLEMENT_CHANGED(double)
+
 signals:
     void widgetChanged(QWidget* widget);
 public slots:
