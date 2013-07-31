@@ -1,5 +1,6 @@
 #include "componentnode.h"
 #include "widgetpoint.h"
+#include "widgetSize.h"
 #include "widgetnumber.h"
 #include "cocos2d.h"
 #include "CCGeometry.h"
@@ -11,6 +12,7 @@ void ComponentNode::Populate(QTreeWidget* tree, QTreeWidgetItem* parent, Node* n
 {
     CONNECT_FIELD(tree, parent, "position", widgetPoint, Node, node, Point, setPosition, getPosition, 1);
     CONNECT_FIELD(tree, parent, "anchor point", widgetPoint, Node, node, Point, setAnchorPoint, getAnchorPoint, .05f);
+    CONNECT_FIELD(tree, parent, "content size", widgetSize, Node, node, Size, setContentSize, getContentSize, 1);
     CONNECT_FIELD(tree, parent, "scale X", widgetFloat, Node, node, float, setScaleX, getScaleX, .1f);
     CONNECT_FIELD(tree, parent, "scale Y", widgetFloat, Node, node, float, setScaleY, getScaleY, .1f);
     CONNECT_FIELD(tree, parent, "rotation", widgetFloat, Node, node, float, setRotation, getRotation, .5f);

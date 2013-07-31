@@ -222,7 +222,8 @@ mysceneeditor.h \
     nodeitem.h \
     widgetpoint.h \
     widgetnumber.h \
-    widgetmisc.h
+    widgetmisc.h \
+    widgetSize.h
 
 FORMS += mainwindow.ui \
     dialogimportccb.ui
