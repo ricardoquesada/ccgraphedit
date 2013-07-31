@@ -26,7 +26,7 @@ public:
     }
 
     float Value() const;
-    void SetValue(float value);
+    void SetValue(float value, bool block = false);
 
 signals:
     void widgetChanged(QWidget* widget);
@@ -52,7 +52,7 @@ public:
     }
 
     int Value() const;
-    void SetValue(int value);
+    void SetValue(int value, bool block = false);
 
 signals:
     void widgetChanged(QWidget* widget);

@@ -15,7 +15,7 @@ public:
         connect(this, SIGNAL(stateChanged(int)), this, SLOT(triggerChange(int)));
     }
     bool Value() const;
-    void SetValue(bool value);
+    void SetValue(bool value, bool block = false);
 
 signals:
     void widgetChanged(QWidget* widget);

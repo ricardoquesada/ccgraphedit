@@ -196,7 +196,7 @@ void MainWindow::setNodePosition(Node* node, Point& position)
             widgetPoint* wp = dynamic_cast<widgetPoint*>(widget);
             if (wp)
             {
-                wp->SetValue(position);
+                wp->SetValue(position, true);
             }
         }
     }

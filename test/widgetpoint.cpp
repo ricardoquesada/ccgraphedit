@@ -32,9 +32,17 @@ Point widgetPoint::Value() const
     return ccp(mSpinX->value(), mSpinY->value());
 }
 
-void widgetPoint::SetValue(const cocos2d::Point& value)
+void widgetPoint::SetValue(const cocos2d::Point& value, bool block)
 {
-    mSpinX->setValue(value.x);
-    mSpinY->setValue(value.y);
+    {
+        bool b = mSpinX->blockSignals(block);
+        mSpinX->setValue(value.x);
+        mSpinX->blockSignals(b);
+    }
+    {
+        bool b = mSpinY->blockSignals(block);
+        mSpinY->setValue(value.y);
+        mSpinY->blockSignals(b);
+    }
 }
 

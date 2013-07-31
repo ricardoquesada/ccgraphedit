@@ -15,7 +15,7 @@ public:
     widgetPoint(QWidget* parent);
 
     cocos2d::Point Value() const;
-    void SetValue(const cocos2d::Point& value);
+    void SetValue(const cocos2d::Point& value, bool block = false);
 
 signals:
     void widgetChanged(QWidget* widget);
