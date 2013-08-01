@@ -25,9 +25,9 @@ public:
         setLayout(layout);
         QLabel* labelx = new QLabel(QString("width"));
         QLabel* labely = new QLabel(QString("height"));
-        const int kWidth = 10;
-        labelx->setMaximumWidth(kWidth);
-        labely->setMaximumWidth(kWidth);
+        const int kWidth = 40;
+        labelx->setFixedWidth(kWidth);
+        labely->setFixedWidth(kWidth);
         mSpinWidth = new QDoubleSpinBox;
         mSpinHeight = new QDoubleSpinBox;
         mSpinWidth->setRange(-FLT_MAX, FLT_MAX);
