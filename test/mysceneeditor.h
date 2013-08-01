@@ -28,9 +28,9 @@ public:
 
     // drawing methods
     void drawOverlay();
-    void drawOrigin(cocos2d::Node* node, const cocos2d::Point& origin, float size = 10);
-    void drawRect(cocos2d::Node* node, const cocos2d::Rect& rect, bool solid = false, const cocos2d::ccColor4F* color = 0);
-    void drawHandles(cocos2d::Node* node);
+    void drawOrigin(cocos2d::Node* node, const cocos2d::Point& origin, float size = 10, bool scaled = true);
+    void drawRect(cocos2d::Node* node, const cocos2d::Rect& rect, bool solid = false, bool scaled = true, const cocos2d::ccColor4F* color = 0);
+    void drawHandles(cocos2d::Node* node, bool scaled = true);
 
     // pick the cocos node under point
     cocos2d::Node* PickNode(const cocos2d::Point& point);
