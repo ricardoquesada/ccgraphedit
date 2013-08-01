@@ -21,6 +21,7 @@ void MySceneEditor::mousePressed(float x, float y)
 {
     mTouchDown = mTouchLast = ccp(x, y);
     mSelectedNode = PickNode(ccp(x, y));
+    emit selectedNodeChanged(mSelectedNode);
     if (mSelectedNode && mSelectedNode->getParent())
     {
         Point p = mSelectedNode->getParent()->convertToNodeSpace(ccp(x, y));

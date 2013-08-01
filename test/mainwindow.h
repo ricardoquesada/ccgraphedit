@@ -34,7 +34,7 @@ public:
     Ui::MainWindow* UI();
 
     void AddFiles(const char* root, const char* path, bool directory);
-    void AddNode(cocos2d::Node* parent, cocos2d::Node* node, const char* nodeName);
+    void AddNode(Node* parent, Node* node, const char* nodeName);
 
     void RegisterComponent(uint32_t classId, ComponentBase* component);
     ComponentBase* FindComponent(uint32_t classId);
@@ -46,14 +46,15 @@ public slots:
 
     void setNodePosition(Node* node, Point& position);
     void pushWidget(QWidget* widget);
+    void setSelectedNode(Node* node);
 
 protected:
 
     Ui::MainWindow *ui;
     MyQGLWidget* mQGLWidget;
-    cocos2d::Node* mSelectedNode;
+    Node* mSelectedNode;
 
-    typedef std::map<cocos2d::Node*, NodeItem*> tNodeToNodeItemMap;
+    typedef std::map<Node*, NodeItem*> tNodeToNodeItemMap;
     tNodeToNodeItemMap mNodeToNodeItemMap;
 
     typedef std::map<uint32_t, ComponentBase*> tClassToComponentMap;
@@ -66,8 +67,9 @@ private slots:
 
 protected:
 
-    cocos2d::Node* GetSelectedNodeInHierarchy();
-    void SetPropertyViewForNode(cocos2d::Node* node, cocos2d::Node* oldNode);
+    Node* GetSelectedNodeInHierarchy();
+    void SetSelectedNodeInHierarchy(Node* node);
+    void SetPropertyViewForNode(Node* node, Node* oldNode);
 };
 
 NS_CC_END

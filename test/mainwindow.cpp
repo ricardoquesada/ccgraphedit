@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // connect any signals and slots
     connect(MySceneEditor::instance(), SIGNAL(positionChanged(Node*, Point&)), this, SLOT(setNodePosition(Node*,Point&)));
+    connect(MySceneEditor::instance(), SIGNAL(selectedNodeChanged(Node*)), this, SLOT(setSelectedNode(Node*)));
 
     // add our cocos2dx opengl widget to the splitter in the correct place
     mQGLWidget = new MyQGLWidget;
@@ -221,6 +222,12 @@ void MainWindow::pushWidget(QWidget* widget)
     }
 }
 
+void MainWindow::setSelectedNode(cocos2d::Node* node)
+{
+    if (node)
+        SetSelectedNodeInHierarchy(node);
+}
+
 //
 // Toolbar Actions
 //
@@ -270,6 +277,18 @@ Node* MainWindow::GetSelectedNodeInHierarchy()
     NodeItem* item = (NodeItem*)var.toLongLong();
 
     return item->GetNode();
+}
+
+void MainWindow::SetSelectedNodeInHierarchy(Node* node)
+{
+    tNodeToNodeItemMap::iterator it = mNodeToNodeItemMap.find(node);
+    if (it == mNodeToNodeItemMap.end())
+    {
+        QMessageBox::information(nullptr, QString("Error"), QString("Node cannot be found in the map"), QMessageBox::Ok);
+        return;
+    }
+    NodeItem* nodeItem = (*it).second;
+    ui->hierarchy->setCurrentItem(nodeItem->SceneItem());
 }
 
 void MainWindow::SetPropertyViewForNode(Node* node, Node* oldNode)

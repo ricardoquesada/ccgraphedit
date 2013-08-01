@@ -53,6 +53,7 @@ public:
 signals:
 
     void positionChanged(Node* node, Point& position);
+    void selectedNodeChanged(Node* node);
 
 protected:
 
