@@ -46,6 +46,9 @@
        </column>
       </widget>
       <widget class="QTreeWidget" name="properties">
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
        <column>
         <property name="text">
          <string notr="true">1</string>
