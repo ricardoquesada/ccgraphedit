@@ -71,7 +71,7 @@ void MyQGLWidget::resizeGL(int w, int h)
 
 void MyQGLWidget::paintGL()
 {
-#define NORM(x) ((float)x / 255.f)
+    #define NORM(x) ((float)x / 255.f)
     glClearColor(NORM(84), NORM(124), NORM(196), 1);
     Director::sharedDirector()->drawScene();
     MySceneEditor::instance()->drawOverlay();

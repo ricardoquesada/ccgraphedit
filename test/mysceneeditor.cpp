@@ -79,9 +79,14 @@ void MySceneEditor::drawOverlay()
         rc.size   = mSelectedNode->getContentSize();
         drawRect(mSelectedNode, rc);
 
+        kmGLPushMatrix();
+        kmGLLoadIdentity();
+
         drawOrigin(mSelectedNode, mSelectedNode->getAnchorPointInPoints());
 
         drawHandles(mSelectedNode);
+
+        kmGLPopMatrix();
     }
 }
 
@@ -121,7 +126,7 @@ void MySceneEditor::drawRect(Node* node, const Rect& rect, bool solid, const ccC
 
 void MySceneEditor::drawHandles(Node* node)
 {
-    const float kHandleSize = 5;
+    const float kHandleSize = 4;
     #define RectAtPoint(p,hs) Rect(p.x-hs,p.y-hs,hs+hs,hs+hs)
     Size size = node->getContentSize();
     drawRect(node, RectAtPoint(Point(0,         0), kHandleSize),           true);
