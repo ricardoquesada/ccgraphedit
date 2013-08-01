@@ -70,11 +70,19 @@ MainWindow::MainWindow(QWidget *parent)
         ui->properties->setHeaderLabels(labels);
     }
 
-    // Add the root scene node to the graph
-    AddNode(nullptr, Director::sharedDirector()->getRunningScene(), "Scene");
-
     // Add a path for our test sprite
     FileUtils::sharedFileUtils()->addSearchPath("../../../../../cocos2d/template/multi-platform-cpp/proj.ios");
+    FileUtils::sharedFileUtils()->addSearchPath("/Users/jgraham/dev_qtTest/resources/images/frames");
+
+    Sprite* frame = Sprite::create("frame-ipad.png");
+    if (frame)
+    {
+        Node* scene = Director::sharedDirector()->getRunningScene();
+        Node* root = Node::create();
+        AddNode(scene, root, "root");
+        MySceneEditor::instance()->SetRootNode(root);
+        scene->addChild(frame);
+    }
 }
 
 MainWindow::~MainWindow()
@@ -102,15 +110,8 @@ void MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
         return;
     }
 
-    // add the node to the graph
-    // avoid special case where we are adding the root scene node
-    Node* const root = Director::sharedDirector()->getRunningScene();
-    if (node != root)
-    {
-        if (!parent)
-            parent = root;
+    if (parent)
         parent->addChild(node);
-    }
 
     if (ui->hierarchy)
     {
@@ -229,6 +230,8 @@ void MainWindow::on_actionCCSprite_triggered()
     Size size = Director::sharedDirector()->getWinSize();
 
     Node* parent = GetSelectedNodeInHierarchy();
+    if (!parent)
+        parent = MySceneEditor::instance()->GetRootNode();
 
     Sprite* sprite = Sprite::create("Icon-144.png");
     if (sprite)
@@ -294,8 +297,8 @@ void MainWindow::SetPropertyViewForNode(Node* node, Node* oldNode)
                 lastPlugin->DestroyAll();
         }
 
-        // Don't allow editing of the scene node (for now)
-        if (node == Director::sharedDirector()->getRunningScene())
+        // Don't allow editing of the nodes above/next to root
+        if (!MySceneEditor::instance()->IsChildOfRoot(node))
             return;
 
         ComponentBase* plugin = FindComponent(node->classId());

@@ -28,7 +28,9 @@ namespace cocos2d {
         assert(nullptr != instance); \
         w->SetValue(instance->getter()); \
         tree->setItemWidget(item, 1, w); \
-        NodeDriverT<widget, classT, var>* driver = new NodeDriverT<widget, classT, var>((void (classT::*)(const var&))&classT::setter, instance, w); \
+        typedef NodeDriverT<widget, classT, var> tNodeDriver; \
+        tNodeDriver::tSetter fsetter = &classT::setter; \
+        NodeDriverT<widget, classT, var>* driver = new tNodeDriver(fsetter, instance, w); \
         AddNodeDriver(item, w, fnv1_32(name), driver); \
         QObject::connect(w, SIGNAL(widgetChanged(QWidget*)), MainWindow::instance(), SLOT(pushWidget(QWidget*))); \
     }

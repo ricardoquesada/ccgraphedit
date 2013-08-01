@@ -51,8 +51,6 @@ void MyQGLWidget::resizeGL(int w, int h)
         //director->setDisplayStats(true);
         director->setOpenGLView(view);
 
-        glClearColor(0, 0, 0, 1);
-
         connect(&mTimer, SIGNAL(timeout()), this, SLOT(updateGL()));
         mTimer.start();
 
@@ -73,6 +71,8 @@ void MyQGLWidget::resizeGL(int w, int h)
 
 void MyQGLWidget::paintGL()
 {
+#define NORM(x) ((float)x / 255.f)
+    glClearColor(NORM(84), NORM(124), NORM(196), 1);
     Director::sharedDirector()->drawScene();
     MySceneEditor::instance()->drawOverlay();
 }
@@ -94,3 +94,18 @@ void MyQGLWidget::mouseMoveEvent(QMouseEvent* event)
     MySceneEditor::instance()->mouseMoved(event->localPos().x(), this->height() - event->localPos().y());
     //qDebug("mouseMoveEvent %.2f, %.2f", event->localPos().x(), this->height() - event->localPos().y());
 }
+
+void MyQGLWidget::wheelEvent(QWheelEvent* event)
+{
+    if (event->orientation() == Qt::Vertical)
+    {
+        float step = (float)event->delta() / 3500.f;
+        Node* root = Director::sharedDirector()->getRunningScene();
+        if (root)
+        {
+            float scale = root->getScale();
+            root->setScale(scale + step);
+        }
+    }
+}
+

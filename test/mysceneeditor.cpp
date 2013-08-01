@@ -11,48 +11,65 @@ USING_NS_CC;
 IMPLEMENT_SINGLETON(MySceneEditor)
 
 MySceneEditor::MySceneEditor()
-    : mSelectedNode(0)
+    : mRootNode(nullptr)
+    , mSelectedNode(nullptr)
     , mDragging(false)
 {
 }
 
 void MySceneEditor::mousePressed(float x, float y)
 {
-    //CCNode* node = PickNode(ccp(x, y));
-    //qDebug("Pressed: picked node %p", node);
+    mTouchDown = mTouchLast = ccp(x, y);
     mSelectedNode = PickNode(ccp(x, y));
+    if (mSelectedNode && mSelectedNode->getParent())
+    {
+        Point p = mSelectedNode->getParent()->convertToNodeSpace(ccp(x, y));
+        mOffset = ccpSub(p, mSelectedNode->getPosition());
+    }
     mDragging = true;
 }
 
 void MySceneEditor::mouseRelease(float x, float y)
 {
+    mTouchLast = ccp(x, y);
     mDragging = false;
-    //qDebug("Released: picked node %p", mSelectedNode);
 }
 
 void MySceneEditor::mouseMoved(float x, float y)
 {
-    if (mSelectedNode && mDragging)
+    if (mDragging)
     {
-        Node* parent = mSelectedNode->getParent();
-        if (parent)
+        if (mSelectedNode)
         {
-            Point p = parent->convertToNodeSpace(ccp(x, y));
-            if (ccpLengthSQ(ccpSub(p, mSelectedNode->getPosition())) > FLT_EPSILON)
+            Node* parent = mSelectedNode->getParent();
+            if (parent)
             {
-                emit positionChanged(mSelectedNode, p);
+                Point p = parent->convertToNodeSpace(ccp(x, y));
+                p = ccpSub(p, mOffset);
+                if (ccpLengthSQ(ccpSub(p, mSelectedNode->getPosition())) > FLT_EPSILON)
+                {
+                    emit positionChanged(mSelectedNode, p);
+                }
+                mSelectedNode->setPosition(p);
             }
-            mSelectedNode->setPosition(p);
         }
+        else
+        {
+            Node* scene = Director::sharedDirector()->getRunningScene();
+            Point diff = ccpSub(ccp(x, y), mTouchLast);
+            Point p = scene->getPosition();
+            p = ccpAdd(p, diff);
+            scene->setPosition(p);
+        }
+
+        mTouchLast = ccp(x, y);
     }
-    //CCNode* node = PickNode(ccp(x, y));
-    //qDebug("Moved: picked node %p", node);
 }
 
 void MySceneEditor::drawOverlay()
 {
-    // disallow drawing of the main scene
-    if (mSelectedNode == Director::sharedDirector()->getRunningScene())
+    // disallow drawing of the main scene nodes
+    if (!IsChildOfRoot(mSelectedNode))
         return;
 
     if (mSelectedNode)
@@ -120,8 +137,10 @@ Node* MySceneEditor::PickNode(const Point& point)
     kmGLPushMatrix();
     kmGLLoadIdentity();
 
-    Scene* root = Director::sharedDirector()->getRunningScene();
-    Node* node = PickNode(root, point);
+    // build transform from scene
+    IncludeParentTransforms(mRootNode);
+
+    Node* node = PickNode(mRootNode, point);
 
     kmGLPopMatrix();
 
@@ -136,6 +155,28 @@ void MySceneEditor::SetSelectedNode(Node* node)
 Node* MySceneEditor::GetSelectedNode() const
 {
     return mSelectedNode;
+}
+
+void MySceneEditor::SetRootNode(cocos2d::Node* root)
+{
+    mRootNode = root;
+}
+
+cocos2d::Node* MySceneEditor::GetRootNode() const
+{
+    return mRootNode;
+}
+
+bool MySceneEditor::IsChildOfRoot(Node* node)
+{
+    while (node)
+    {
+        Node* parent = node->getParent();
+        if (parent == mRootNode)
+            return true;
+        node = parent;
+    }
+    return false;
 }
 
 //
@@ -233,3 +274,9 @@ bool MySceneEditor::PointInPolygon(const kmVec3* polygon, int numVerts, const km
     return counter % 2 != 0;
 }
 
+void MySceneEditor::IncludeParentTransforms(Node* node)
+{
+    if (node->getParent())
+        IncludeParentTransforms(node->getParent());
+    node->transform();
+}

@@ -3,13 +3,11 @@
 
 #include "cocos2d.h"
 #include <QWidget>
-
-class QDoubleSpinBox;
-
-#include "widgetpoint.h"
 #include <QHBoxLayout>
 #include <QSpinBox>
 #include <QLabel>
+
+class QDoubleSpinBox;
 
 USING_NS_CC;
 
