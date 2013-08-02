@@ -23,6 +23,9 @@
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QMessageBox>
+#include <QToolBar>
+#include <QToolButton>
+#include <QSignalMapper>
 
 USING_NS_CC;
 USING_NS_CC_EXT;
@@ -38,13 +41,19 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , mQGLWidget(nullptr)
+    , mToolbar(nullptr)
     , mSelectedNode(nullptr)
 {
     ui->setupUi(this);
 
+    // create a toolbar for the working area
+    // add it to the working layout
+    mToolbar = new QToolBar;
+    ui->working->layout()->addWidget(mToolbar);
+
     // register the components
-    RegisterComponent(Node::kClassId, new ComponentNode);
-    RegisterComponent(Sprite::kClassId, new ComponentSprite);
+    RegisterComponent(Node::kClassId, new ComponentNode, "Node");
+    RegisterComponent(Sprite::kClassId, new ComponentSprite, "Sprite");
 
     // connect any signals and slots
     connect(MySceneEditor::instance(), SIGNAL(positionChanged(Node*, Point&)), this, SLOT(setNodePosition(Node*,Point&)));
@@ -53,7 +62,8 @@ MainWindow::MainWindow(QWidget *parent)
     // add our cocos2dx opengl widget to the splitter in the correct place
     mQGLWidget = new MyQGLWidget;
     mQGLWidget->show(); // this must come before adding to the graph since it initializes cocos2d.
-    ui->splitter->insertWidget(1, mQGLWidget);
+    //ui->splitter->insertWidget(1, mQGLWidget);
+    ui->working->layout()->addWidget(mQGLWidget);
 
     if (ui->hierarchy)
     {
@@ -145,9 +155,14 @@ void MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
     }
 }
 
-void MainWindow::RegisterComponent(uint32_t classId, ComponentBase* component)
+void MainWindow::RegisterComponent(uint32_t classId, ComponentBase* component, const char* componentName)
 {
     mClassToComponentMap.insert(tClassToComponentMap::value_type(classId, component));
+
+    QAction* action = new QAction(QString(componentName), mToolbar);
+    mToolbar->addAction(action);
+    action->setData(QVariant((int)classId));
+    connect(action, SIGNAL(triggered()), this, SLOT(performToolbarAction()));
 }
 
 ComponentBase* MainWindow::FindComponent(uint32_t classId)
@@ -222,10 +237,50 @@ void MainWindow::pushWidget(QWidget* widget)
     }
 }
 
-void MainWindow::setSelectedNode(cocos2d::Node* node)
+void MainWindow::setSelectedNode(Node* node)
 {
     if (node)
         SetSelectedNodeInHierarchy(node);
+}
+
+void MainWindow::performToolbarAction()
+{
+    QAction* action = dynamic_cast<QAction*>(sender());
+    if (action)
+    {
+        QVariant v = action->data();
+        uint32_t classId = v.toInt();
+
+        Node* node = dynamic_cast<Node*>(CCClassRegistry::instance()->instantiateClass(classId));
+        if (node)
+        {
+            Size size = Director::sharedDirector()->getWinSize();
+
+            Node* parent = GetSelectedNodeInHierarchy();
+            if (!parent)
+                parent = MySceneEditor::instance()->GetRootNode();
+
+            node->setPosition(ccp(.5f * size.width, .5f * size.height));
+
+            Sprite* sprite = dynamic_cast<Sprite*>(node);
+            if (sprite)
+            {
+                Image* image = new Image;
+                image->autorelease();
+                if (image->initWithImageFile("Icon-144.png"))
+                {
+                    Texture2D* texture = new Texture2D;
+                    if (texture->initWithImage(image))
+                    {
+                        sprite->setTexture(texture);
+                        sprite->setTextureRect(Rect(0, 0, texture->getPixelsWide(), texture->getPixelsHigh()));
+                    }
+                }
+            }
+
+            AddNode(parent, node, "New Node");
+        }
+    }
 }
 
 //

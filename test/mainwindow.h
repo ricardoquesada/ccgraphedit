@@ -8,7 +8,9 @@
 #include "CCGeometry.h"
 
 class MyQGLWidget;
+class QToolbar;
 class QTreeWidgetItem;
+class QSignalMapper;
 class NodeItem;
 class ComponentBase;
 namespace Ui {
@@ -36,7 +38,7 @@ public:
     void AddFiles(const char* root, const char* path, bool directory);
     void AddNode(Node* parent, Node* node, const char* nodeName);
 
-    void RegisterComponent(uint32_t classId, ComponentBase* component);
+    void RegisterComponent(uint32_t classId, ComponentBase* component, const char* componentName);
     ComponentBase* FindComponent(uint32_t classId);
 
 public slots:
@@ -47,11 +49,13 @@ public slots:
     void setNodePosition(Node* node, Point& position);
     void pushWidget(QWidget* widget);
     void setSelectedNode(Node* node);
+    void performToolbarAction();
 
 protected:
 
     Ui::MainWindow *ui;
     MyQGLWidget* mQGLWidget;
+    QToolBar* mToolbar;
     Node* mSelectedNode;
 
     typedef std::map<Node*, NodeItem*> tNodeToNodeItemMap;

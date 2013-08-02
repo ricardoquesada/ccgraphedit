@@ -104,7 +104,10 @@ void MyQGLWidget::wheelEvent(QWheelEvent* event)
         if (root)
         {
             float scale = root->getScale();
-            root->setScale(scale + step);
+            scale += step;
+            scale = MIN(scale, 10);
+            scale = MAX(scale, .2);
+            root->setScale(scale);
         }
     }
 }
