@@ -11,7 +11,9 @@ USING_NS_CC;
 
 void ComponentNode::Populate(QTreeWidget* tree, QTreeWidgetItem* parent, Node* node)
 {
-    CONNECT_FIELD(tree, parent, "position",     widgetPoint, Node, node, Point, (void(Node::*)(const Point&))&Node::setPosition,    getPosition,    1);
+    // position is a little different because it has various overloaded versions which confuse the template compiler, hence the cast.
+    CONNECT_FIELD(tree, parent, "position",     widgetPoint, Node, node, Point, (void(Node::*)(const Point&))&Node::setPosition, getPosition, 1);
+
     CONNECT_FIELD(tree, parent, "anchor point", widgetPoint, Node, node, Point, &Node::setAnchorPoint, getAnchorPoint, 0.05f);
     CONNECT_FIELD(tree, parent, "z order",      widgetInt,   Node, node, int,   &Node::setZOrder,      getZOrder,      1);
     CONNECT_FIELD(tree, parent, "vertex z",     widgetFloat, Node, node, float, &Node::setVertexZ,     getVertexZ,     1);

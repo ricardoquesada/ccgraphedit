@@ -46,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    setWindowTitle(QString("Cocos2d Graph Editor"));
+
     // create a toolbar for the working area
     // add it to the working layout
     mToolbar = new QToolBar;

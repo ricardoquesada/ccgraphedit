@@ -72,19 +72,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionCCNode"/>
-   <addaction name="actionCCSprite"/>
-  </widget>
   <action name="actionCCNode">
    <property name="text">
     <string>CCNode</string>
