@@ -85,7 +85,7 @@ void MySceneEditor::drawOverlay()
 
         drawOrigin(mSelectedNode, mSelectedNode->getAnchorPointInPoints(), 10, false);
 
-        drawHandles(mSelectedNode, false);
+        //drawHandles(mSelectedNode, false);
 
         kmGLPopMatrix();
     }
@@ -93,81 +93,38 @@ void MySceneEditor::drawOverlay()
 
 void MySceneEditor::drawOrigin(Node* node, const Point& origin, float size, bool scaled)
 {
-    if (scaled)
-    {
-        const Point lines[] = {
-            node->convertToWorldSpace(ccp(origin.x, origin.y + size)),
-            node->convertToWorldSpace(ccp(origin.x, origin.y - size)),
-            node->convertToWorldSpace(ccp(origin.x - size, origin.y)),
-            node->convertToWorldSpace(ccp(origin.x + size, origin.y))
-        };
-        ccDrawLine(lines[0], lines[1]);
-        ccDrawLine(lines[2], lines[3]);
-    }
-    else
-    {
-        Point p = node->convertToWorldSpace(origin);
-        const Point lines[] = {
-            ccp(p.x, p.y + size),
-            ccp(p.x, p.y - size),
-            ccp(p.x - size, p.y),
-            ccp(p.x + size, p.y)
-        };
-        ccDrawLine(lines[0], lines[1]);
-        ccDrawLine(lines[2], lines[3]);
-    }
+    const Point lines[] = {
+        node->convertToWorldSpace(ccp(origin.x, origin.y + size)),
+        node->convertToWorldSpace(ccp(origin.x, origin.y - size)),
+        node->convertToWorldSpace(ccp(origin.x - size, origin.y)),
+        node->convertToWorldSpace(ccp(origin.x + size, origin.y))
+    };
+    ccDrawLine(lines[0], lines[1]);
+    ccDrawLine(lines[2], lines[3]);
 }
 
 void MySceneEditor::drawRect(Node* node, const Rect& rect, bool solid, bool scaled, const ccColor4F* color)
 {
-    if (scaled)
-    {
-        float hw = .5f * rect.size.width;
-        float hh = .5f * rect.size.height;
-        float l(rect.origin.x - hw), b(rect.origin.y - hh);
-        float r(rect.origin.x + hw), t(rect.origin.y + hh);
+    float hw = .5f * rect.size.width;
+    float hh = .5f * rect.size.height;
+    float l(rect.origin.x - hw), b(rect.origin.y - hh);
+    float r(rect.origin.x + hw), t(rect.origin.y + hh);
 
-        const Point points[] = {
-            node->convertToWorldSpace(ccp(l, b)),
-            node->convertToWorldSpace(ccp(r, b)),
-            node->convertToWorldSpace(ccp(r, t)),
-            node->convertToWorldSpace(ccp(l, t))
-        };
-        if (solid)
-        {
-            ccColor4F temp = {1,1,1,1};
-            if (!color)
-                color = &temp;
-            ccDrawSolidPoly(points, 4, *color);
-        }
-        else
-            ccDrawPoly(points, 4, true);
+    const Point points[] = {
+        node->convertToWorldSpace(ccp(l, b)),
+        node->convertToWorldSpace(ccp(r, b)),
+        node->convertToWorldSpace(ccp(r, t)),
+        node->convertToWorldSpace(ccp(l, t))
+    };
+    if (solid)
+    {
+        ccColor4F temp = {1,1,1,1};
+        if (!color)
+            color = &temp;
+        ccDrawSolidPoly(points, 4, *color);
     }
     else
-    {
-        Point p = node->convertToWorldSpace(rect.origin);
-
-        float hw = .5f * rect.size.width;
-        float hh = .5f * rect.size.height;
-        float l(p.x - hw), b(p.y - hh);
-        float r(p.x + hw), t(p.y + hh);
-
-        const Point points[] = {
-            ccp(l, b),
-            ccp(r, b),
-            ccp(r, t),
-            ccp(l, t)
-        };
-        if (solid)
-        {
-            ccColor4F temp = {1,1,1,1};
-            if (!color)
-                color = &temp;
-            ccDrawSolidPoly(points, 4, *color);
-        }
-        else
-            ccDrawPoly(points, 4, true);
-    }
+        ccDrawPoly(points, 4, true);
 }
 
 void MySceneEditor::drawHandles(Node* node, bool scaled)

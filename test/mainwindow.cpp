@@ -60,28 +60,13 @@ MainWindow::MainWindow(QWidget *parent)
     // connect any signals and slots
     connect(MySceneEditor::instance(), SIGNAL(positionChanged(Node*, Point&)), this, SLOT(setNodePosition(Node*,Point&)));
     connect(MySceneEditor::instance(), SIGNAL(selectedNodeChanged(Node*)), this, SLOT(setSelectedNode(Node*)));
+    connect(ui->hierarchy->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this, SLOT(selectNode()));
 
     // add our cocos2dx opengl widget to the splitter in the correct place
     mQGLWidget = new MyQGLWidget;
+    mQGLWidget->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding);
     mQGLWidget->show(); // this must come before adding to the graph since it initializes cocos2d.
-    //ui->splitter->insertWidget(1, mQGLWidget);
     ui->working->layout()->addWidget(mQGLWidget);
-
-    if (ui->hierarchy)
-    {
-        QStringList labels;
-        labels << "Scene Graph";
-        ui->hierarchy->setHeaderLabels(labels);
-
-        connect(ui->hierarchy->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this, SLOT(selectNode()));
-    }
-
-    if (ui->properties)
-    {
-        QStringList labels;
-        labels << "Properties" << "Value";
-        ui->properties->setHeaderLabels(labels);
-    }
 
     // Add a path for our test sprite
     FileUtils::sharedFileUtils()->addSearchPath("../../../../../cocos2d/template/multi-platform-cpp/proj.ios");
@@ -141,12 +126,10 @@ void MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
             parentItem = item->SceneItem();
         }
 
-        String* className = CCClassRegistry::instance()->getClassName(node->classId());
-
         NodeItem* item = new NodeItem;
 
         QTreeWidgetItem* sceneItem = new QTreeWidgetItem;
-        sceneItem->setText(0, QString(className->getCString()));
+        sceneItem->setText(0, QString(nodeName));
 
         item->SetNode(node);
         item->SetSceneItem(sceneItem);

@@ -54,8 +54,6 @@ void MyQGLWidget::resizeGL(int w, int h)
         connect(&mTimer, SIGNAL(timeout()), this, SLOT(updateGL()));
         mTimer.start();
 
-        CCLOG("QT: Initialized cocos director\n");
-
         Scene* scene = Scene::create();
         director->pushScene(scene);
 
@@ -65,8 +63,6 @@ void MyQGLWidget::resizeGL(int w, int h)
     EGLView* view = EGLView::sharedOpenGLView();
     view->setFrameSize(w, h);
     view->setDesignResolutionSize(w, h, kResolutionNoBorder);
-
-    CCLOG("QT: setting frame size to %d, %d\n", w, h);
 }
 
 void MyQGLWidget::paintGL()
@@ -80,19 +76,16 @@ void MyQGLWidget::paintGL()
 void MyQGLWidget::mousePressEvent(QMouseEvent* event)
 {
     MySceneEditor::instance()->mousePressed(event->localPos().x(), this->height() - event->localPos().y());
-    //qDebug("mousePressEvent %.2f, %.2f", event->localPos().x(), this->height() - event->localPos().y());
 }
 
 void MyQGLWidget::mouseReleaseEvent(QMouseEvent* event)
 {
     MySceneEditor::instance()->mouseRelease(event->localPos().x(), this->height() - event->localPos().y());
-    //qDebug("mouseReleaseEvent %.2f, %.2f", event->localPos().x(), this->height() - event->localPos().y());
 }
 
 void MyQGLWidget::mouseMoveEvent(QMouseEvent* event)
 {
     MySceneEditor::instance()->mouseMoved(event->localPos().x(), this->height() - event->localPos().y());
-    //qDebug("mouseMoveEvent %.2f, %.2f", event->localPos().x(), this->height() - event->localPos().y());
 }
 
 void MyQGLWidget::wheelEvent(QWheelEvent* event)

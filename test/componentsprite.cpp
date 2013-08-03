@@ -11,8 +11,18 @@ USING_NS_CC;
 void ComponentSprite::Populate(QTreeWidget* tree, QTreeWidgetItem* parent, Node* node)
 {
     ComponentNode::Populate(tree, parent, node);
-    CONNECT_FIELD(tree, parent, "flip X",  widgetBool, Sprite, node, bool,    &Sprite::setFlipX,   isFlipX,    1);
-    CONNECT_FIELD(tree, parent, "flip Y",  widgetBool, Sprite, node, bool,    &Sprite::setFlipY,   isFlipY,    1);
-    CONNECT_FIELD(tree, parent, "opacity", widgetInt,  Sprite, node, uint8_t, &Sprite::setOpacity, getOpacity, 1);
-    CONNECT_FIELD(tree, parent, "texture", widgetTexture,  Sprite, node, Texture2D*, &Sprite::setTexture, getTexture, 1);
+    ADD_FIELD(tree, parent, "flip X",  widgetBool, Sprite, node, bool,    setFlipX,   isFlipX,    1);
+    ADD_FIELD(tree, parent, "flip Y",  widgetBool, Sprite, node, bool,    setFlipY,   isFlipY,    1);
+    ADD_FIELD(tree, parent, "opacity", widgetInt,  Sprite, node, uint8_t, setOpacity, getOpacity, 1);
+
+    {
+        auto setter = [] (Sprite* node, Texture2D* const& value)
+        {
+            node->setTexture(const_cast<Texture2D*>(value));
+            Size size = value->getContentSizeInPixels();
+            node->setTextureRect(Rect(0, 0, size.width, size.height));
+        };
+        auto getter = [] (Sprite* node, Texture2D*& value) { value = node->getTexture(); };
+        connectFieldT<widgetTexture, Sprite, Texture2D*>(this, tree, parent, "texture", node, setter, getter);
+    }
 }

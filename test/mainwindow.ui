@@ -30,9 +30,15 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="QTreeWidget" name="hierarchy">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <column>
         <property name="text">
-         <string notr="true">Hierarchy</string>
+         <string notr="true">Scene Graph</string>
         </property>
        </column>
       </widget>
@@ -53,6 +59,12 @@
        </layout>
       </widget>
       <widget class="QTreeWidget" name="properties">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -65,6 +77,11 @@
        <column>
         <property name="text">
          <string notr="true">Properties</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Value</string>
         </property>
        </column>
       </widget>

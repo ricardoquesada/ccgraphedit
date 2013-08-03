@@ -15,24 +15,11 @@ namespace cocos2d {
     class Node;
 }
 
-#define CONNECT_FIELD(tree, parent, name, widget, classT, node, var, setter, getter, increment) \
+#define ADD_FIELD(tree, parent, name, widget, classT, node, var, setter, getter, increment) \
     { \
-        QTreeWidgetItem* item = new QTreeWidgetItem; \
-        parent->addChild(item); \
-        item->setText(0, QString(name)); \
-        widget* w = new widget(tree); \
-        w->SetIncrement(increment); \
-        w->setProperty("node", QVariant((qlonglong)node)); \
-        item->setData(0, Qt::UserRole, QVariant((qlonglong)w)); \
-        classT* instance = dynamic_cast<classT*>(node); \
-        assert(nullptr != instance); \
-        w->SetValue(instance->getter()); \
-        tree->setItemWidget(item, 1, w); \
-        typedef NodeDriverT<widget, classT, var> tNodeDriver; \
-        tNodeDriver::tSetter fsetter = setter; \
-        NodeDriverT<widget, classT, var>* driver = new tNodeDriver(fsetter, instance, w); \
-        AddNodeDriver(item, w, fnv1_32(name), driver); \
-        QObject::connect(w, SIGNAL(widgetChanged(QWidget*)), MainWindow::instance(), SLOT(pushWidget(QWidget*))); \
+        auto lsetter = [] (classT* node, const var& value) { node->setter(value); }; \
+        auto lgetter = [] (classT* node, var& value) { value = node->getter(); }; \
+        connectFieldT<widget, classT, var>(this, tree, parent, name, node, lsetter, lgetter, increment); \
     }
 
 class INodeDriver
@@ -49,10 +36,9 @@ class NodeDriverT
 {
 public:
 
-    typedef std::function<void(nodeT*, const varT&)> tSetter;
-
-    NodeDriverT(tSetter setter, nodeT* node, widgetT* widget)
+    NodeDriverT(void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), nodeT* node, widgetT* widget)
         : mSetter(setter)
+        , mGetter(getter)
         , mNode(node)
         , mWidget(widget)
     {}
@@ -79,7 +65,12 @@ public:
 
 protected:
 
+    typedef std::function<void(nodeT*, const varT&)> tSetter;
     tSetter  mSetter;
+
+    typedef std::function<void(nodeT*, varT&)> tGetter;
+    tGetter  mGetter;
+
     nodeT*   mNode;
     widgetT* mWidget;
 };
@@ -115,3 +106,32 @@ protected:
     typedef std::vector<QTreeWidgetItem*> tTreeWidgetItemsArray;
     tTreeWidgetItemsArray mTreeWidgetItemsArray;
 };
+
+template <class widgetT, class nodeT, typename varT, class componentT = ComponentBase>
+NodeDriverT<widgetT, nodeT, varT>* connectFieldT(componentT* component, QTreeWidget* tree, QTreeWidgetItem* parent, const char* name, cocos2d::Node* node, void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), float increment = 1)
+{
+    QTreeWidgetItem* item = new QTreeWidgetItem;
+    item->setText(0, QString(name));
+    parent->addChild(item);
+
+    widgetT* w = new widgetT(tree);
+    w->SetIncrement(increment);
+    w->setProperty("node", QVariant((qlonglong)node));
+    item->setData(0, Qt::UserRole, QVariant((qlonglong)w));
+
+    nodeT* instance = dynamic_cast<nodeT*>(node);
+    assert(nullptr != instance);
+    varT value;
+    getter(instance, value);
+    w->SetValue(value);
+    tree->setItemWidget(item, 1, w);
+
+    typedef NodeDriverT<widgetT, nodeT, varT> tNodeDriver;
+    tNodeDriver* driver = new tNodeDriver(setter, getter, instance, w);
+
+    component->AddNodeDriver(item, w, cocos2d::fnv1_32(name), driver);
+
+    QObject::connect(w, SIGNAL(widgetChanged(QWidget*)), cocos2d::MainWindow::instance(), SLOT(pushWidget(QWidget*)));
+
+    return driver;
+}
