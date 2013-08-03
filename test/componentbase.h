@@ -15,11 +15,14 @@ namespace cocos2d {
     class Node;
 }
 
-#define ADD_FIELD(tree, parent, name, widget, classT, node, var, setter, getter, increment) \
+#define SETTER(classT, varT, setter) [] (classT* node, const varT& value) { node->setter(value); }
+#define GETTER(classT, varT, getter) [] (classT* node, varT& value) { value = node->getter(); }
+
+#define ADD_FIELD(tree, parent, name, widget, classT, node, varT, setter, getter, increment) \
     { \
-        auto lsetter = [] (classT* node, const var& value) { node->setter(value); }; \
-        auto lgetter = [] (classT* node, var& value) { value = node->getter(); }; \
-        connectFieldT<widget, classT, var>(this, tree, parent, name, node, lsetter, lgetter, increment); \
+        auto lsetter = SETTER(classT, varT, setter); \
+        auto lgetter = GETTER(classT, varT, getter); \
+        connectFieldT<widget, classT, varT>(this, tree, parent, name, node, lsetter, lgetter, increment); \
     }
 
 class INodeDriver

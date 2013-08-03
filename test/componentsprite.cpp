@@ -22,7 +22,6 @@ void ComponentSprite::Populate(QTreeWidget* tree, QTreeWidgetItem* parent, Node*
             Size size = value->getContentSizeInPixels();
             node->setTextureRect(Rect(0, 0, size.width, size.height));
         };
-        auto getter = [] (Sprite* node, Texture2D*& value) { value = node->getTexture(); };
-        connectFieldT<widgetTexture, Sprite, Texture2D*>(this, tree, parent, "texture", node, setter, getter);
+        connectFieldT<widgetTexture, Sprite, Texture2D*>(this, tree, parent, "texture", node, setter, GETTER(Sprite, Texture2D*, getTexture));
     }
 }
