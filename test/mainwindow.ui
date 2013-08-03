@@ -36,6 +36,12 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::InternalMove</enum>
+       </property>
+       <property name="defaultDropAction">
+        <enum>Qt::MoveAction</enum>
+       </property>
        <column>
         <property name="text">
          <string notr="true">Scene Graph</string>

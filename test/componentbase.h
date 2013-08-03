@@ -18,12 +18,8 @@ namespace cocos2d {
 #define SETTER(classT, varT, setter) [] (classT* node, const varT& value) { node->setter(value); }
 #define GETTER(classT, varT, getter) [] (classT* node, varT& value) { value = node->getter(); }
 
-#define ADD_FIELD(tree, parent, name, widget, classT, node, varT, setter, getter, increment) \
-    { \
-        auto lsetter = SETTER(classT, varT, setter); \
-        auto lgetter = GETTER(classT, varT, getter); \
-        connectFieldT<widget, classT, varT>(this, tree, parent, name, node, lsetter, lgetter, increment); \
-    }
+#define ADD_FIELD(tree, parent, name, widgetT, classT, node, varT, setter, getter, increment) \
+        connectFieldT<widgetT, classT, varT>(this, tree, parent, name, node, SETTER(classT, varT, setter), GETTER(classT, varT, getter), increment)
 
 class INodeDriver
 {
@@ -68,12 +64,8 @@ public:
 
 protected:
 
-    typedef std::function<void(nodeT*, const varT&)> tSetter;
-    tSetter  mSetter;
-
-    typedef std::function<void(nodeT*, varT&)> tGetter;
-    tGetter  mGetter;
-
+    std::function<void(nodeT*, const varT&)> mSetter;
+    std::function<void(nodeT*, varT&)> mGetter;
     nodeT*   mNode;
     widgetT* mWidget;
 };
