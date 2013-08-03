@@ -73,6 +73,11 @@ void MyQGLWidget::paintGL()
     MySceneEditor::instance()->drawOverlay();
 }
 
+QSize MyQGLWidget::sizeHint() const
+{
+    return QSize(1000, 1000);
+}
+
 void MyQGLWidget::mousePressEvent(QMouseEvent* event)
 {
     MySceneEditor::instance()->mousePressed(event->localPos().x(), this->height() - event->localPos().y());

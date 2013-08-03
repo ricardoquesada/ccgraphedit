@@ -15,6 +15,8 @@ public:
     void resizeGL(int w, int h);
     void paintGL();
 
+    QSize sizeHint() const;
+
     // mouse handling
     void mousePressEvent(QMouseEvent*);
     void mouseReleaseEvent(QMouseEvent*);
