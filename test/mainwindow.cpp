@@ -45,7 +45,20 @@ MainWindow::MainWindow(QWidget *parent)
     , mSelectedNode(nullptr)
 {
     ui->setupUi(this);
+}
 
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+Ui::MainWindow* MainWindow::UI()
+{
+    return ui;
+}
+
+bool MainWindow::Init()
+{
     setWindowTitle(QString("Cocos2d Graph Editor"));
 
     // create a toolbar for the working area
@@ -83,16 +96,6 @@ MainWindow::MainWindow(QWidget *parent)
     }
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
-
-Ui::MainWindow* MainWindow::UI()
-{
-    return ui;
-}
-
 void MainWindow::AddFiles(const char* root, const char* path, bool directory)
 {
     if (directory)
@@ -105,6 +108,13 @@ void MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
     if (it != mNodeToNodeItemMap.end())
     {
         QMessageBox::information(nullptr, QString("Error"), QString("Node cannot be added twice"), QMessageBox::Ok);
+        return;
+    }
+
+    ComponentBase* plugin = MainWindow::instance()->FindComponent(node->classId());
+    if (!plugin)
+    {
+        QMessageBox::information(nullptr, QString("Error"), QString("Component cannot be found to populate node item"), QMessageBox::Ok);
         return;
     }
 
@@ -127,6 +137,8 @@ void MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
         }
 
         NodeItem* item = new NodeItem;
+
+        plugin->Populate(item, ui->properties, node);
 
         QTreeWidgetItem* sceneItem = new QTreeWidgetItem;
         sceneItem->setText(0, QString(nodeName));
@@ -188,10 +200,10 @@ void MainWindow::selectNode()
 
 void MainWindow::setNodePosition(Node* node, Point& position)
 {
-    ComponentBase* plugin = FindComponent(node->classId());
-    if (plugin)
+    NodeItem* nodeItem = GetNodeItemFromNode(node);
+    if (nodeItem)
     {
-        INodeDriver* driver = plugin->FindDriverByHash(kNodeDriverPosition);
+        INodeDriver* driver = nodeItem->FindDriverByHash(kNodeDriverPosition);
         if (driver)
         {
             QWidget* widget = driver->Widget();
@@ -210,10 +222,10 @@ void MainWindow::pushWidget(QWidget* widget)
     Node* node = (Node*)var.toLongLong();
     if (node)
     {
-        ComponentBase* plugin = FindComponent(node->classId());
-        if (plugin)
+        NodeItem* nodeItem = GetNodeItemFromNode(node);
+        if (nodeItem)
         {
-            INodeDriver* driver = plugin->FindDriverByWidget(widget);
+            INodeDriver* driver = nodeItem->FindDriverByWidget(widget);
             if (driver)
             {
                 driver->Push();
@@ -306,6 +318,19 @@ void MainWindow::on_actionCCNode_triggered()
 // Protected Methods
 //
 
+NodeItem* MainWindow::GetNodeItemFromNode(Node* node)
+{
+    tNodeToNodeItemMap::iterator it = mNodeToNodeItemMap.find(node);
+    if (it == mNodeToNodeItemMap.end())
+    {
+        QMessageBox::information(nullptr, QString("Error"), QString("Node item cannot be found in the map"), QMessageBox::Ok);
+        return nullptr;
+    }
+
+    NodeItem* nodeItem = (*it).second;
+    return nodeItem;
+}
+
 Node* MainWindow::GetSelectedNodeInHierarchy()
 {
     QList<QTreeWidgetItem*> nodes = ui->hierarchy->selectedItems();
@@ -333,9 +358,35 @@ void MainWindow::SetSelectedNodeInHierarchy(Node* node)
 
 void MainWindow::SetPropertyViewForNode(Node* node, Node* oldNode)
 {
+    if (node == oldNode)
+        return;
+
     if (ui->properties)
     {
+        // first unmap the widgets for the old node since we cannot recycle them
+        // and they will be destroyed by the owning widgets or tree view widget.
+        if (oldNode)
+        {
+            tNodeToNodeItemMap::iterator it = mNodeToNodeItemMap.find(oldNode);
+            if (it == mNodeToNodeItemMap.end())
+            {
+                QMessageBox::information(nullptr, QString("Error"), QString("Old node cannot be found in the map"), QMessageBox::Ok);
+            }
+            else
+            {
+                NodeItem* nodeItem = (*it).second;
+                nodeItem->DestroyWidgets();
+            }
+        }
+
+        // remove all children of the root node
         QTreeWidgetItem* root = ui->properties->invisibleRootItem();
+        while (root->childCount())
+            root->takeChild(0);
+
+        // Don't allow editing of the nodes above/next to root
+        if (!MySceneEditor::instance()->IsChildOfRoot(node))
+            return;
 
         tNodeToNodeItemMap::iterator it = mNodeToNodeItemMap.find(node);
         if (it == mNodeToNodeItemMap.end())
@@ -344,30 +395,7 @@ void MainWindow::SetPropertyViewForNode(Node* node, Node* oldNode)
             return;
         }
 
-        // remove all children of the root node
-        while (root->childCount())
-            root->takeChild(0);
-
-        // destroy all for last node being displayed
-        if (oldNode)
-        {
-            ComponentBase* lastPlugin = FindComponent(oldNode->classId());
-            if (lastPlugin)
-                lastPlugin->DestroyAll();
-        }
-
-        // Don't allow editing of the nodes above/next to root
-        if (!MySceneEditor::instance()->IsChildOfRoot(node))
-            return;
-
-        ComponentBase* plugin = FindComponent(node->classId());
-        if (plugin)
-        {
-            plugin->Populate(ui->properties, root, node);
-        }
-        else
-        {
-            QMessageBox::information(nullptr, QString("Error"), QString("Component cannot be found to populate node"), QMessageBox::Ok);
-        }
+        NodeItem* nodeItem = (*it).second;
+        nodeItem->CreateWidgets(ui->properties);
     }
 }

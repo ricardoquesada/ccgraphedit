@@ -7,6 +7,6 @@ class ComponentSprite
     : public ComponentNode
 {
 public:
-    void Populate(QTreeWidget* tree, QTreeWidgetItem* parent, cocos2d::Node* node);
+    void Populate(NodeItem* nodeItem, QTreeWidget* tree, cocos2d::Node* node);
 };
 

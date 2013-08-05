@@ -6,12 +6,12 @@
 
 USING_NS_CC;
 
-void ComponentSprite::Populate(QTreeWidget* tree, QTreeWidgetItem* parent, Node* node)
+void ComponentSprite::Populate(NodeItem* nodeItem, QTreeWidget* tree, Node* node)
 {
-    ComponentNode::Populate(tree, parent, node);
-    ADD_FIELD(tree, parent, "flip X",  widgetBool, Sprite, node, bool,    setFlipX,   isFlipX,    1);
-    ADD_FIELD(tree, parent, "flip Y",  widgetBool, Sprite, node, bool,    setFlipY,   isFlipY,    1);
-    ADD_FIELD(tree, parent, "opacity", widgetInt,  Sprite, node, uint8_t, setOpacity, getOpacity, 1);
+    ComponentNode::Populate(nodeItem, tree, node);
+    ADD_FIELD(nodeItem, tree, "flip X",  widgetBool, Sprite, node, bool,    setFlipX,   isFlipX,    1);
+    ADD_FIELD(nodeItem, tree, "flip Y",  widgetBool, Sprite, node, bool,    setFlipY,   isFlipY,    1);
+    ADD_FIELD(nodeItem, tree, "opacity", widgetInt,  Sprite, node, uint8_t, setOpacity, getOpacity, 1);
 
     {
         // for textures we use a lamda for two reasons
@@ -23,6 +23,6 @@ void ComponentSprite::Populate(QTreeWidget* tree, QTreeWidgetItem* parent, Node*
             Size size = value->getContentSizeInPixels();
             node->setTextureRect(Rect(0, 0, size.width, size.height));
         };
-        connectFieldT<widgetTexture, Sprite, Texture2D*>(this, tree, parent, "texture", node, setter, GETTER(Sprite, Texture2D*, getTexture));
+        connectFieldT<widgetTexture, Sprite, Texture2D*>(nodeItem, tree, "texture", node, setter, GETTER(Sprite, Texture2D*, getTexture));
     }
 }

@@ -30,10 +30,11 @@ public:
 
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    Ui::MainWindow* UI();
 
     DECLARE_SINGLETON(MainWindow)
 
-    Ui::MainWindow* UI();
+    bool Init();
 
     void AddFiles(const char* root, const char* path, bool directory);
     void AddNode(Node* parent, Node* node, const char* nodeName);
@@ -71,6 +72,7 @@ private slots:
 
 protected:
 
+    NodeItem* GetNodeItemFromNode(Node* node);
     Node* GetSelectedNodeInHierarchy();
     void SetSelectedNodeInHierarchy(Node* node);
     void SetPropertyViewForNode(Node* node, Node* oldNode);
