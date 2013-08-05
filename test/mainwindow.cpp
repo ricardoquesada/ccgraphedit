@@ -7,6 +7,7 @@
 #include "mysceneeditor.h"
 #include "dialogimportccb.h"
 #include "nodeitem.h"
+#include "NodeDriver.h"
 #include "widgetpoint.h"
 #include "componentnode.h"
 #include "componentsprite.h"
@@ -111,7 +112,7 @@ void MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
         return;
     }
 
-    ComponentBase* plugin = MainWindow::instance()->FindComponent(node->classId());
+    IComponentBase* plugin = MainWindow::instance()->FindComponent(node->classId());
     if (!plugin)
     {
         QMessageBox::information(nullptr, QString("Error"), QString("Component cannot be found to populate node item"), QMessageBox::Ok);
@@ -152,7 +153,7 @@ void MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
     }
 }
 
-void MainWindow::RegisterComponent(uint32_t classId, ComponentBase* component, const char* componentName)
+void MainWindow::RegisterComponent(uint32_t classId, IComponentBase* component, const char* componentName)
 {
     mClassToComponentMap.insert(tClassToComponentMap::value_type(classId, component));
 
@@ -162,7 +163,7 @@ void MainWindow::RegisterComponent(uint32_t classId, ComponentBase* component, c
     connect(action, SIGNAL(triggered()), this, SLOT(performToolbarAction()));
 }
 
-ComponentBase* MainWindow::FindComponent(uint32_t classId)
+IComponentBase* MainWindow::FindComponent(uint32_t classId)
 {
     tClassToComponentMap::iterator it = mClassToComponentMap.find(classId);
     return it == mClassToComponentMap.end() ? nullptr : (*it).second;

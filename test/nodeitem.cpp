@@ -1,5 +1,6 @@
 
 #include "nodeitem.h"
+#include "NodeDriver.h"
 #include "componentbase.h"
 #include "cocos2d.h"
 #include <QTreeWidgetItem>

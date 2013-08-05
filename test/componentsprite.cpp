@@ -1,5 +1,6 @@
 #include "componentsprite.h"
 #include "cocos2d.h"
+#include "NodeDriver.h"
 #include "widgetmisc.h"
 #include "widgetnumber.h"
 #include "widgetTexture.h"
