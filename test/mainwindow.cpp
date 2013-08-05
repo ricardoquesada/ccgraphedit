@@ -112,7 +112,7 @@ void MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
         return;
     }
 
-    IComponentBase* plugin = MainWindow::instance()->FindComponent(node->classId());
+    IComponent* plugin = MainWindow::instance()->FindComponent(node->classId());
     if (!plugin)
     {
         QMessageBox::information(nullptr, QString("Error"), QString("Component cannot be found to populate node item"), QMessageBox::Ok);
@@ -153,7 +153,7 @@ void MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
     }
 }
 
-void MainWindow::RegisterComponent(uint32_t classId, IComponentBase* component, const char* componentName)
+void MainWindow::RegisterComponent(uint32_t classId, IComponent* component, const char* componentName)
 {
     mClassToComponentMap.insert(tClassToComponentMap::value_type(classId, component));
 
@@ -163,7 +163,7 @@ void MainWindow::RegisterComponent(uint32_t classId, IComponentBase* component, 
     connect(action, SIGNAL(triggered()), this, SLOT(performToolbarAction()));
 }
 
-IComponentBase* MainWindow::FindComponent(uint32_t classId)
+IComponent* MainWindow::FindComponent(uint32_t classId)
 {
     tClassToComponentMap::iterator it = mClassToComponentMap.find(classId);
     return it == mClassToComponentMap.end() ? nullptr : (*it).second;
@@ -281,38 +281,9 @@ void MainWindow::performToolbarAction()
     }
 }
 
-//
-// Toolbar Actions
-//
-
-void MainWindow::on_actionCCSprite_triggered()
+void MainWindow::ExportToFile(const char* file)
 {
-    Size size = Director::sharedDirector()->getWinSize();
 
-    Node* parent = GetSelectedNodeInHierarchy();
-    if (!parent)
-        parent = MySceneEditor::instance()->GetRootNode();
-
-    Sprite* sprite = Sprite::create("Icon-144.png");
-    if (sprite)
-    {
-        sprite->setPosition(ccp(.5f * size.width, .5f * size.height));
-        AddNode(parent, sprite, "Sprite");
-    }
-}
-
-void MainWindow::on_actionCCNode_triggered()
-{
-    Size size = Director::sharedDirector()->getWinSize();
-
-    Node* parent = GetSelectedNodeInHierarchy();
-
-    Node* node = Node::create();
-    if (node)
-    {
-        node->setPosition(ccp(.5f * size.width, .5f * size.height));
-        AddNode(parent, node, "Node");
-    }
 }
 
 //

@@ -12,7 +12,7 @@ class QToolbar;
 class QTreeWidgetItem;
 class QSignalMapper;
 class NodeItem;
-class IComponentBase;
+class IComponent;
 namespace Ui {
     class MainWindow;
 }
@@ -39,8 +39,10 @@ public:
     void AddFiles(const char* root, const char* path, bool directory);
     void AddNode(Node* parent, Node* node, const char* nodeName);
 
-    void RegisterComponent(uint32_t classId, IComponentBase* component, const char* componentName);
-    IComponentBase* FindComponent(uint32_t classId);
+    void RegisterComponent(uint32_t classId, IComponent* component, const char* componentName);
+    IComponent* FindComponent(uint32_t classId);
+
+    void ExportToFile(const char* file);
 
 public slots:
 
@@ -62,13 +64,8 @@ protected:
     typedef std::map<Node*, NodeItem*> tNodeToNodeItemMap;
     tNodeToNodeItemMap mNodeToNodeItemMap;
 
-    typedef std::map<uint32_t, IComponentBase*> tClassToComponentMap;
+    typedef std::map<uint32_t, IComponent*> tClassToComponentMap;
     tClassToComponentMap mClassToComponentMap;
-
-private slots:
-
-    void on_actionCCSprite_triggered();
-    void on_actionCCNode_triggered();
 
 protected:
 

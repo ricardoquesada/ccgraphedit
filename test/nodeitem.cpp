@@ -103,3 +103,8 @@ INodeDriver* NodeItem::FindDriverByWidget(QWidget* widget)
     tWidgetToDriverMap::iterator it = mWidgetToDriverMap.find(widget);
     return it == mWidgetToDriverMap.end() ? nullptr : (*it).second;
 }
+
+const NodeItem::tNodeDrivers& NodeItem::Drivers() const
+{
+    return mNodeDrivers;
+}

@@ -27,7 +27,7 @@ public:
     void SetNode(cocos2d::Node* node);
     cocos2d::Node* GetNode() const;
 
-    // add a driver to this node item
+    // add a node property driver to this node item
     void AddDriver(uint32_t nameHash, INodeDriver* driver);
 
     // create the widgets and connect them to drivers
@@ -45,6 +45,10 @@ public:
     // find a drived by its widget
     INodeDriver* FindDriverByWidget(QWidget* widget);
 
+    // retrieve the node property drivers for this node
+    typedef std::vector<INodeDriver*> tNodeDrivers;
+    const tNodeDrivers& Drivers() const;
+
 protected:
 
     QTreeWidgetItem* mSceneItem;
@@ -60,6 +64,5 @@ protected:
     typedef std::vector<QTreeWidgetItem*> tTreeWidgetItemsArray;
     tTreeWidgetItemsArray mTreeWidgetItemsArray;
 
-    typedef std::vector<INodeDriver*> tNodeDrivers;
     tNodeDrivers mNodeDrivers;
 };

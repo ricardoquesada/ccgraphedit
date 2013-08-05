@@ -7,7 +7,7 @@ namespace cocos2d {
 }
 class NodeItem;
 
-class IComponentBase
+class IComponent
 {
 public:
     virtual void Populate(NodeItem* nodeItem, QTreeWidget* tree, cocos2d::Node* node) = 0;

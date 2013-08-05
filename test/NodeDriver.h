@@ -120,7 +120,7 @@ protected:
 
 void AddDriver(NodeItem* nodeItem, uint32_t nameHash, INodeDriver* driver);
 
-template <class widgetT, class nodeT, typename varT, class componentT = IComponentBase>
+template <class widgetT, class nodeT, typename varT, class componentT = IComponent>
 NodeDriverT<widgetT, nodeT, varT>* connectFieldT(NodeItem* nodeItem, QTreeWidget* tree, const char* name, cocos2d::Node* node, void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), float increment = 1)
 {
     nodeT* typedNode = dynamic_cast<nodeT*>(node);
