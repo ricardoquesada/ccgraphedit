@@ -1,10 +1,8 @@
 #include "componentsprite.h"
+#include "cocos2d.h"
 #include "widgetmisc.h"
 #include "widgetnumber.h"
 #include "widgetTexture.h"
-#include "cocos2d.h"
-#include "CCGeometry.h"
-#include <functional>
 
 USING_NS_CC;
 

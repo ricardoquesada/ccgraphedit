@@ -1,11 +1,9 @@
 #include "componentnode.h"
+#include "cocos2d.h"
 #include "widgetpoint.h"
 #include "widgetSize.h"
 #include "widgetnumber.h"
 #include "widgetmisc.h"
-#include "cocos2d.h"
-#include "CCGeometry.h"
-#include <functional>
 
 USING_NS_CC;
 
