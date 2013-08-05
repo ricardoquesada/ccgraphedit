@@ -39,6 +39,7 @@ public:
         : mSetter(setter)
         , mGetter(getter)
         , mNode(node)
+        , mItem(nullptr)
         , mWidget(nullptr)
         , mName(name)
         , mIncrement(1)
@@ -46,14 +47,18 @@ public:
 
     // this has to be done each time it is added to the tree since the tree takes
     // ownership of it, and there is no way to get it back, so it is recreated.
-    void SetupWidget(QTreeWidget* tree, QTreeWidgetItem* parent, QTreeWidgetItem* item)
+    void SetupWidgets(QTreeWidget* tree, QTreeWidgetItem* parent)
     {
+        mItem = new QTreeWidgetItem;
+        mItem->setText(0, mName);
+        parent->addChild(mItem);
+
         mWidget = new widgetT(tree);
         mWidget->SetIncrement(mIncrement);
         mWidget->setProperty("node", QVariant((qlonglong)mNode));
-        item->setData(0, Qt::UserRole, QVariant((qlonglong)mWidget));
+        mItem->setData(0, Qt::UserRole, QVariant((qlonglong)mWidget));
 
-        tree->setItemWidget(item, 1, mWidget);
+        tree->setItemWidget(mItem, 1, mWidget);
 
         // set the default value
         varT value;
@@ -71,6 +76,11 @@ public:
     void Push()
     {
         mSetter(mNode, mWidget->Value());
+    }
+
+    QTreeWidgetItem* Item() const
+    {
+        return mItem;
     }
 
     QWidget* Widget() const
@@ -98,6 +108,7 @@ protected:
     std::function<void(nodeT*, const varT&)> mSetter;
     std::function<void(nodeT*, varT&)> mGetter;
     nodeT*   mNode;
+    QTreeWidgetItem* mItem;
     widgetT* mWidget;
     QString  mName;
     float    mIncrement;
@@ -106,6 +117,7 @@ protected:
 class ComponentBase
 {
 public:
+
     virtual void Populate(QTreeWidget* tree, QTreeWidgetItem* parent, cocos2d::Node* node);
 
     // connect a widget with a node driver
@@ -138,19 +150,15 @@ protected:
 template <class widgetT, class nodeT, typename varT, class componentT = ComponentBase>
 NodeDriverT<widgetT, nodeT, varT>* connectFieldT(componentT* component, QTreeWidget* tree, QTreeWidgetItem* parent, const char* name, cocos2d::Node* node, void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), float increment = 1)
 {
-    nodeT* instance = dynamic_cast<nodeT*>(node);
-    assert(nullptr != instance);
-
-    QTreeWidgetItem* item = new QTreeWidgetItem;
-    item->setText(0, name);
-    parent->addChild(item);
+    nodeT* typedNode = dynamic_cast<nodeT*>(node);
+    Q_ASSERT(nullptr != typedNode);
 
     typedef NodeDriverT<widgetT, nodeT, varT> tNodeDriver;
-    tNodeDriver* driver = new tNodeDriver(setter, getter, instance, name);
+    tNodeDriver* driver = new tNodeDriver(setter, getter, typedNode, name);
     driver->SetIncrement(increment);
-    driver->SetupWidget(tree, parent, item);
+    driver->SetupWidgets(tree, parent);
 
-    component->AddNodeDriver(item, driver->Widget(), cocos2d::fnv1_32(name), driver);
+    component->AddNodeDriver(driver->Item(), driver->Widget(), cocos2d::fnv1_32(name), driver);
 
     return driver;
 }
