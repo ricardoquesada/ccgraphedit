@@ -208,7 +208,7 @@ mysceneeditor.cpp \
     componentnode.cpp \
     componentsprite.cpp \
     nodeitem.cpp \
-    NodeDriver.cpp
+    nodedriver.cpp
 
 HEADERS  += \
 mainwindow.h \
@@ -226,7 +226,7 @@ mysceneeditor.h \
     widgetmisc.h \
     widgetSize.h \
     widgetTexture.h \
-    NodeDriver.h
+    nodedriver.h
 
 FORMS += mainwindow.ui \
     dialogimportccb.ui
