@@ -37,7 +37,7 @@ public:
     bool Init();
 
     void AddFiles(const char* root, const char* path, bool directory);
-    void AddNode(Node* parent, Node* node, const char* nodeName);
+    NodeItem* AddNode(Node* parent, Node* node, const char* nodeName);
 
     void RegisterComponent(uint32_t classId, IComponent* component, const char* componentName);
     IComponent* FindComponent(uint32_t classId);

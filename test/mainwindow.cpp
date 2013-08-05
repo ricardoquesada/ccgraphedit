@@ -103,54 +103,61 @@ void MainWindow::AddFiles(const char* root, const char* path, bool directory)
         FileUtils::sharedFileUtils()->addSearchPath(path);
 }
 
-void MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
+NodeItem* MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
 {
-    tNodeToNodeItemMap::iterator it = mNodeToNodeItemMap.find(node);
-    if (it != mNodeToNodeItemMap.end())
+    if (!ui->hierarchy)
     {
-        QMessageBox::information(nullptr, QString("Error"), QString("Node cannot be added twice"), QMessageBox::Ok);
-        return;
+        QMessageBox::information(nullptr, QString("Error"), QString("Scene tree widget not available"), QMessageBox::Ok);
+        return nullptr;
     }
 
-    IComponent* plugin = MainWindow::instance()->FindComponent(node->classId());
-    if (!plugin)
+    {
+        tNodeToNodeItemMap::iterator it = mNodeToNodeItemMap.find(node);
+        if (it != mNodeToNodeItemMap.end())
+        {
+            QMessageBox::information(nullptr, QString("Error"), QString("Node cannot be added twice"), QMessageBox::Ok);
+            return nullptr;
+        }
+    }
+
+    IComponent* component = MainWindow::instance()->FindComponent(node->classId());
+    if (!component)
     {
         QMessageBox::information(nullptr, QString("Error"), QString("Component cannot be found to populate node item"), QMessageBox::Ok);
-        return;
+        return nullptr;
     }
 
     if (parent)
         parent->addChild(node);
 
-    if (ui->hierarchy)
+    // Find the parent so that we can append to it in the tree view
+    QTreeWidgetItem* parentItem;
+    tNodeToNodeItemMap::iterator it = mNodeToNodeItemMap.find(parent);
+    if (it == mNodeToNodeItemMap.end())
     {
-        // Find the parent so that we can append to it in the tree view
-        QTreeWidgetItem* parentItem;
-        tNodeToNodeItemMap::iterator it = mNodeToNodeItemMap.find(parent);
-        if (it == mNodeToNodeItemMap.end())
-        {
-            parentItem = ui->hierarchy->invisibleRootItem();
-        }
-        else
-        {
-            NodeItem* item = (*it).second;
-            parentItem = item->SceneItem();
-        }
-
-        NodeItem* item = new NodeItem;
-
-        plugin->Populate(item, ui->properties, node);
-
-        QTreeWidgetItem* sceneItem = new QTreeWidgetItem;
-        sceneItem->setText(0, QString(nodeName));
-
-        item->SetNode(node);
-        item->SetSceneItem(sceneItem);
-
-        parentItem->addChild(sceneItem);
-
-        mNodeToNodeItemMap.insert(tNodeToNodeItemMap::value_type(node, item));
+        parentItem = ui->hierarchy->invisibleRootItem();
     }
+    else
+    {
+        NodeItem* item = (*it).second;
+        parentItem = item->SceneItem();
+    }
+
+    NodeItem* nodeItem = new NodeItem;
+
+    component->Populate(nodeItem, ui->properties, node);
+
+    QTreeWidgetItem* sceneItem = new QTreeWidgetItem;
+    sceneItem->setText(0, QString(nodeName));
+
+    nodeItem->SetNode(node);
+    nodeItem->SetSceneItem(sceneItem);
+
+    parentItem->addChild(sceneItem);
+
+    mNodeToNodeItemMap.insert(tNodeToNodeItemMap::value_type(node, nodeItem));
+
+    return nodeItem;
 }
 
 void MainWindow::RegisterComponent(uint32_t classId, IComponent* component, const char* componentName)
