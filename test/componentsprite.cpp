@@ -15,7 +15,7 @@ void ComponentSprite::Populate(NodeItem* nodeItem, QTreeWidget* tree, Node* node
     ADD_FIELD(nodeItem, tree, "opacity", widgetInt,  Sprite, node, uint8_t, setOpacity, getOpacity, 1);
 
     {
-        // for textures we use a lamda for two reasons
+        // for textures we use a lambda for two reasons
         // 1. we need to remove the const qualifier since the method takes a non-const texture.
         // 2. we need to adjust the texture rect of the sprite to match the texture size.
         auto setter = [] (Sprite* node, Texture2D* const& value)
@@ -24,6 +24,6 @@ void ComponentSprite::Populate(NodeItem* nodeItem, QTreeWidget* tree, Node* node
             Size size = value->getContentSizeInPixels();
             node->setTextureRect(Rect(0, 0, size.width, size.height));
         };
-        connectFieldT<widgetTexture, Sprite, Texture2D*>(nodeItem, tree, "texture", node, setter, GETTER(Sprite, Texture2D*, getTexture));
+        NodeDriverT<widgetTexture, Sprite, Texture2D*>::create(nodeItem, tree, "texture", node, setter, GETTER(Sprite, Texture2D*, getTexture));
     }
 }

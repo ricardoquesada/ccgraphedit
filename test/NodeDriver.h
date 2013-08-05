@@ -19,7 +19,7 @@ class NodeItem;
 #define GETTER(classT, varT, getter) [] (classT* node, varT& value) { value = node->getter(); }
 
 #define ADD_FIELD(nodeItem, tree, name, widgetT, classT, node, varT, setter, getter, increment) \
-        connectFieldT<widgetT, classT, varT>(nodeItem, tree, name, node, SETTER(classT, varT, setter), GETTER(classT, varT, getter), increment)
+        NodeDriverT<widgetT, classT, varT>::create(nodeItem, tree, name, node, SETTER(classT, varT, setter), GETTER(classT, varT, getter), increment)
 
 class INodeDriver
 {
@@ -72,6 +72,21 @@ public:
         QObject::connect(mWidget, SIGNAL(widgetChanged(QWidget*)), cocos2d::MainWindow::instance(), SLOT(pushWidget(QWidget*)));
     }
 
+    template <class componentT = IComponent>
+    static NodeDriverT<widgetT, nodeT, varT>* create(NodeItem* nodeItem, QTreeWidget* tree, const char* name, cocos2d::Node* node, void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), float increment = 1)
+    {
+        nodeT* typedNode = dynamic_cast<nodeT*>(node);
+        Q_ASSERT(nullptr != typedNode);
+
+        typedef NodeDriverT<widgetT, nodeT, varT> tNodeDriver;
+        tNodeDriver* driver = new tNodeDriver(setter, getter, typedNode, name);
+        driver->SetIncrement(increment);
+
+        AddDriver(nodeItem, cocos2d::fnv1_32(name), driver);
+
+        return driver;
+    }
+
     void SetIncrement(float increment)
     {
         mIncrement = increment;
@@ -120,17 +135,3 @@ protected:
 
 void AddDriver(NodeItem* nodeItem, uint32_t nameHash, INodeDriver* driver);
 
-template <class widgetT, class nodeT, typename varT, class componentT = IComponent>
-NodeDriverT<widgetT, nodeT, varT>* connectFieldT(NodeItem* nodeItem, QTreeWidget* tree, const char* name, cocos2d::Node* node, void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), float increment = 1)
-{
-    nodeT* typedNode = dynamic_cast<nodeT*>(node);
-    Q_ASSERT(nullptr != typedNode);
-
-    typedef NodeDriverT<widgetT, nodeT, varT> tNodeDriver;
-    tNodeDriver* driver = new tNodeDriver(setter, getter, typedNode, name);
-    driver->SetIncrement(increment);
-
-    AddDriver(nodeItem, cocos2d::fnv1_32(name), driver);
-
-    return driver;
-}
