@@ -15,20 +15,37 @@ namespace cocos2d {
 }
 class NodeItem;
 
-#define SETTER(classT, varT, setter) [] (classT* node, const varT& value) { node->setter(value); }
-#define GETTER(classT, varT, getter) [] (classT* node, varT& value) { value = node->getter(); }
-
-#define ADD_FIELD(nodeItem, tree, name, widgetT, classT, node, varT, setter, getter, increment) \
-        NodeDriverT<widgetT, classT, varT>::create(nodeItem, tree, name, node, SETTER(classT, varT, setter), GETTER(classT, varT, getter), increment)
+//#define ADD_FIELD(nodeItem, name, widgetT, classT, node, varT, setter, getter, increment) \
+//    nodeItem->AddDriver(NodeDriverT<widgetT, classT, varT>::create(name, node, SETTER(classT, varT, setter), GETTER(classT, varT, getter), increment))
 
 class INodeDriver
 {
 public:
+
+    // returns the name of this node
+    virtual const char* Name() const = 0;
+
+    // pushes edits to the node
     virtual void Push() = 0;
+
+    // the row item in the property tree
     virtual QTreeWidgetItem* Item() const = 0;
+
+    // the property widget associated with this driver.
     virtual QWidget* Widget() const = 0;
+
+    // sets the node associated with this driver
+    virtual void SetNode(cocos2d::Node* node) = 0;
+
+    // the node associated with this driver
     virtual cocos2d::Node* Node() const = 0;
+
+    // called whenever the tool shows properties for a node
+    // it needs to create widgets and connect things.
     virtual void SetupWidgets(QTreeWidget* tree) = 0;
+
+    // clones this driver except for the widgets
+    virtual INodeDriver* Clone() = 0;
 };
 
 template <class widgetT, class nodeT, typename varT>
@@ -37,10 +54,24 @@ class NodeDriverT
 {
 public:
 
-    NodeDriverT(void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), nodeT* node, const char* name)
+    typedef NodeDriverT<widgetT, nodeT, varT> instance_type;
+    typedef std::function<void(nodeT*, const varT&)> setter_type;
+    typedef std::function<void(nodeT*, varT&)> getter_type;
+
+    NodeDriverT(void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), const char* name)
         : mSetter(setter)
         , mGetter(getter)
-        , mNode(node)
+        , mNode(nullptr)
+        , mItem(nullptr)
+        , mWidget(nullptr)
+        , mName(name)
+        , mIncrement(1)
+    {}
+
+    NodeDriverT(const setter_type& setter, const getter_type& getter, const char* name)
+        : mSetter(setter)
+        , mGetter(getter)
+        , mNode(nullptr)
         , mItem(nullptr)
         , mWidget(nullptr)
         , mName(name)
@@ -54,7 +85,7 @@ public:
         QTreeWidgetItem* parent = tree->invisibleRootItem();
 
         mItem = new QTreeWidgetItem;
-        mItem->setText(0, mName);
+        mItem->setText(0, mName.c_str());
         parent->addChild(mItem);
 
         mWidget = new widgetT(tree);
@@ -72,21 +103,24 @@ public:
         QObject::connect(mWidget, SIGNAL(widgetChanged(QWidget*)), cocos2d::MainWindow::instance(), SLOT(pushWidget(QWidget*)));
     }
 
+    // templated creator method to instantiate drivers
     template <class componentT = IComponent>
-    static NodeDriverT<widgetT, nodeT, varT>* create(NodeItem* nodeItem, QTreeWidget* tree, const char* name, cocos2d::Node* node, void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), float increment = 1)
+    static NodeDriverT<widgetT, nodeT, varT>* create(const char* name, cocos2d::Node* node, void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), float increment = 1)
     {
-        nodeT* typedNode = dynamic_cast<nodeT*>(node);
-        Q_ASSERT(nullptr != typedNode);
-
-        typedef NodeDriverT<widgetT, nodeT, varT> tNodeDriver;
-        tNodeDriver* driver = new tNodeDriver(setter, getter, typedNode, name);
+        instance_type* driver = new instance_type(setter, getter, name);
         driver->SetIncrement(increment);
-
-        AddDriver(nodeItem, cocos2d::fnv1_32(name), driver);
-
         return driver;
     }
 
+    // clones this driver except for the widgets
+    INodeDriver* Clone()
+    {
+        instance_type* driver = new instance_type(mSetter, mGetter, Name());
+        driver->SetIncrement(mIncrement);
+        return driver;
+    }
+
+    // specify the increment for spin boxes
     void SetIncrement(float increment)
     {
         mIncrement = increment;
@@ -107,6 +141,13 @@ public:
         return mWidget;
     }
 
+    void SetNode(cocos2d::Node* node)
+    {
+        nodeT* typedNode = dynamic_cast<nodeT*>(node);
+        Q_ASSERT(nullptr != typedNode);
+        mNode = typedNode;
+    }
+
     cocos2d::Node* Node() const
     {
         return mNode;
@@ -114,7 +155,7 @@ public:
 
     const char* Name() const
     {
-        return mName.toUtf8();
+        return mName.c_str();
     }
 
     void SetValue(const varT& value)
@@ -124,14 +165,11 @@ public:
 
 protected:
 
-    std::function<void(nodeT*, const varT&)> mSetter;
-    std::function<void(nodeT*, varT&)> mGetter;
+    setter_type mSetter;
+    getter_type mGetter;
     nodeT*   mNode;
     QTreeWidgetItem* mItem;
     widgetT* mWidget;
-    QString  mName;
+    std::string mName;
     float    mIncrement;
 };
-
-void AddDriver(NodeItem* nodeItem, uint32_t nameHash, INodeDriver* driver);
-

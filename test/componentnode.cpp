@@ -9,18 +9,18 @@
 
 USING_NS_CC;
 
-void ComponentNode::Populate(NodeItem* nodeItem, QTreeWidget* tree, Node* node)
+void ComponentNode::RegisterDrivers()
 {
-    ADD_FIELD(nodeItem, tree, "position",     widgetPoint, Node, node, Point, setPosition,    getPosition,    1);
-    ADD_FIELD(nodeItem, tree, "anchor point", widgetPoint, Node, node, Point, setAnchorPoint, getAnchorPoint, 0.05f);
-    ADD_FIELD(nodeItem, tree, "z order",      widgetInt,   Node, node, int,   setZOrder,      getZOrder,      1);
-    ADD_FIELD(nodeItem, tree, "vertex z",     widgetFloat, Node, node, float, setVertexZ,     getVertexZ,     1);
-    ADD_FIELD(nodeItem, tree, "content size", widgetSize,  Node, node, Size,  setContentSize, getContentSize, 1);
-    ADD_FIELD(nodeItem, tree, "scale X",      widgetFloat, Node, node, float, setScaleX,      getScaleX,      0.1f);
-    ADD_FIELD(nodeItem, tree, "scale Y",      widgetFloat, Node, node, float, setScaleY,      getScaleY,      0.1f);
-    ADD_FIELD(nodeItem, tree, "rotation",     widgetFloat, Node, node, float, setRotation,    getRotation,    0.5f);
-    ADD_FIELD(nodeItem, tree, "skew X",       widgetFloat, Node, node, float, setSkewX,       getSkewX,       0.5f);
-    ADD_FIELD(nodeItem, tree, "skew Y",       widgetFloat, Node, node, float, setSkewY,       getSkewY,       0.5f);
-    ADD_FIELD(nodeItem, tree, "visible",      widgetBool,  Node, node, bool,  setVisible,     isVisible,      1);
-    ADD_FIELD(nodeItem, tree, "tag",          widgetInt,   Node, node, int,   setTag,         getTag,         1);
+    REGISTER_DRIVER("position",     widgetPoint, Node, Point, setPosition,    getPosition,    1);
+    REGISTER_DRIVER("anchor point", widgetPoint, Node, Point, setAnchorPoint, getAnchorPoint, 0.05f);
+    REGISTER_DRIVER("z order",      widgetInt,   Node, int,   setZOrder,      getZOrder,      1);
+    REGISTER_DRIVER("vertex z",     widgetFloat, Node, float, setVertexZ,     getVertexZ,     1);
+    REGISTER_DRIVER("content size", widgetSize,  Node, Size,  setContentSize, getContentSize, 1);
+    REGISTER_DRIVER("scale X",      widgetFloat, Node, float, setScaleX,      getScaleX,      0.1f);
+    REGISTER_DRIVER("scale Y",      widgetFloat, Node, float, setScaleY,      getScaleY,      0.1f);
+    REGISTER_DRIVER("rotation",     widgetFloat, Node, float, setRotation,    getRotation,    0.5f);
+    REGISTER_DRIVER("skew X",       widgetFloat, Node, float, setSkewX,       getSkewX,       0.5f);
+    REGISTER_DRIVER("skew Y",       widgetFloat, Node, float, setSkewY,       getSkewY,       0.5f);
+    REGISTER_DRIVER("visible",      widgetBool,  Node, bool,  setVisible,     isVisible,      1);
+    REGISTER_DRIVER("tag",          widgetInt,   Node, int,   setTag,         getTag,         1);
 }

@@ -49,8 +49,9 @@ cocos2d::Node* NodeItem::GetNode() const
     return mNode;
 }
 
-void NodeItem::AddDriver(uint32_t nameHash, INodeDriver* driver)
+void NodeItem::AddDriver(INodeDriver* driver)
 {
+    uint32_t nameHash = fnv1_32(driver->Name());
     mNameToDriverMap.insert(tNameToDriverMap::value_type(nameHash, driver));
     mNodeDrivers.push_back(driver);
 }

@@ -28,7 +28,7 @@ public:
     cocos2d::Node* GetNode() const;
 
     // add a node property driver to this node item
-    void AddDriver(uint32_t nameHash, INodeDriver* driver);
+    void AddDriver(INodeDriver* driver);
 
     // create the widgets and connect them to drivers
     void CreateWidgets(QTreeWidget* tree);

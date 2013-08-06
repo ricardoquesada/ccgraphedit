@@ -15,6 +15,9 @@
 #include "cocos2d.h"
 #include "CCFileUtils.h"
 #include "CCClassRegistry.h"
+#include "CCStreamFile.h"
+#include "CCStreamFormatted.h"
+
 #include "CCBReader/CCBReader.h"
 #include "CCBReader/CCNodeLoaderLibrary.h"
 
@@ -95,6 +98,8 @@ bool MainWindow::Init()
         MySceneEditor::instance()->SetRootNode(root);
         scene->addChild(frame);
     }
+
+    return true;
 }
 
 void MainWindow::AddFiles(const char* root, const char* path, bool directory)
@@ -160,8 +165,15 @@ NodeItem* MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
     return nodeItem;
 }
 
+void MainWindow::RegisterNodeDriver(uint32_t driverId, INodeDriver *driver)
+{
+    mClassToNodeDriverMap.insert(tClassToNodeDriverMap::value_type(driverId, driver));
+}
+
 void MainWindow::RegisterComponent(uint32_t classId, IComponent* component, const char* componentName)
 {
+    component->RegisterDrivers();
+
     mClassToComponentMap.insert(tClassToComponentMap::value_type(classId, component));
 
     QAction* action = new QAction(QString(componentName), mToolbar);
@@ -187,11 +199,11 @@ void MainWindow::importCCB()
     dialog->show();
     dialog->exec();
 
-    FileUtil::EnumerateDirectoryT(dialog->ccbPath().toUtf8(), 0, this, &MainWindow::AddFiles);
-    FileUtil::EnumerateDirectoryT(dialog->resourcesPath().toUtf8(), 0, this, &MainWindow::AddFiles);
+    FileUtil::EnumerateDirectoryT(qPrintable(dialog->ccbPath()), 0, this, &MainWindow::AddFiles);
+    FileUtil::EnumerateDirectoryT(qPrintable(dialog->resourcesPath()), 0, this, &MainWindow::AddFiles);
 
     CCBReader* ccbReader = new CCBReader(NodeLoaderLibrary::sharedNodeLoaderLibrary());
-    Node* node = ccbReader->readNodeGraphFromFile(dialog->ccbPath().toUtf8());
+    Node* node = ccbReader->readNodeGraphFromFile(qPrintable(dialog->ccbPath()));
     if (node)
     {
         AddNode(0, node, "");
@@ -290,7 +302,43 @@ void MainWindow::performToolbarAction()
 
 void MainWindow::ExportToFile(const char* file)
 {
+    StreamFile streamFile(file, Stream::kWrite);
+    StreamFormatted streamFormatted(&streamFile);
 
+    Node* root = MySceneEditor::instance()->GetRootNode();
+    ExportToStream(streamFormatted, root);
+}
+
+void MainWindow::ExportToStream(StreamFormatted& stream, Node* node)
+{
+    NodeItem* nodeItem = MainWindow::instance()->GetNodeItemFromNode(node);
+    if (nodeItem)
+    {
+        // write the class id
+        uint32_t classId = node->classId();
+        stream.write(classId);
+
+        // write the number of drivers
+        const NodeItem::tNodeDrivers& drivers = nodeItem->Drivers();
+        uint32_t numDrivers = drivers.size();
+        stream.write(numDrivers);
+
+        // write the driver values
+        NodeItem::tNodeDrivers::const_iterator it(drivers.begin()), itEnd(drivers.end());
+        for (; it != itEnd; ++it)
+        {
+            INodeDriver* driver = *it;
+            //driver->Export(stream);
+        }
+
+        // recurse into children
+        Object* object;
+        CCARRAY_FOREACH(node->getChildren(), object)
+        {
+            Node* child = (Node*)object;
+            ExportToStream(stream, child);
+        }
+    }
 }
 
 //

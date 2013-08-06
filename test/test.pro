@@ -207,8 +207,7 @@ mysceneeditor.cpp \
     componentbase.cpp \
     componentnode.cpp \
     componentsprite.cpp \
-    nodeitem.cpp \
-    nodedriver.cpp
+    nodeitem.cpp
 
 HEADERS  += \
 mainwindow.h \

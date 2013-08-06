@@ -13,6 +13,7 @@ class QTreeWidgetItem;
 class QSignalMapper;
 class NodeItem;
 class IComponent;
+class INodeDriver;
 namespace Ui {
     class MainWindow;
 }
@@ -21,6 +22,7 @@ NS_CC_BEGIN
 
 class MainWindow;
 class Node;
+class StreamFormatted;
 
 class MainWindow : public QMainWindow
 {
@@ -39,10 +41,13 @@ public:
     void AddFiles(const char* root, const char* path, bool directory);
     NodeItem* AddNode(Node* parent, Node* node, const char* nodeName);
 
+    void RegisterNodeDriver(uint32_t driverId, INodeDriver* driver);
+
     void RegisterComponent(uint32_t classId, IComponent* component, const char* componentName);
     IComponent* FindComponent(uint32_t classId);
 
     void ExportToFile(const char* file);
+    void ExportToStream(StreamFormatted& stream, Node* node);
 
 public slots:
 
@@ -66,6 +71,9 @@ protected:
 
     typedef std::map<uint32_t, IComponent*> tClassToComponentMap;
     tClassToComponentMap mClassToComponentMap;
+
+    typedef std::map<uint32_t, INodeDriver*> tClassToNodeDriverMap;
+    tClassToNodeDriverMap mClassToNodeDriverMap;
 
 protected:
 
