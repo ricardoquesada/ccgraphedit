@@ -126,13 +126,15 @@ public:
 
     void Push()
     {
-        mSetter(mNode, mWidget->Value());
+        mValue = mWidget->Value();
+        mSetter(mNode, mValue);
     }
 
     void Update(bool force = false)
     {
-        varT value;
-        mGetter(mNode, value);
+        varT value = mValue;
+        if (mGetter)
+            mGetter(mNode, value);
         if (force || !mWidget->Compare(mValue, value))
         {
             mValue = value;

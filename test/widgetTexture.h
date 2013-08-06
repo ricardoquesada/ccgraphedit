@@ -42,19 +42,21 @@ public:
         // Does Nothing
     }
 
-    cocos2d::Texture2D* Value() const
+    const std::string& Value() const
     {
-        return mTexture;
+        return mValue;
     }
 
-    void SetValue(cocos2d::Texture2D*, bool block = false)
+    void SetValue(std::string& name, bool block = false)
     {
-        // Does Nothing
+        qDebug("setting string to %s", name.c_str());
+        mValue = name;
+        mPath->setText(name.c_str());
     }
 
-    bool Compare(cocos2d::Texture2D* a, cocos2d::Texture2D* b)
+    bool Compare(std::string& a, std::string& b)
     {
-        return a == b;
+        return 0 == a.compare(b);
     }
 
 signals:
@@ -68,6 +70,7 @@ public slots:
         QString path = QFileDialog::getOpenFileName(this, QString("Browse for texture"), QString(""), QString("*.png"));
         if (path.length())
         {
+            mValue.assign(path.toUtf8());
             mPath->setText(path);
             setPath();
         }
@@ -75,11 +78,11 @@ public slots:
 
     void setPath()
     {
-        QString text = mPath->text();
+        const char* text = mValue.c_str();
 
         cocos2d::Image* image = new cocos2d::Image;
         image->autorelease();
-        if (image->initWithImageFile(text.toUtf8()))
+        if (image->initWithImageFile(text))
         {
             cocos2d::Texture2D* texture = new cocos2d::Texture2D;
             texture->autorelease();
@@ -94,6 +97,7 @@ public slots:
 
 protected:
 
+    std::string mValue;
     QLineEdit* mPath;
     QPushButton* mButton;
     cocos2d::Texture2D* mTexture;

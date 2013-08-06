@@ -15,14 +15,22 @@ void ComponentSprite::RegisterDrivers()
     REGISTER_DRIVER("flip Y",  widgetBool, Sprite, bool,    setFlipY,   isFlipY,    1);
     REGISTER_DRIVER("opacity", widgetInt,  Sprite, uint8_t, setOpacity, getOpacity, 1);
 
-    // for textures we use a lambda for two reasons
-    // 1. we need to remove the const qualifier since the method takes a non-const texture.
-    // 2. we need to adjust the texture rect of the sprite to match the texture size.
-    auto setter = [] (Sprite* node, Texture2D* const& value)
+    auto setter = [] (Sprite* node, const std::string& value)
     {
-        node->setTexture(const_cast<Texture2D*>(value));
-        Size size = value->getContentSizeInPixels();
-        node->setTextureRect(Rect(0, 0, size.width, size.height));
+        cocos2d::Image* image = new cocos2d::Image;
+        image->autorelease();
+        if (image->initWithImageFile(value.c_str()))
+        {
+            cocos2d::Texture2D* texture = new cocos2d::Texture2D;
+            texture->autorelease();
+
+            if (texture->initWithImage(image))
+            {
+                node->setTexture(texture);
+                Size size = texture->getContentSizeInPixels();
+                node->setTextureRect(Rect(0, 0, size.width, size.height));
+            }
+        }
     };
-    AddDriver(NodeDriverT<widgetTexture, Sprite, Texture2D*>::create("texture", setter, GETTER(Sprite, Texture2D*, getTexture)));
+    AddDriver(NodeDriverT<widgetTexture, Sprite, std::string>::create("texture", setter, nullptr));
 }
