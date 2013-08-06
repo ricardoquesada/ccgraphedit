@@ -10,7 +10,7 @@ USING_NS_CC;
 
 void ComponentSprite::RegisterDrivers()
 {
-    ComponentNode::RegisterDrivers();
+    ComponentNodeRGBA::RegisterDrivers();
     REGISTER_DRIVER("flip X",  widgetBool, Sprite, bool,    setFlipX,   isFlipX,    1);
     REGISTER_DRIVER("flip Y",  widgetBool, Sprite, bool,    setFlipY,   isFlipY,    1);
     REGISTER_DRIVER("opacity", widgetInt,  Sprite, uint8_t, setOpacity, getOpacity, 1);

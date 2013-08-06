@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include "componentnode.h"
+#include "componentnodergba.h"
 
 class ComponentSprite
-    : public ComponentNode
+    : public ComponentNodeRGBA
 {
 public:
     void RegisterDrivers();
