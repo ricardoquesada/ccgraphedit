@@ -25,6 +25,9 @@ public:
     // pushes edits to the node
     virtual void Push() = 0;
 
+    // update widget from node if changed
+    virtual void Update() = 0;
+
     // the row item in the property tree
     virtual QTreeWidgetItem* Item() const = 0;
 
@@ -93,9 +96,7 @@ public:
         tree->setItemWidget(mItem, 1, mWidget);
 
         // set the default value
-        varT value;
-        mGetter(mNode, value);
-        mWidget->SetValue(value);
+        Update();
 
         QObject::connect(mWidget, SIGNAL(widgetChanged(QWidget*)), cocos2d::MainWindow::instance(), SLOT(pushWidget(QWidget*)));
     }
@@ -126,6 +127,17 @@ public:
     void Push()
     {
         mSetter(mNode, mWidget->Value());
+    }
+
+    void Update()
+    {
+        varT value;
+        mGetter(mNode, value);
+        if (!mWidget->Compare(mValue, value))
+        {
+            mValue = value;
+            mWidget->SetValue(value);
+        }
     }
 
     QTreeWidgetItem* Item() const
@@ -162,6 +174,7 @@ public:
 
 protected:
 
+    varT mValue;
     setter_type mSetter;
     getter_type mGetter;
     nodeT*   mNode;

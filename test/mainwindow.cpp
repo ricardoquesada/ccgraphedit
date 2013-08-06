@@ -244,13 +244,7 @@ void MainWindow::pushWidget(QWidget* widget)
     {
         NodeItem* nodeItem = GetNodeItemFromNode(node);
         if (nodeItem)
-        {
-            INodeDriver* driver = nodeItem->FindDriverByWidget(widget);
-            if (driver)
-            {
-                driver->Push();
-            }
-        }
+            nodeItem->Push(widget);
     }
 }
 

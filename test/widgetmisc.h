@@ -36,6 +36,11 @@ public:
         blockSignals(b);
     }
 
+    bool Compare(bool a, bool b)
+    {
+        return a == b;
+    }
+
 signals:
 
     void widgetChanged(QWidget* widget);

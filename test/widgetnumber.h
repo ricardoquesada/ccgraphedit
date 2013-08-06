@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QSpinBox>
 #include "float.h"
+#include "math.h"
 
 enum
 {
@@ -42,6 +43,11 @@ public:
         bool b = blockSignals(block);
         setValue(value);
         blockSignals(b);
+    }
+
+    bool Compare(float a, float b)
+    {
+        return fabsf(a - b) < FLT_EPSILON;
     }
 
 signals:
@@ -87,6 +93,11 @@ public:
         bool b = blockSignals(block);
         setValue(value);
         blockSignals(b);
+    }
+
+    bool Compare(int a, int b)
+    {
+        return a == b;
     }
 
 signals:

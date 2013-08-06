@@ -85,11 +85,14 @@ void NodeItem::DestroyWidgets()
 
 void NodeItem::Push(QWidget* widget)
 {
-    tWidgetToDriverMap::iterator it = mWidgetToDriverMap.find(widget);
-    if (it != mWidgetToDriverMap.end())
+    tWidgetToDriverMap::iterator it(mWidgetToDriverMap.begin()), itEnd(mWidgetToDriverMap.end());
+    for (; it != itEnd; ++it)
     {
         INodeDriver* driver = (*it).second;
-        driver->Push();
+        if (driver->Widget() == widget)
+            driver->Push();
+        else
+            driver->Update();
     }
 }
 

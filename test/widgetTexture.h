@@ -52,6 +52,11 @@ public:
         // Does Nothing
     }
 
+    bool Compare(cocos2d::Texture2D* a, cocos2d::Texture2D* b)
+    {
+        return a == b;
+    }
+
 signals:
 
     void widgetChanged(QWidget* widget);

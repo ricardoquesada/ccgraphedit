@@ -65,6 +65,11 @@ public:
         }
     }
 
+    bool Compare(const cocos2d::Point& a, const cocos2d::Point& b)
+    {
+        return a.equals(b);
+    }
+
 signals:
 
     void widgetChanged(QWidget* widget);
