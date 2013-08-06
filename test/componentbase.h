@@ -20,9 +20,10 @@ public:
 
 #define SETTER(classT, varT, setter) [] (classT* node, const varT& value) { node->setter(value); }
 #define GETTER(classT, varT, getter) [] (classT* node, varT& value) { value = node->getter(); }
+#define DRIVER_HASH(classT, name) fnv1_32(#classT"::"#name)
 
 #define REGISTER_DRIVER(name, widgetT, classT, varT, setter, getter, increment) \
-    AddDriver(fnv1_32(#classT"::"#name), NodeDriverT<widgetT, classT, varT>::create(name, 0, SETTER(classT, varT, setter), GETTER(classT, varT, getter), increment))
+    AddDriver(DRIVER_HASH(classT, name), NodeDriverT<widgetT, classT, varT>::create(name, SETTER(classT, varT, setter), GETTER(classT, varT, getter), increment))
 
 class ComponentBase
     : public IComponent

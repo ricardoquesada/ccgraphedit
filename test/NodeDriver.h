@@ -15,9 +15,6 @@ namespace cocos2d {
 }
 class NodeItem;
 
-//#define ADD_FIELD(nodeItem, name, widgetT, classT, node, varT, setter, getter, increment) \
-//    nodeItem->AddDriver(NodeDriverT<widgetT, classT, varT>::create(name, node, SETTER(classT, varT, setter), GETTER(classT, varT, getter), increment))
-
 class INodeDriver
 {
 public:
@@ -105,7 +102,7 @@ public:
 
     // templated creator method to instantiate drivers
     template <class componentT = IComponent>
-    static NodeDriverT<widgetT, nodeT, varT>* create(const char* name, cocos2d::Node* node, void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), float increment = 1)
+    static NodeDriverT<widgetT, nodeT, varT>* create(const char* name, void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), float increment = 1)
     {
         instance_type* driver = new instance_type(setter, getter, name);
         driver->SetIncrement(increment);
