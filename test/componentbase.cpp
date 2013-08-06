@@ -2,15 +2,18 @@
 #include "componentbase.h"
 #include "nodedriver.h"
 #include "nodeitem.h"
+#include "ccTypeInfo.h"
+
+USING_NS_CC;
 
 void ComponentBase::RegisterDrivers()
 {
     // Does Nothing
 }
 
-void ComponentBase::AddDriver(uint32_t driverId, INodeDriver *driver)
+void ComponentBase::AddDriver(INodeDriver* driver)
 {
-    qDebug("register driver %s", driver->Name());
+    uint32_t driverId = fnv1_32(driver->Name());
     mDriverMap.insert(tDriverMap::value_type(driverId, driver));
     mDriverArray.push_back(driver);
 }

@@ -24,5 +24,5 @@ void ComponentSprite::RegisterDrivers()
         Size size = value->getContentSizeInPixels();
         node->setTextureRect(Rect(0, 0, size.width, size.height));
     };
-    AddDriver(DRIVER_HASH(Texture2D, "texture"), NodeDriverT<widgetTexture, Sprite, Texture2D*>::create("texture", setter, GETTER(Sprite, Texture2D*, getTexture)));
+    AddDriver(NodeDriverT<widgetTexture, Sprite, Texture2D*>::create("texture", setter, GETTER(Sprite, Texture2D*, getTexture)));
 }
