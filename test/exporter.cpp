@@ -13,7 +13,7 @@ Exporter::Exporter()
 
 // called by editor to begin exporting graph to stream
 // allows you to export any preamble you would like.
-bool Exporter::ExportToStream(Stream& stream)
+bool Exporter::ExportToStream(StreamFormatted& stream)
 {
     Node* rootNode = MySceneEditor::instance()->GetRootNode();
     NodeItem* rootItem = MainWindow::instance()->GetNodeItemFromNode(rootNode);
@@ -22,7 +22,7 @@ bool Exporter::ExportToStream(Stream& stream)
 
 // called by editor for each node in graph. calls may be
 // nested in which case they are considered to be children.
-bool Exporter::ExportNodeBegin(Stream& stream, NodeItem* item)
+bool Exporter::ExportNodeBegin(StreamFormatted& stream, NodeItem* item)
 {
     // export each node driver
     const NodeItem::tNodeDrivers& drivers = item->Drivers();
@@ -30,7 +30,7 @@ bool Exporter::ExportNodeBegin(Stream& stream, NodeItem* item)
     for (; it != itEnd; ++it)
     {
         INodeDriver* driver = *it;
-        if (!driver->Export(stream, this))
+        if (!ExportNodeDriver(stream, driver))
         {
             // insert logging here
             return false;
@@ -64,9 +64,15 @@ bool Exporter::ExportNodeBegin(Stream& stream, NodeItem* item)
     return true;
 }
 
+// called by editor for each driver on a node item
+bool Exporter::ExportNodeDriver(StreamFormatted &stream, INodeDriver *driver)
+{
+    return driver->Export(stream, this);
+}
+
 // called by editor for each node to close that node.
 // the next call to begin starts exporting a new node.
-bool Exporter::ExportNodeEnd(Stream& stream, NodeItem* item)
+bool Exporter::ExportNodeEnd(StreamFormatted& stream, NodeItem* item)
 {
     return true;
 }

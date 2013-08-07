@@ -6,17 +6,17 @@
 #include <QObject>
 #include <QTreeWidgetItem>
 #include <QTreeWidget>
-
+#include "ccTypeInfo.h"
 #include <map>
 
 class QWidget;
 class QTreeWidget;
 namespace cocos2d {
     class Node;
+    class StreamFormatted;
 }
 class NodeItem;
 class Exporter;
-class Stream;
 
 class INodeDriver
 {
@@ -24,6 +24,9 @@ public:
 
     // returns the name of this node
     virtual const char* Name() const = 0;
+
+    // returns the id of this driver
+    virtual uint32_t Id() const = 0;
 
     // pushes edits to the node
     virtual void Push() = 0;
@@ -51,7 +54,7 @@ public:
     virtual INodeDriver* Clone() = 0;
 
     // exports the value type to the stream via the exporter
-    virtual bool Export(Stream& stream, Exporter* exporter) = 0;
+    virtual bool Export(cocos2d::StreamFormatted& stream, Exporter* exporter) = 0;
 };
 
 template <class widgetT, class nodeT, typename varT>
@@ -66,7 +69,8 @@ public:
     typedef std::function<void(nodeT*, varT&)> getter_type;
 
     NodeDriverT(void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), const char* name)
-        : mNode(nullptr)
+        : mId(cocos2d::fnv1_32(name))
+        , mNode(nullptr)
         , mSetter(setter)
         , mGetter(getter)
         , mName(name)
@@ -76,7 +80,8 @@ public:
     {}
 
     NodeDriverT(const setter_type& setter, const getter_type& getter, const char* name)
-        : mNode(nullptr)
+        : mId(cocos2d::fnv1_32(name))
+        , mNode(nullptr)
         , mSetter(setter)
         , mGetter(getter)
         , mName(name)
@@ -129,6 +134,12 @@ public:
     void SetIncrement(float increment)
     {
         mIncrement = increment;
+    }
+
+    // returns the id of this driver
+    uint32_t Id() const
+    {
+        return mId;
     }
 
     // update cached value and push to node
@@ -184,12 +195,15 @@ public:
     }
 
     // exports the value type to the stream via the exporter
-    bool Export(Stream& stream, Exporter* exporter)
+    bool Export(cocos2d::StreamFormatted& stream, Exporter* exporter)
     {
         return exporter->ExportProperty(stream, &mValue);
     }
 
 protected:
+
+    // hash of name
+    uint32_t mId;
 
     // cached value for this property
     // *note this variable is explicitly not initialized in the constructor*.

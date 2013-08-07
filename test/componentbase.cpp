@@ -13,8 +13,7 @@ void ComponentBase::RegisterDrivers()
 
 void ComponentBase::AddDriver(INodeDriver* driver)
 {
-    uint32_t driverId = fnv1_32(driver->Name());
-    mDriverMap.insert(tDriverMap::value_type(driverId, driver));
+    mDriverMap.insert(tDriverMap::value_type(driver->Id(), driver));
     mDriverArray.push_back(driver);
 }
 
