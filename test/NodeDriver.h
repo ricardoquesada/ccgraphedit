@@ -2,6 +2,7 @@
 #pragma once
 
 #include "mainwindow.h"
+#include "exporter.h"
 #include <QObject>
 #include <QTreeWidgetItem>
 #include <QTreeWidget>
@@ -14,6 +15,8 @@ namespace cocos2d {
     class Node;
 }
 class NodeItem;
+class Exporter;
+class Stream;
 
 class INodeDriver
 {
@@ -46,6 +49,9 @@ public:
 
     // clones this driver except for the widgets
     virtual INodeDriver* Clone() = 0;
+
+    // exports the value type to the stream via the exporter
+    virtual bool Export(Stream& stream, Exporter* exporter) = 0;
 };
 
 template <class widgetT, class nodeT, typename varT>
@@ -55,26 +61,27 @@ class NodeDriverT
 public:
 
     typedef NodeDriverT<widgetT, nodeT, varT> instance_type;
+
     typedef std::function<void(nodeT*, const varT&)> setter_type;
     typedef std::function<void(nodeT*, varT&)> getter_type;
 
     NodeDriverT(void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), const char* name)
-        : mSetter(setter)
+        : mNode(nullptr)
+        , mSetter(setter)
         , mGetter(getter)
-        , mNode(nullptr)
+        , mName(name)
         , mItem(nullptr)
         , mWidget(nullptr)
-        , mName(name)
         , mIncrement(1)
     {}
 
     NodeDriverT(const setter_type& setter, const getter_type& getter, const char* name)
-        : mSetter(setter)
+        : mNode(nullptr)
+        , mSetter(setter)
         , mGetter(getter)
-        , mNode(nullptr)
+        , mName(name)
         , mItem(nullptr)
         , mWidget(nullptr)
-        , mName(name)
         , mIncrement(1)
     {}
 
@@ -124,12 +131,14 @@ public:
         mIncrement = increment;
     }
 
+    // update cached value and push to node
     void Push()
     {
         mValue = mWidget->Value();
         mSetter(mNode, mValue);
     }
 
+    // update cached value and widget from node
     void Update(bool force = false)
     {
         varT value = mValue;
@@ -174,14 +183,36 @@ public:
         mSetter(mNode, value);
     }
 
+    // exports the value type to the stream via the exporter
+    bool Export(Stream& stream, Exporter* exporter)
+    {
+        return exporter->ExportProperty(stream, &mValue);
+    }
+
 protected:
 
+    // cached value for this property
+    // *note this variable is explicitly not initialized in the constructor*.
     varT mValue;
+
+    // node that has this property
+    nodeT* mNode;
+
+    // setter for the node
     setter_type mSetter;
+
+    // getter for the node
     getter_type mGetter;
-    nodeT*   mNode;
-    QTreeWidgetItem* mItem;
-    widgetT* mWidget;
+
+    // name of the property
     std::string mName;
-    float    mIncrement;
+
+    // container item in property tree widget
+    QTreeWidgetItem* mItem;
+
+    // property display/edit widget for column 1 in property tree widget
+    widgetT* mWidget;
+
+    // (for spin boxes) amount to increment/decrement
+    float mIncrement;
 };

@@ -11,6 +11,7 @@
 #include "widgetpoint.h"
 #include "componentnode.h"
 #include "componentsprite.h"
+#include "componentparticlesystem.h"
 
 #include "cocos2d.h"
 #include "CCFileUtils.h"
@@ -73,6 +74,7 @@ bool MainWindow::Init()
     // register the components
     RegisterComponent(Node::kClassId, new ComponentNode, "Node");
     RegisterComponent(Sprite::kClassId, new ComponentSprite, "Sprite");
+    RegisterComponent(ParticleSystemQuad::kClassId, new ComponentParticleSystem, "Particle System");
 
     // connect any signals and slots
     connect(MySceneEditor::instance(), SIGNAL(positionChanged(Node*, Point&)), this, SLOT(setNodePosition(Node*,Point&)));
@@ -261,6 +263,13 @@ void MainWindow::performToolbarAction()
     {
         QVariant v = action->data();
         uint32_t classId = v.toInt();
+
+        // TODO
+        // this method should really just allocate a NodeItem based on the class id
+        // to allow overriding of NodeItem types and then let it manage the node itself.
+        // There are cases where the node might need to be recreated etc.
+        // Basically, Component -> NodeItem classes, and register those, move the register drivers to NodeItem
+        // rename NodeDriver to PropertyDriver
 
         Node* node = dynamic_cast<Node*>(CCClassRegistry::instance()->instantiateClass(classId));
         if (node)

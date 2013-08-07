@@ -209,7 +209,8 @@ mysceneeditor.cpp \
     componentsprite.cpp \
     nodeitem.cpp \
     exporter.cpp \
-    componentnodergba.cpp
+    componentnodergba.cpp \
+    componentparticlesystem.cpp
 
 HEADERS  += \
 mainwindow.h \
@@ -229,7 +230,8 @@ mysceneeditor.h \
     widgetTexture.h \
     nodedriver.h \
     exporter.h \
-    componentnodergba.h
+    componentnodergba.h \
+    componentparticlesystem.h
 
 FORMS += mainwindow.ui \
     dialogimportccb.ui

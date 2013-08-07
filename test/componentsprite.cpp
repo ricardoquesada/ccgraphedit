@@ -15,6 +15,7 @@ void ComponentSprite::RegisterDrivers()
     REGISTER_DRIVER("flip Y",  widgetBool, Sprite, bool,    setFlipY,   isFlipY,    1);
     REGISTER_DRIVER("opacity", widgetInt,  Sprite, uint8_t, setOpacity, getOpacity, 1);
 
+    // custom setter for texture which creates the texture from the string path
     auto setter = [] (Sprite* node, const std::string& value)
     {
         cocos2d::Image* image = new cocos2d::Image;

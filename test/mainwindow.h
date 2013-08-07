@@ -46,6 +46,8 @@ public:
     void RegisterComponent(uint32_t classId, IComponent* component, const char* componentName);
     IComponent* FindComponent(uint32_t classId);
 
+    NodeItem* GetNodeItemFromNode(Node* node);
+
     void ExportToFile(const char* file);
     void ExportToStream(StreamFormatted& stream, Node* node);
 
@@ -77,7 +79,6 @@ protected:
 
 protected:
 
-    NodeItem* GetNodeItemFromNode(Node* node);
     Node* GetSelectedNodeInHierarchy();
     void SetSelectedNodeInHierarchy(Node* node);
     void SetPropertyViewForNode(Node* node, Node* oldNode);
