@@ -17,7 +17,7 @@ MySceneEditor::MySceneEditor()
 {
 }
 
-void MySceneEditor::mousePressed(float x, float y)
+void MySceneEditor::mousePressed(float x, float y, int buttons)
 {
     mTouchDown = mTouchLast = ccp(x, y);
     mSelectedNode = PickNode(ccp(x, y));
@@ -30,17 +30,17 @@ void MySceneEditor::mousePressed(float x, float y)
     mDragging = true;
 }
 
-void MySceneEditor::mouseRelease(float x, float y)
+void MySceneEditor::mouseRelease(float x, float y, int buttons)
 {
     mTouchLast = ccp(x, y);
     mDragging = false;
 }
 
-void MySceneEditor::mouseMoved(float x, float y)
+void MySceneEditor::mouseMoved(float x, float y, int buttons)
 {
     if (mDragging)
     {
-        if (mSelectedNode)
+        if (mSelectedNode && !(buttons&kButtonRight))
         {
             Node* parent = mSelectedNode->getParent();
             if (parent)

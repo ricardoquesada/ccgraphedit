@@ -80,17 +80,17 @@ QSize MyQGLWidget::sizeHint() const
 
 void MyQGLWidget::mousePressEvent(QMouseEvent* event)
 {
-    MySceneEditor::instance()->mousePressed(event->localPos().x(), this->height() - event->localPos().y());
+    MySceneEditor::instance()->mousePressed(event->localPos().x(), this->height() - event->localPos().y(), event->buttons());
 }
 
 void MyQGLWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-    MySceneEditor::instance()->mouseRelease(event->localPos().x(), this->height() - event->localPos().y());
+    MySceneEditor::instance()->mouseRelease(event->localPos().x(), this->height() - event->localPos().y(), event->buttons());
 }
 
 void MyQGLWidget::mouseMoveEvent(QMouseEvent* event)
 {
-    MySceneEditor::instance()->mouseMoved(event->localPos().x(), this->height() - event->localPos().y());
+    MySceneEditor::instance()->mouseMoved(event->localPos().x(), this->height() - event->localPos().y(), event->buttons());
 }
 
 void MyQGLWidget::wheelEvent(QWheelEvent* event)

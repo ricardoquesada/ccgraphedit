@@ -21,10 +21,16 @@ public:
 
     MySceneEditor();
 
+    enum
+    {
+        kButtonLeft  = (1<<0),
+        kButtonRight = (1<<1)
+    };
+
     // mouse input methods
-    void mousePressed(float x, float y);
-    void mouseRelease(float x, float y);
-    void mouseMoved(float x, float y);
+    void mousePressed(float x, float y, int buttons);
+    void mouseRelease(float x, float y, int buttons);
+    void mouseMoved(float x, float y, int buttons);
 
     // drawing methods
     void drawOverlay();
