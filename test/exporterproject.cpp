@@ -42,7 +42,7 @@ bool ExporterProject::ExportNodeDriver(StreamFormatted& stream, INodeDriver* dri
     // write out id of driver
     stream.write(driver->Id());
 
-    return ExportNodeDriver(stream, driver);
+    return Exporter::ExportNodeDriver(stream, driver);
 }
 
 //

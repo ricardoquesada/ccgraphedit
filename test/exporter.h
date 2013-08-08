@@ -15,7 +15,6 @@ class INodeDriver;
 class Exporter
 {
 public:
-    Exporter();
 
     // called by editor to begin exporting graph to stream
     // allows you to export any preamble you would like.
@@ -41,5 +40,4 @@ public:
     virtual bool ExportProperty(cocos2d::StreamFormatted& stream, std::string* value) = 0;
     virtual bool ExportProperty(cocos2d::StreamFormatted& stream, uint8_t* value) = 0;
 };
-
 

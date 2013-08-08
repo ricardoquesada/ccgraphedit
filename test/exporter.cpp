@@ -4,12 +4,9 @@
 #include "nodeitem.h"
 #include "NodeDriver.h"
 #include "cocos2d.h"
+#include "CCStreamFormatted.h"
 
 USING_NS_CC;
-
-Exporter::Exporter()
-{
-}
 
 // called by editor to begin exporting graph to stream
 // allows you to export any preamble you would like.
@@ -67,6 +64,7 @@ bool Exporter::ExportNodeBegin(StreamFormatted& stream, NodeItem* item)
 // called by editor for each driver on a node item
 bool Exporter::ExportNodeDriver(StreamFormatted &stream, INodeDriver *driver)
 {
+    stream.write(driver->Id());
     return driver->Export(stream, this);
 }
 

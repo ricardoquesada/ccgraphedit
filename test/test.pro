@@ -211,7 +211,8 @@ mysceneeditor.cpp \
     exporter.cpp \
     componentnodergba.cpp \
     componentparticlesystem.cpp \
-    exporterproject.cpp
+    exporterproject.cpp \
+    importer.cpp
 
 HEADERS  += \
 mainwindow.h \
@@ -233,7 +234,8 @@ mysceneeditor.h \
     exporter.h \
     componentnodergba.h \
     componentparticlesystem.h \
-    exporterproject.h
+    exporterproject.h \
+    importer.h
 
 FORMS += mainwindow.ui \
     dialogimportccb.ui

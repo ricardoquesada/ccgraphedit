@@ -49,7 +49,6 @@ public:
 
     void SetValue(std::string& name, bool block = false)
     {
-        qDebug("setting string to %s", name.c_str());
         mValue = name;
         mPath->setText(name.c_str());
     }

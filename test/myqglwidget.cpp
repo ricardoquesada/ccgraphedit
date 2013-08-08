@@ -2,7 +2,6 @@
 #include "mysceneeditor.h"
 #include "mainwindow.h"
 
-#include <QDebug>
 #include <QStandardItemModel>
 #include <QTreeView>
 

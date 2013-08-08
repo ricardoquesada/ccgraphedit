@@ -4,8 +4,6 @@
 #include "kazmath/vec3.h"
 #include "fileutil.h"
 
-#include <QDebug>
-
 USING_NS_CC;
 
 IMPLEMENT_SINGLETON(MySceneEditor)
@@ -167,7 +165,9 @@ Node* MySceneEditor::GetSelectedNode() const
 
 void MySceneEditor::SetRootNode(cocos2d::Node* root)
 {
+    CC_SAFE_RELEASE(mRootNode);
     mRootNode = root;
+    CC_SAFE_RETAIN(mRootNode);
 }
 
 cocos2d::Node* MySceneEditor::GetRootNode() const

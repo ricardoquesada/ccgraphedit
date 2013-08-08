@@ -27,3 +27,9 @@ void ComponentBase::Populate(NodeItem *nodeItem, QTreeWidget *tree, cocos2d::Nod
         nodeItem->AddDriver(driver);
     }
 }
+
+INodeDriver* ComponentBase::GetDriver(uint32_t id)
+{
+    tDriverMap::iterator it = mDriverMap.find(id);
+    return it == mDriverMap.end() ? nullptr : (*it).second;
+}

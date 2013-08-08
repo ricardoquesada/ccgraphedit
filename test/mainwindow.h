@@ -39,20 +39,19 @@ public:
     bool Init();
 
     void AddFiles(const char* root, const char* path, bool directory);
+
     NodeItem* AddNode(Node* parent, Node* node, const char* nodeName);
+    void ClearScene();
 
     void RegisterNodeDriver(uint32_t driverId, INodeDriver* driver);
-
     void RegisterComponent(uint32_t classId, IComponent* component, const char* componentName);
     IComponent* FindComponent(uint32_t classId);
 
     NodeItem* GetNodeItemFromNode(Node* node);
 
-    void ExportToFile(const char* file);
-    void ExportToStream(StreamFormatted& stream, Node* node);
-
 public slots:
 
+    void saveProject();
     void importCCB();
     void selectNode();
 

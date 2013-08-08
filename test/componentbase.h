@@ -16,6 +16,7 @@ class IComponent
 public:
     virtual void Populate(NodeItem* nodeItem, QTreeWidget* tree, cocos2d::Node* node) = 0;
     virtual void RegisterDrivers() = 0;
+    virtual INodeDriver* GetDriver(uint32_t id) = 0;
 };
 
 #define SETTER(classT, varT, setter) [] (classT* node, const varT& value) { node->setter(value); }
@@ -31,6 +32,7 @@ public:
 
     void Populate(NodeItem* nodeItem, QTreeWidget* tree, cocos2d::Node* node);
     void RegisterDrivers();
+    INodeDriver* GetDriver(uint32_t id);
 
 protected:
 
