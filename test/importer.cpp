@@ -17,6 +17,8 @@ bool Importer::ImportFromStream(cocos2d::StreamFormatted& stream)
 // Import a single node including all children
 NodeItem* Importer::ImportNode(cocos2d::StreamFormatted& stream)
 {
+    // export each node driver
+
 
 }
 

@@ -235,7 +235,8 @@ mysceneeditor.h \
     componentnodergba.h \
     componentparticlesystem.h \
     exporterproject.h \
-    importer.h
+    importer.h \
+    deviceframe.h
 
 FORMS += mainwindow.ui \
     dialogimportccb.ui

@@ -20,13 +20,8 @@ public:
     // allows you to export any preamble you would like.
     virtual bool ExportToStream(cocos2d::StreamFormatted& stream);
 
-    // called by editor for each node in graph. calls may be
-    // nested in which case they are considered to be children.
-    virtual bool ExportNodeBegin(cocos2d::StreamFormatted& stream, NodeItem* item);
-
-    // called by editor for each node to close that node.
-    // the next call to begin starts exporting a new node.
-    virtual bool ExportNodeEnd(cocos2d::StreamFormatted& stream, NodeItem* item);
+    // called by editor for each node in graph. Is reentrant for children.
+    virtual bool ExportNode(cocos2d::StreamFormatted& stream, NodeItem* item);
 
     // called by editor for each driver on a node item
     virtual bool ExportNodeDriver(cocos2d::StreamFormatted& stream, INodeDriver* driver);

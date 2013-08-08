@@ -11,9 +11,11 @@ class MyQGLWidget;
 class QToolbar;
 class QTreeWidgetItem;
 class QSignalMapper;
+class QComboBox;
 class NodeItem;
 class IComponent;
 class INodeDriver;
+class DeviceFrame;
 namespace Ui {
     class MainWindow;
 }
@@ -38,6 +40,8 @@ public:
 
     bool Init();
 
+    void SetWorkingDirectory(const char* path);
+
     void AddFiles(const char* root, const char* path, bool directory);
 
     NodeItem* AddNode(Node* parent, Node* node, const char* nodeName);
@@ -51,6 +55,7 @@ public:
 
 public slots:
 
+    void selectDeviceFrame(int comboIndex);
     void saveProject();
     void importCCB();
     void selectNode();
@@ -62,9 +67,19 @@ public slots:
 
 protected:
 
+    void AddDeviceFrame(DeviceFrame* frame);
+    void SetCurrentDeviceFrame(DeviceFrame* frame);
+    Node* GetSelectedNodeInHierarchy();
+    void SetSelectedNodeInHierarchy(Node* node);
+    void SetPropertyViewForNode(Node* node, Node* oldNode);
+
+protected:
+
     Ui::MainWindow *ui;
     MyQGLWidget* mQGLWidget;
     QToolBar* mToolbar;
+    QComboBox* mDeviceCombo;
+
     Node* mSelectedNode;
 
     typedef std::map<Node*, NodeItem*> tNodeToNodeItemMap;
@@ -76,11 +91,11 @@ protected:
     typedef std::map<uint32_t, INodeDriver*> tClassToNodeDriverMap;
     tClassToNodeDriverMap mClassToNodeDriverMap;
 
-protected:
+    QString mWorkingDirectory;
 
-    Node* GetSelectedNodeInHierarchy();
-    void SetSelectedNodeInHierarchy(Node* node);
-    void SetPropertyViewForNode(Node* node, Node* oldNode);
+    typedef std::vector<DeviceFrame*> tDeviceFrames;
+    tDeviceFrames mDeviceFrames;
+    DeviceFrame* mCurrentDeviceFrame;
 };
 
 NS_CC_END

@@ -200,6 +200,20 @@ public:
         return exporter->ExportProperty(stream, &mValue);
     }
 
+    // frame space is normalized to 100% of the current device frame size
+    // this takes a value between 0 and 100 and converts it to 0 and device frame size.
+    varT ConvertFrameToNodeSpace(const varT& value)
+    {
+        return value;
+    }
+
+    // frame space is normalized to 100% of the current device frame size
+    // this takes a value in device frame space and converts it to a value between 0 and 100
+    varT ConvertNodeToFrameSpace(const varT& value)
+    {
+        return value;
+    }
+
 protected:
 
     // hash of name

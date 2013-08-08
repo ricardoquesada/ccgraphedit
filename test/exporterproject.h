@@ -14,8 +14,7 @@ class ExporterProject
 public:
 
     bool ExportToStream(cocos2d::StreamFormatted& stream);
-    bool ExportNodeBegin(cocos2d::StreamFormatted& stream, NodeItem* item);
-    bool ExportNodeEnd(cocos2d::StreamFormatted& stream, NodeItem* item);
+    bool ExportNode(cocos2d::StreamFormatted& stream, NodeItem* item);
     bool ExportNodeDriver(cocos2d::StreamFormatted& stream, INodeDriver* driver);
 
     // specializations

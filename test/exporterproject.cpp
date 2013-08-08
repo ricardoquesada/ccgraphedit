@@ -19,7 +19,7 @@ bool ExporterProject::ExportToStream(StreamFormatted& stream)
     return Exporter::ExportToStream(stream);
 }
 
-bool ExporterProject::ExportNodeBegin(StreamFormatted& stream, NodeItem* item)
+bool ExporterProject::ExportNode(StreamFormatted& stream, NodeItem* item)
 {
     Node* node = item->GetNode();
 
@@ -29,12 +29,7 @@ bool ExporterProject::ExportNodeBegin(StreamFormatted& stream, NodeItem* item)
     // write out the count of items
     stream.write(uint32_t(item->Drivers().size()));
 
-    return Exporter::ExportNodeBegin(stream, item);
-}
-
-bool ExporterProject::ExportNodeEnd(StreamFormatted& stream, NodeItem* item)
-{
-    return Exporter::ExportNodeEnd(stream, item);
+    return Exporter::ExportNode(stream, item);
 }
 
 bool ExporterProject::ExportNodeDriver(StreamFormatted& stream, INodeDriver* driver)

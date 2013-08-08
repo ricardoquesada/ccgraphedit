@@ -18,12 +18,15 @@ public:
 
     NodeItem();
 
+    // specify the item in the scene graph tree view
     void SetSceneItem(QTreeWidgetItem* item);
     QTreeWidgetItem* SceneItem() const;
 
+    // specify the item in the property tree view
     void SetPropertyItem(QTreeWidgetItem* item);
     QTreeWidgetItem* PropertyItem() const;
 
+    // specify the node managed by this node item
     void SetNode(cocos2d::Node* node);
     cocos2d::Node* GetNode() const;
 
@@ -42,7 +45,7 @@ public:
     // find a driver by its name hash
     INodeDriver* FindDriverByHash(uint32_t nameHash);
 
-    // find a drived by its widget
+    // find a driver by its widget
     INodeDriver* FindDriverByWidget(QWidget* widget);
 
     // retrieve the node property drivers for this node
@@ -55,14 +58,18 @@ protected:
     QTreeWidgetItem* mPropertyItem;
     cocos2d::Node*   mNode;
 
+    // maps a widget instance to a driver
     typedef std::map<QWidget*, INodeDriver*> tWidgetToDriverMap;
     tWidgetToDriverMap mWidgetToDriverMap;
 
+    // maps a name hash to a driver
     typedef std::map<uint32_t, INodeDriver*> tNameToDriverMap;
     tNameToDriverMap mNameToDriverMap;
 
+    // array of widgets associated with this node
     typedef std::vector<QTreeWidgetItem*> tTreeWidgetItemsArray;
     tTreeWidgetItemsArray mTreeWidgetItemsArray;
 
+    // array of drivers associated with this node
     tNodeDrivers mNodeDrivers;
 };

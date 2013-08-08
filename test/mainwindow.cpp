@@ -13,6 +13,7 @@
 #include "componentsprite.h"
 #include "componentparticlesystem.h"
 #include "exporterproject.h"
+#include "deviceframe.h"
 
 #include "cocos2d.h"
 #include "CCFileUtils.h"
@@ -33,6 +34,7 @@
 #include <QToolButton>
 #include <QSignalMapper>
 #include <QFileDialog>
+#include <QComboBox>
 
 USING_NS_CC;
 USING_NS_CC_EXT;
@@ -49,7 +51,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , mQGLWidget(nullptr)
     , mToolbar(nullptr)
+    , mDeviceCombo(nullptr)
     , mSelectedNode(nullptr)
+    , mCurrentDeviceFrame(nullptr)
 {
     ui->setupUi(this);
 }
@@ -93,15 +97,22 @@ bool MainWindow::Init()
     FileUtils::sharedFileUtils()->addSearchPath("../../../../../cocos2d/template/multi-platform-cpp/proj.ios");
     FileUtils::sharedFileUtils()->addSearchPath("/Users/jgraham/dev_qtTest/resources/images/frames");
 
-    Sprite* frame = Sprite::create("frame-ipad.png");
-    if (frame)
-    {
-        Node* scene = Director::sharedDirector()->getRunningScene();
-        Node* root = Node::create();
-        AddNode(scene, root, "root");
-        MySceneEditor::instance()->SetRootNode(root);
-        scene->addChild(frame);
-    }
+    // setup the basic scene and root node
+    Node* scene = Director::sharedDirector()->getRunningScene();
+    Node* root = Node::create();
+    AddNode(scene, root, "root");
+    MySceneEditor::instance()->SetRootNode(root);
+
+    // setup device frame combo box
+    mDeviceCombo = new QComboBox;
+    connect(mDeviceCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(selectDeviceFrame(int)));
+    mToolbar->addWidget(mDeviceCombo);
+
+    AddDeviceFrame(new DeviceFrame("iPhone", "frame-iphone.png", 320, 480,  DeviceFrame::kPortrait));
+    AddDeviceFrame(new DeviceFrame("iPad",   "frame-ipad.png",   768, 1024, DeviceFrame::kPortrait));
+    AddDeviceFrame(new DeviceFrame("iPhone landscape left", "frame-iphone.png", 480, 320,  DeviceFrame::kLandscapeLeft));
+    AddDeviceFrame(new DeviceFrame("iPad landscape left",   "frame-ipad.png",   1024,768,  DeviceFrame::kLandscapeLeft));
+    selectDeviceFrame(0);
 
     QMenu* menu = new QMenu("File", this);
     menuBar()->addMenu(menu);
@@ -111,6 +122,11 @@ bool MainWindow::Init()
     menu->addAction(save);
 
     return true;
+}
+
+void MainWindow::SetWorkingDirectory(const char* path)
+{
+    mWorkingDirectory = path;
 }
 
 void MainWindow::AddFiles(const char* root, const char* path, bool directory)
@@ -217,6 +233,13 @@ IComponent* MainWindow::FindComponent(uint32_t classId)
 // Public Slots
 //
 
+void MainWindow::selectDeviceFrame(int comboIndex)
+{
+    QVariant var = mDeviceCombo->itemData(comboIndex);
+    DeviceFrame* frame = (DeviceFrame*)var.toLongLong();
+    SetCurrentDeviceFrame(frame);
+}
+
 void MainWindow::saveProject()
 {
     QString path = QFileDialog::getSaveFileName(this, QString("Save Project"), QString(""), QString(""));
@@ -301,13 +324,6 @@ void MainWindow::performToolbarAction()
         QVariant v = action->data();
         uint32_t classId = v.toInt();
 
-        // TODO
-        // this method should really just allocate a NodeItem based on the class id
-        // to allow overriding of NodeItem types and then let it manage the node itself.
-        // There are cases where the node might need to be recreated etc.
-        // Basically, Component -> NodeItem classes, and register those, move the register drivers to NodeItem
-        // rename NodeDriver to PropertyDriver
-
         Node* node = dynamic_cast<Node*>(CCClassRegistry::instance()->instantiateClass(classId));
         if (node)
         {
@@ -343,6 +359,26 @@ void MainWindow::performToolbarAction()
 //
 // Protected Methods
 //
+
+void MainWindow::AddDeviceFrame(DeviceFrame* frame)
+{
+    mDeviceFrames.push_back(frame);
+    mDeviceCombo->addItem(QString(frame->Name()), QVariant(qlonglong(frame)));
+    SetCurrentDeviceFrame(frame);
+}
+
+void MainWindow::SetCurrentDeviceFrame(DeviceFrame* frame)
+{
+    if (mCurrentDeviceFrame)
+    {
+        Director::sharedDirector()->getRunningScene()->removeChild(mCurrentDeviceFrame->Sprite());
+    }
+    mCurrentDeviceFrame = frame;
+    if (mCurrentDeviceFrame)
+    {
+        Director::sharedDirector()->getRunningScene()->addChild(mCurrentDeviceFrame->Sprite());
+    }
+}
 
 NodeItem* MainWindow::GetNodeItemFromNode(Node* node)
 {

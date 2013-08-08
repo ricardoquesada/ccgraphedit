@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     cocos2d::MainWindow* window = cocos2d::MainWindow::instance();
-    //window->SetWorkingDirectory(workingDirectory);
+    window->SetWorkingDirectory((const char*)workingDirectory.toUtf8());
     window->Init();
     window->show();
     
