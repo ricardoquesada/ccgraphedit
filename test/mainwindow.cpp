@@ -356,6 +356,11 @@ void MainWindow::performToolbarAction()
     }
 }
 
+DeviceFrame* MainWindow::GetCurrentDeviceFrame() const
+{
+    return mCurrentDeviceFrame;
+}
+
 //
 // Protected Methods
 //

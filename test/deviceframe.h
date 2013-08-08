@@ -25,7 +25,7 @@ public:
         , mHeight(height)
         , mOrientation(orientation)
     {
-        mSprite = Sprite::create(image);
+        mSprite = cocos2d::Sprite::create(image);
         switch (mOrientation)
         {
         case kUpsideDown:

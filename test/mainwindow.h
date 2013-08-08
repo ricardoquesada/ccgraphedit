@@ -53,6 +53,8 @@ public:
 
     NodeItem* GetNodeItemFromNode(Node* node);
 
+    DeviceFrame* GetCurrentDeviceFrame() const;
+
 public slots:
 
     void selectDeviceFrame(int comboIndex);
