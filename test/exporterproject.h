@@ -7,6 +7,8 @@ class INodeDriver;
 namespace cocos2d {
     class StreamFormatted;
 }
+class INodeDriver;
+class NodeItem;
 
 class ExporterProject
     : public Exporter

@@ -9,8 +9,6 @@ namespace cocos2d {
     class Point;
     class Size;
 }
-class NodeItem;
-class INodeDriver;
 
 class Exporter
 {
