@@ -99,10 +99,7 @@ bool MainWindow::Init()
     FileUtils::sharedFileUtils()->addSearchPath("/Users/jgraham/dev_qtTest/resources/images/frames");
 
     // setup the basic scene and root node
-    Node* scene = Director::sharedDirector()->getRunningScene();
-    Node* root = Node::create();
-    AddNode(scene, root, "root");
-    MySceneEditor::instance()->SetRootNode(root);
+    ClearScene();
 
     // setup device frame combo box
     mDeviceCombo = new QComboBox;
@@ -203,12 +200,17 @@ void MainWindow::ClearScene()
     for (; it != itEnd; ++it)
     {
         NodeItem* item = (*it).second;
+        Node* node = item->GetNode();
+        node->removeFromParent();
         delete item;
     }
     mNodeToNodeItemMap.clear();
+    ui->hierarchy->clear();
 
-    MySceneEditor::instance()->GetRootNode()->removeFromParent();
-    MySceneEditor::instance()->SetRootNode(nullptr);
+    Node* scene = Director::sharedDirector()->getRunningScene();
+    Node* root = Node::create();
+    AddNode(scene, root, "root");
+    MySceneEditor::instance()->SetRootNode(root);
 }
 
 void MainWindow::RegisterNodeDriver(uint32_t driverId, INodeDriver *driver)

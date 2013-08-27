@@ -1,5 +1,6 @@
 #include "importerproject.h"
 #include "mainwindow.h"
+#include "mysceneeditor.h"
 #include "cocos2d.h"
 #include "CCStreamFormatted.h"
 #include "CCClassRegistry.h"
@@ -80,6 +81,9 @@ bool ImporterProject::ImportProperty(cocos2d::StreamFormatted& stream, uint8_t* 
 // Import a single node including all children
 NodeItem* ImporterProject::ImportNode(cocos2d::StreamFormatted& stream, Node* parent)
 {
+    if (!parent)
+        parent = MySceneEditor::instance()->GetRootNode();
+
     // class id
     uint32_t classId;
     stream.read(classId);
