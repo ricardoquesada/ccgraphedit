@@ -16,15 +16,7 @@ class Exporter
 {
 public:
 
-    // called by editor to begin exporting graph to stream
-    // allows you to export any preamble you would like.
-    virtual bool ExportToStream(cocos2d::StreamFormatted& stream);
-
-    // called by editor for each node in graph. Is reentrant for children.
-    virtual bool ExportNode(cocos2d::StreamFormatted& stream, NodeItem* item);
-
-    // called by editor for each driver on a node item
-    virtual bool ExportNodeDriver(cocos2d::StreamFormatted& stream, INodeDriver* driver);
+    virtual bool ExportToStream(cocos2d::StreamFormatted& stream) = 0;
 
     // value types that must be implemented per exporter
     virtual bool ExportProperty(cocos2d::StreamFormatted& stream, float* value) = 0;

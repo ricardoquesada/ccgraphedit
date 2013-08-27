@@ -208,7 +208,6 @@ mysceneeditor.cpp \
     componentnode.cpp \
     componentsprite.cpp \
     nodeitem.cpp \
-    exporter.cpp \
     componentnodergba.cpp \
     componentparticlesystem.cpp \
     exporterproject.cpp \
