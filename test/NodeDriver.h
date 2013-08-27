@@ -3,6 +3,7 @@
 
 #include "mainwindow.h"
 #include "exporter.h"
+#include "importer.h"
 #include "deviceframe.h"
 #include <QObject>
 #include <QTreeWidgetItem>
@@ -54,8 +55,11 @@ public:
     // clones this driver except for the widgets
     virtual INodeDriver* Clone() = 0;
 
-    // exports the value type to the stream via the exporter
+    // exports the value type to the stream via the exporter (invokes correct specialization based on type)
     virtual bool Export(cocos2d::StreamFormatted& stream, Exporter* exporter) = 0;
+
+    // imports the value type from the stream via importer (invokes correct specialization based on type)
+    virtual bool Import(cocos2d::StreamFormatted& stream, Importer* importer) = 0;
 };
 
 template <class widgetT, class nodeT, typename varT>
@@ -146,7 +150,8 @@ public:
     // update cached value and push to node
     void Push()
     {
-        mValue = mWidget->Value();
+        if (mWidget)
+            mValue = mWidget->Value();
         mSetter(mNode, mValue);
     }
 
@@ -195,10 +200,14 @@ public:
         mSetter(mNode, value);
     }
 
-    // exports the value type to the stream via the exporter
     bool Export(cocos2d::StreamFormatted& stream, Exporter* exporter)
     {
         return exporter->ExportProperty(stream, &mValue);
+    }
+
+    bool Import(cocos2d::StreamFormatted &stream, Importer *importer)
+    {
+        return importer->ImportProperty(stream, &mValue);
     }
 
 protected:

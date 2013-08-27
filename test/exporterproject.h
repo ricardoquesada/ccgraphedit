@@ -2,7 +2,6 @@
 #pragma once
 
 #include "exporter.h"
-class INodeDriver;
 
 namespace cocos2d {
     class StreamFormatted;
@@ -17,7 +16,6 @@ public:
 
     bool ExportToStream(cocos2d::StreamFormatted& stream);
 
-    // specializations
     bool ExportProperty(cocos2d::StreamFormatted& stream, float* value);
     bool ExportProperty(cocos2d::StreamFormatted& stream, int* value);
     bool ExportProperty(cocos2d::StreamFormatted& stream, bool* value);

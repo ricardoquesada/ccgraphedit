@@ -16,7 +16,7 @@ public:
 
     virtual bool ExportToStream(cocos2d::StreamFormatted& stream) = 0;
 
-    // value types that must be implemented per exporter
+    // specializations that must be implemented per exporter
     virtual bool ExportProperty(cocos2d::StreamFormatted& stream, float* value) = 0;
     virtual bool ExportProperty(cocos2d::StreamFormatted& stream, int* value) = 0;
     virtual bool ExportProperty(cocos2d::StreamFormatted& stream, bool* value) = 0;

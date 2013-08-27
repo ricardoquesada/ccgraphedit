@@ -59,6 +59,7 @@ public slots:
 
     void selectDeviceFrame(int comboIndex);
     void saveProject();
+    void loadProject();
     void importCCB();
     void selectNode();
 

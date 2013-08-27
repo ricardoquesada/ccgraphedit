@@ -13,6 +13,7 @@
 #include "componentsprite.h"
 #include "componentparticlesystem.h"
 #include "exporterproject.h"
+#include "importerproject.h"
 #include "deviceframe.h"
 
 #include "cocos2d.h"
@@ -120,6 +121,10 @@ bool MainWindow::Init()
     QAction* save = new QAction("Save Project", this);
     connect(save, SIGNAL(triggered()), this, SLOT(saveProject()));
     menu->addAction(save);
+
+    QAction* load = new QAction("Load Project", this);
+    connect(load, SIGNAL(triggered()), this, SLOT(loadProject()));
+    menu->addAction(load);
 
     return true;
 }
@@ -250,6 +255,22 @@ void MainWindow::saveProject()
 
         ExporterProject* exporter = new ExporterProject;
         exporter->ExportToStream(sf);
+        stream.close();
+    }
+}
+
+void MainWindow::loadProject()
+{
+    ClearScene();
+
+    QString path = QFileDialog::getOpenFileName(this, QString("Open Project"), QString(""), QString(""));
+    if (path.length())
+    {
+        StreamFile stream(path.toUtf8(), Stream::kRead);
+        StreamFormatted sf(&stream);
+
+        ImporterProject* importer = new ImporterProject;
+        importer->ImportFromStream(sf);
         stream.close();
     }
 }

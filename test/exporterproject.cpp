@@ -118,6 +118,10 @@ bool ExporterProject::ExportNode(StreamFormatted& stream, NodeItem* item)
 
     // export children
     Array* children = node->getChildren();
+
+    // write child count
+    stream.write(uint32_t(children->count()));
+
     Object* object;
     CCARRAY_FOREACH(children, object)
     {

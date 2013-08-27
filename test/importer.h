@@ -9,25 +9,14 @@ namespace cocos2d {
     class Point;
     class Size;
 }
-class NodeItem;
-class INodeDriver;
-class IComponent;
 
 class Importer
 {
 public:
 
-    // called by editor to begin importing from stream
-    // allows you to import any preamble you would like
-    virtual bool ImportFromStream(cocos2d::StreamFormatted& stream);
+    virtual bool ImportFromStream(cocos2d::StreamFormatted& stream) = 0;
 
-    // Import a single node including all children
-    virtual NodeItem* ImportNode(cocos2d::StreamFormatted& stream);
-
-    // Import a node driver
-    virtual INodeDriver* ImportNodeDriver(cocos2d::StreamFormatted& stream, IComponent* component);
-
-    // value types that must be implemented per importer
+    // specializations that must be implemented per importer
     virtual bool ImportProperty(cocos2d::StreamFormatted& stream, float* value) = 0;
     virtual bool ImportProperty(cocos2d::StreamFormatted& stream, int* value) = 0;
     virtual bool ImportProperty(cocos2d::StreamFormatted& stream, bool* value) = 0;
