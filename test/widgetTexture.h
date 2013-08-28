@@ -47,13 +47,13 @@ public:
         return mValue;
     }
 
-    void SetValue(std::string& name, bool block = false)
+    void SetValue(const std::string& name, bool block = false)
     {
         mValue = name;
         mPath->setText(name.c_str());
     }
 
-    bool Compare(std::string& a, std::string& b)
+    bool Compare(const std::string& a, const std::string& b) const
     {
         return 0 == a.compare(b);
     }

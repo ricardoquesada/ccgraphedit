@@ -100,6 +100,10 @@ bool ExporterProject::ExportNode(StreamFormatted& stream, NodeItem* item)
     // write out the node class id
     stream.write(node->classId());
 
+    // write out the node name
+    std::string name(item->SceneItem()->text(0).toUtf8());
+    ExportProperty(stream, &name);
+
     // write out the count of items
     stream.write(uint32_t(item->Drivers().size()));
 
@@ -109,18 +113,19 @@ bool ExporterProject::ExportNode(StreamFormatted& stream, NodeItem* item)
     for (; it != itEnd; ++it)
     {
         INodeDriver* driver = *it;
-        if (!ExportNodeDriver(stream, driver))
-        {
-            // insert logging here
-            return false;
-        }
+
+        // write out id of driver
+        stream.write(driver->Id());
+
+        // write out driver data
+        driver->Export(stream, this);
     }
 
     // export children
     Array* children = node->getChildren();
 
     // write child count
-    stream.write(uint32_t(children->count()));
+    stream.write(uint32_t(children ? children->count() : 0));
 
     Object* object;
     CCARRAY_FOREACH(children, object)
@@ -138,13 +143,4 @@ bool ExporterProject::ExportNode(StreamFormatted& stream, NodeItem* item)
     }
 
     return true;
-}
-
-bool ExporterProject::ExportNodeDriver(StreamFormatted& stream, INodeDriver* driver)
-{
-    // write out id of driver
-    stream.write(driver->Id());
-
-    // write out driver data
-    return driver->Export(stream, this);
 }

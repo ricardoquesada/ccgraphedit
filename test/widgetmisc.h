@@ -34,7 +34,7 @@ public:
         blockSignals(b);
     }
 
-    bool Compare(bool a, bool b)
+    bool Compare(bool a, bool b) const
     {
         return a == b;
     }

@@ -15,6 +15,7 @@
 #include "exporterproject.h"
 #include "importerproject.h"
 #include "deviceframe.h"
+#include "widgetTexture.h"
 
 #include "cocos2d.h"
 #include "CCFileUtils.h"
@@ -43,6 +44,8 @@ USING_NS_CC_EXT;
 namespace
 {
     const uint32_t kNodeDriverPosition = fnv1_32("position");
+    const uint32_t kDriverHashTexture = fnv1_32("texture");
+    const char* kDefaultTextureName = "Icon-144.png";
 };
 
 IMPLEMENT_SINGLETON(MainWindow)
@@ -99,7 +102,10 @@ bool MainWindow::Init()
     FileUtils::sharedFileUtils()->addSearchPath("/Users/jgraham/dev_qtTest/resources/images/frames");
 
     // setup the basic scene and root node
-    ClearScene();
+    Node* scene = Director::sharedDirector()->getRunningScene();
+    Node* root = Node::create();
+    AddNode(scene, root, "root");
+    MySceneEditor::instance()->SetRootNode(root);
 
     // setup device frame combo box
     mDeviceCombo = new QComboBox;
@@ -206,11 +212,6 @@ void MainWindow::ClearScene()
     }
     mNodeToNodeItemMap.clear();
     ui->hierarchy->clear();
-
-    Node* scene = Director::sharedDirector()->getRunningScene();
-    Node* root = Node::create();
-    AddNode(scene, root, "root");
-    MySceneEditor::instance()->SetRootNode(root);
 }
 
 void MainWindow::RegisterNodeDriver(uint32_t driverId, INodeDriver *driver)
@@ -363,7 +364,7 @@ void MainWindow::performToolbarAction()
             {
                 Image* image = new Image;
                 image->autorelease();
-                if (image->initWithImageFile("Icon-144.png"))
+                if (image->initWithImageFile(kDefaultTextureName))
                 {
                     Texture2D* texture = new Texture2D;
                     if (texture->initWithImage(image))
@@ -374,7 +375,15 @@ void MainWindow::performToolbarAction()
                 }
             }
 
-            AddNode(parent, node, "New Node");
+            NodeItem* item = AddNode(parent, node, "New Node");
+            if (item)
+            {
+                // fill in the texture name since we cannot get it from the node in this case
+                typedef NodeDriverT<widgetTexture, Sprite, std::string> tTextureDriver;
+                tTextureDriver* textureDriver = dynamic_cast<tTextureDriver*>(item->FindDriverByHash(kDriverHashTexture));
+                if (textureDriver)
+                    textureDriver->SetValue(std::string(kDefaultTextureName));
+            }
         }
     }
 }

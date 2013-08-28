@@ -65,7 +65,7 @@ public:
         }
     }
 
-    bool Compare(const cocos2d::Point& a, cocos2d::Point& b)
+    bool Compare(const cocos2d::Point& a, const cocos2d::Point& b) const
     {
         return a.equals(b);
     }

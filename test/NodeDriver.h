@@ -198,6 +198,7 @@ public:
     void SetValue(const varT& value)
     {
         mSetter(mNode, value);
+        mValue = value;
     }
 
     bool Export(cocos2d::StreamFormatted& stream, Exporter* exporter)

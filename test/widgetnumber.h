@@ -45,7 +45,7 @@ public:
         blockSignals(b);
     }
 
-    bool Compare(float a, float b)
+    bool Compare(float a, float b) const
     {
         return fabsf(a - b) < FLT_EPSILON;
     }

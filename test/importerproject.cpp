@@ -22,7 +22,14 @@ bool ImporterProject::ImportFromStream(cocos2d::StreamFormatted& stream)
     uint32_t version;
     stream.read(version);
 
-    NodeItem* item = ImportNode(stream);
+    Node* scene = Director::sharedDirector()->getRunningScene();
+
+    NodeItem* item = ImportNode(stream, scene);
+    if (item)
+    {
+        Node* root = item->GetNode();
+        MySceneEditor::instance()->SetRootNode(root);
+    }
 
     return item != nullptr;
 }
@@ -33,17 +40,17 @@ bool ImporterProject::ImportFromStream(cocos2d::StreamFormatted& stream)
 
 bool ImporterProject::ImportProperty(cocos2d::StreamFormatted& stream, float* value)
 {
-    return sizeof(value) == stream.read(*value);
+    return sizeof(*value) == stream.read(*value);
 }
 
 bool ImporterProject::ImportProperty(cocos2d::StreamFormatted& stream, int* value)
 {
-    return sizeof(value) == stream.read(*value);
+    return sizeof(*value) == stream.read(*value);
 }
 
 bool ImporterProject::ImportProperty(cocos2d::StreamFormatted& stream, bool* value)
 {
-    return sizeof(value) == stream.read(*value);
+    return sizeof(*value) == stream.read(*value);
 }
 
 bool ImporterProject::ImportProperty(cocos2d::StreamFormatted& stream, cocos2d::Point* value)
@@ -65,13 +72,16 @@ bool ImporterProject::ImportProperty(cocos2d::StreamFormatted& stream, std::stri
     uint32_t length;
     stream.read(length);
     value->resize(length);
-    stream.read(&value[0], length);
+    char* temp = (char*)alloca(length + 1);
+    stream.read(temp, length);
+    temp[length] = 0;
+    value->assign(temp);
     return true;
 }
 
 bool ImporterProject::ImportProperty(cocos2d::StreamFormatted& stream, uint8_t* value)
 {
-    return sizeof(value) == stream.read(*value);
+    return sizeof(*value) == stream.read(*value);
 }
 
 //
@@ -88,6 +98,10 @@ NodeItem* ImporterProject::ImportNode(cocos2d::StreamFormatted& stream, Node* pa
     uint32_t classId;
     stream.read(classId);
 
+    // read name
+    std::string name;
+    ImportProperty(stream, &name);
+
     // instantiate class
     Node* node = dynamic_cast<Node*>(CCClassRegistry::instance()->instantiateClass(classId));
     if (!node)
@@ -97,7 +111,7 @@ NodeItem* ImporterProject::ImportNode(cocos2d::StreamFormatted& stream, Node* pa
     }
 
     // add the node to the scene and create all drivers etc.
-    NodeItem* item = MainWindow::instance()->AddNode(parent, node, "NODENAME");
+    NodeItem* item = MainWindow::instance()->AddNode(parent, node, name.c_str());
     if (!item)
     {
         // logging
