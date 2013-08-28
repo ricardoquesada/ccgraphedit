@@ -60,6 +60,7 @@ public slots:
     void selectDeviceFrame(int comboIndex);
     void saveProject();
     void loadProject();
+    void dumpScene();
     void importCCB();
     void selectNode();
 
@@ -75,6 +76,7 @@ protected:
     Node* GetSelectedNodeInHierarchy();
     void SetSelectedNodeInHierarchy(Node* node);
     void SetPropertyViewForNode(Node* node, Node* oldNode);
+    void DumpSceneGraph(Node* node, int indent = 0);
 
 protected:
 

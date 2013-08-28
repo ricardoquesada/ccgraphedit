@@ -5,22 +5,6 @@
 #include "CCStreamFormatted.h"
 #include "mysceneeditor.h"
 
-/*
-    File Format Description
-
-    [sentinel] 4 bytes
-    [version]  4 bytes
-
-        [node class id] 4 bytes
-        [count of drivers] 4 bytes
-
-            [driver id] 4 bytes
-            [driver data] N bytes
-            ...
-
-        ...
-*/
-
 namespace
 {
     const uint32_t kExporterFormatMagicNumber = 0xdeadbeef;
@@ -49,17 +33,17 @@ bool ExporterProject::ExportToStream(StreamFormatted& stream)
 
 bool ExporterProject::ExportProperty(cocos2d::StreamFormatted& stream, float* value)
 {
-    return sizeof(value) == stream.write(*value);
+    return sizeof(*value) == stream.write(*value);
 }
 
 bool ExporterProject::ExportProperty(cocos2d::StreamFormatted& stream, int* value)
 {
-    return sizeof(value) == stream.write(*value);
+    return sizeof(*value) == stream.write(*value);
 }
 
 bool ExporterProject::ExportProperty(cocos2d::StreamFormatted& stream, bool* value)
 {
-    return sizeof(value) == stream.write(*value);
+    return sizeof(*value) == stream.write(*value);
 }
 
 bool ExporterProject::ExportProperty(cocos2d::StreamFormatted& stream, cocos2d::Point* value)
@@ -86,7 +70,7 @@ bool ExporterProject::ExportProperty(cocos2d::StreamFormatted& stream, std::stri
 
 bool ExporterProject::ExportProperty(cocos2d::StreamFormatted& stream, uint8_t* value)
 {
-    return sizeof(value) == stream.write(*value);
+    return sizeof(*value) == stream.write(*value);
 }
 
 //
@@ -113,6 +97,8 @@ bool ExporterProject::ExportNode(StreamFormatted& stream, NodeItem* item)
     for (; it != itEnd; ++it)
     {
         INodeDriver* driver = *it;
+
+        qDebug("exporting %08x", driver->Id());
 
         // write out id of driver
         stream.write(driver->Id());

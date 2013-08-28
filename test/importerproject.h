@@ -28,5 +28,5 @@ public:
 
 protected:
 
-    NodeItem* ImportNode(cocos2d::StreamFormatted& stream, cocos2d::Node* parent = nullptr);
+    NodeItem* ImportNode(cocos2d::StreamFormatted& stream, cocos2d::Node* parent);
 };

@@ -161,10 +161,11 @@ public:
         varT value = mValue;
         if (mGetter)
             mGetter(mNode, value);
-        if (force || !mWidget->Compare(mValue, value))
+        if (force || !mWidget || mWidget->Compare(mValue, value))
         {
             mValue = value;
-            mWidget->SetValue(value);
+            if (mWidget)
+                mWidget->SetValue(value);
         }
     }
 

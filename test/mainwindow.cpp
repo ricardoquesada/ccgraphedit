@@ -129,6 +129,10 @@ bool MainWindow::Init()
     connect(load, SIGNAL(triggered()), this, SLOT(loadProject()));
     menu->addAction(load);
 
+    QAction* dump = new QAction("Dump Scene Graph", this);
+    connect(dump, SIGNAL(triggered()), this, SLOT(dumpScene()));
+    menu->addAction(dump);
+
     return true;
 }
 
@@ -276,6 +280,11 @@ void MainWindow::loadProject()
         importer->ImportFromStream(sf);
         stream.close();
     }
+}
+
+void MainWindow::dumpScene()
+{
+    DumpSceneGraph(Director::sharedDirector()->getRunningScene());
 }
 
 void MainWindow::importCCB()
@@ -496,5 +505,21 @@ void MainWindow::SetPropertyViewForNode(Node* node, Node* oldNode)
 
         NodeItem* nodeItem = (*it).second;
         nodeItem->CreateWidgets(ui->properties);
+    }
+}
+
+void MainWindow::DumpSceneGraph(Node* node, int indent)
+{
+    char foo[1000];
+    memset(foo, 32, sizeof(foo));
+    foo[indent * 4] = 0;
+
+    qDebug(">%s%p %.2f,%.2f", foo, node, node->getPosition().x, node->getPosition().y);
+
+    Object* obj;
+    CCARRAY_FOREACH(node->getChildren(), obj)
+    {
+        Node* child = (Node*)obj;
+        DumpSceneGraph(child, indent+1);
     }
 }

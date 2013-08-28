@@ -10,8 +10,6 @@
 
 USING_NS_CC;
 
-// called by editor to begin importing from stream
-// allows you to import any preamble you would like
 bool ImporterProject::ImportFromStream(cocos2d::StreamFormatted& stream)
 {
     // sentinel

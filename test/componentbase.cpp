@@ -13,6 +13,7 @@ void ComponentBase::RegisterDrivers()
 
 void ComponentBase::AddDriver(INodeDriver* driver)
 {
+    qDebug("Added driver %08x %s", driver->Id(), driver->Name());
     mDriverMap.insert(tDriverMap::value_type(driver->Id(), driver));
     mDriverArray.push_back(driver);
 }
@@ -24,6 +25,7 @@ void ComponentBase::Populate(NodeItem *nodeItem, QTreeWidget *tree, cocos2d::Nod
     {
         INodeDriver* driver = (*it)->Clone();
         driver->SetNode(node);
+        driver->Update();
         nodeItem->AddDriver(driver);
     }
 }
