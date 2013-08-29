@@ -415,15 +415,8 @@ void MainWindow::AddDeviceFrame(DeviceFrame* frame)
 
 void MainWindow::SetCurrentDeviceFrame(DeviceFrame* frame)
 {
-    if (mCurrentDeviceFrame)
-    {
-        Director::sharedDirector()->getRunningScene()->removeChild(mCurrentDeviceFrame->Sprite());
-    }
     mCurrentDeviceFrame = frame;
-    if (mCurrentDeviceFrame)
-    {
-        Director::sharedDirector()->getRunningScene()->addChild(mCurrentDeviceFrame->Sprite());
-    }
+    MySceneEditor::instance()->SetFrameNode(mCurrentDeviceFrame->Sprite());
 }
 
 NodeItem* MainWindow::GetNodeItemFromNode(Node* node)

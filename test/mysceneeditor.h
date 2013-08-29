@@ -53,6 +53,12 @@ public:
     // retrieve the root node
     cocos2d::Node* GetRootNode() const;
 
+    // specify the frame node in the graph
+    void SetFrameNode(cocos2d::Node* node);
+
+    // retrieve the frame node
+    cocos2d::Node* GetFrameNode() const;
+
     // returns true if node is a child of the root node
     bool IsChildOfRoot(cocos2d::Node* node);
 
@@ -74,6 +80,7 @@ protected:
     cocos2d::Point mOffset;
     cocos2d::Node* mRootNode;
     cocos2d::Node* mSelectedNode;
+    cocos2d::Node* mFrameNode;
     bool mDragging;
 };
 

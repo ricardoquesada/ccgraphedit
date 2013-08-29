@@ -161,12 +161,9 @@ public:
         varT value = mValue;
         if (mGetter)
             mGetter(mNode, value);
-        if (force || !mWidget || mWidget->Compare(mValue, value))
-        {
-            mValue = value;
-            if (mWidget)
-                mWidget->SetValue(value);
-        }
+        mValue = value;
+        if (mWidget && (force || mWidget->Compare(mValue, value)))
+            mWidget->SetValue(value);
     }
 
     QTreeWidgetItem* Item() const

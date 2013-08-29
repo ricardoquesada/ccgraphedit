@@ -102,6 +102,7 @@ bool ExporterProject::ExportNode(StreamFormatted& stream, NodeItem* item)
         stream.write(driver->Id());
 
         // write out driver data
+        driver->Update();
         driver->Export(stream, this);
     }
 

@@ -64,6 +64,16 @@ void MyQGLWidget::resizeGL(int w, int h)
     view->setDesignResolutionSize(w, h, kResolutionNoBorder);
 }
 
+Rect MyQGLWidget::screenInWorld() const
+{
+    Size s = EGLView::sharedOpenGLView()->getFrameSize();
+    Point bl(0, 0);
+    Point tr(s.width, s.height);
+    bl = Director::sharedDirector()->convertToGL(bl);
+    tr = Director::sharedDirector()->convertToGL(tr);
+    return Rect(bl.x, bl.y, tr.x - bl.x, tr.y - bl.y);
+}
+
 void MyQGLWidget::paintGL()
 {
     #define NORM(x) ((float)x / 255.f)

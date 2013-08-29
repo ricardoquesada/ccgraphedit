@@ -1,6 +1,8 @@
 #ifndef MYQGLWIDGET_H
 #define MYQGLWIDGET_H
 
+#include "cocos2d.h"
+
 #include <QGLWidget>
 #include <QTimer>
 #include <QMouseEvent>
@@ -16,6 +18,8 @@ public:
     void paintGL();
 
     QSize sizeHint() const;
+
+    cocos2d::Rect screenInWorld() const;
 
     // mouse handling
     void mousePressEvent(QMouseEvent*);

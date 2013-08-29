@@ -11,6 +11,7 @@ IMPLEMENT_SINGLETON(MySceneEditor)
 MySceneEditor::MySceneEditor()
     : mRootNode(nullptr)
     , mSelectedNode(nullptr)
+    , mFrameNode(nullptr)
     , mDragging(false)
 {
 }
@@ -68,8 +69,8 @@ void MySceneEditor::mouseMoved(float x, float y, int buttons)
 void MySceneEditor::drawOverlay()
 {
     // disallow drawing of the main scene nodes
-    if (!IsChildOfRoot(mSelectedNode))
-        return;
+    //if (!IsChildOfRoot(mSelectedNode))
+    //    return;
 
     if (mSelectedNode)
     {
@@ -84,6 +85,21 @@ void MySceneEditor::drawOverlay()
         drawOrigin(mSelectedNode, mSelectedNode->getAnchorPointInPoints(), 10, false);
 
         //drawHandles(mSelectedNode, false);
+
+        kmGLPopMatrix();
+    }
+
+    if (mFrameNode)
+    {
+        Rect rc;
+        rc.size   = mFrameNode->getContentSize();
+        rc.origin = ccp(.5f * rc.size.width, .5f * rc.size.height);
+        drawRect(mFrameNode, rc);
+
+        kmGLPushMatrix();
+        kmGLLoadIdentity();
+
+        drawOrigin(mFrameNode, mFrameNode->getAnchorPointInPoints(), 10, false);
 
         kmGLPopMatrix();
     }
@@ -163,16 +179,34 @@ Node* MySceneEditor::GetSelectedNode() const
     return mSelectedNode;
 }
 
-void MySceneEditor::SetRootNode(cocos2d::Node* root)
+void MySceneEditor::SetRootNode(Node* root)
 {
     CC_SAFE_RELEASE(mRootNode);
     mRootNode = root;
     CC_SAFE_RETAIN(mRootNode);
 }
 
-cocos2d::Node* MySceneEditor::GetRootNode() const
+Node* MySceneEditor::GetRootNode() const
 {
     return mRootNode;
+}
+
+void MySceneEditor::SetFrameNode(Node* node)
+{
+    if (mFrameNode)
+        Director::sharedDirector()->getRunningScene()->removeChild(mFrameNode);
+
+    CC_SAFE_RELEASE(mFrameNode);
+    mFrameNode = node;
+    CC_SAFE_RETAIN(mFrameNode);
+
+    if (mFrameNode)
+        Director::sharedDirector()->getRunningScene()->addChild(mFrameNode);
+}
+
+Node* MySceneEditor::GetFrameNode() const
+{
+    return mFrameNode;
 }
 
 bool MySceneEditor::IsChildOfRoot(Node* node)
