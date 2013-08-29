@@ -98,8 +98,6 @@ bool ExporterProject::ExportNode(StreamFormatted& stream, NodeItem* item)
     {
         INodeDriver* driver = *it;
 
-        qDebug("exporting %08x", driver->Id());
-
         // write out id of driver
         stream.write(driver->Id());
 

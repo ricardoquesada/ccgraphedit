@@ -13,7 +13,6 @@ void ComponentBase::RegisterDrivers()
 
 void ComponentBase::AddDriver(INodeDriver* driver)
 {
-    qDebug("Added driver %08x %s", driver->Id(), driver->Name());
     mDriverMap.insert(tDriverMap::value_type(driver->Id(), driver));
     mDriverArray.push_back(driver);
 }
