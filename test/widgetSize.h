@@ -2,6 +2,7 @@
 #pragma once
 
 #include "cocos2d.h"
+#include "AutoSignalBlock.h"
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QSpinBox>
@@ -54,14 +55,12 @@ public:
     void SetValue(const cocos2d::Point& value, bool block = false)
     {
         {
-            bool b = mSpinWidth->blockSignals(block);
+            AutoSignalBlocker autoblock(mSpinWidth, block);
             mSpinWidth->setValue(value.x);
-            mSpinWidth->blockSignals(b);
         }
         {
-            bool b = mSpinHeight->blockSignals(block);
+            AutoSignalBlocker autoblock(mSpinHeight, block);
             mSpinHeight->setValue(value.y);
-            mSpinHeight->blockSignals(b);
         }
     }
 

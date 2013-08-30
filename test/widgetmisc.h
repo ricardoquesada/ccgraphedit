@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "AutoSignalBlock.h"
 #include <QWidget>
 #include <QCheckBox>
 
@@ -29,9 +30,8 @@ public:
 
     void SetValue(bool value, bool block = false)
     {
-        bool b = blockSignals(block);
+        AutoSignalBlocker autoblock(this, block);
         setCheckState(value ? Qt::Checked : Qt::Unchecked);
-        blockSignals(b);
     }
 
     bool Compare(bool a, bool b) const

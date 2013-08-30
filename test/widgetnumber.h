@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "AutoSignalBlock.h"
 #include <QWidget>
 #include <QSpinBox>
 #include "float.h"
@@ -40,9 +41,8 @@ public:
 
     void SetValue(float value, bool block = false)
     {
-        bool b = blockSignals(block);
+        AutoSignalBlocker autoblock(this, block);
         setValue(value);
-        blockSignals(b);
     }
 
     bool Compare(float a, float b) const
@@ -90,9 +90,8 @@ public:
 
     void SetValue(int value, bool block = false)
     {
-        bool b = blockSignals(block);
+        AutoSignalBlocker autoblock(this, block);
         setValue(value);
-        blockSignals(b);
     }
 
     bool Compare(int a, int b)

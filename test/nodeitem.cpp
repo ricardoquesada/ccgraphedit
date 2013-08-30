@@ -64,7 +64,7 @@ void NodeItem::CreateWidgets(QTreeWidget* tree)
     for (; it != itEnd; ++it)
     {
         INodeDriver* driver = *it;
-        driver->SetupWidgets(tree);
+        driver->SetupWidget(tree);
         mTreeWidgetItemsArray.push_back(driver->Item());
         mWidgetToDriverMap.insert(tWidgetToDriverMap::value_type(driver->Widget(), driver));
     }
@@ -79,6 +79,16 @@ void NodeItem::DestroyWidgets()
         QTreeWidgetItem* item = *it;
         delete item;
     }
+
+    {
+        tNodeDrivers::iterator it(mNodeDrivers.begin()), itEnd(mNodeDrivers.end());
+        for (; it != itEnd; ++it)
+        {
+            INodeDriver* driver = *it;
+            driver->DestroyWidget();
+        }
+    }
+
     mTreeWidgetItemsArray.clear();
     mWidgetToDriverMap.clear();
 }

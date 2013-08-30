@@ -49,8 +49,11 @@ public:
     virtual cocos2d::Node* Node() const = 0;
 
     // called whenever the tool shows properties for a node
-    // it needs to create widgets and connect things.
-    virtual void SetupWidgets(QTreeWidget* tree) = 0;
+    // it needs to create the widget and connect things.
+    virtual void SetupWidget(QTreeWidget* tree) = 0;
+
+    // called to destroy the widget for this driver
+    virtual void DestroyWidget() = 0;
 
     // clones this driver except for the widgets
     virtual INodeDriver* Clone() = 0;
@@ -97,7 +100,7 @@ public:
 
     // this has to be done each time it is added to the tree since the tree takes
     // ownership of it, and there is no way to get it back, so it is recreated.
-    void SetupWidgets(QTreeWidget* tree)
+    void SetupWidget(QTreeWidget* tree)
     {
         QTreeWidgetItem* parent = tree->invisibleRootItem();
 
@@ -116,6 +119,11 @@ public:
         Update(true);
 
         QObject::connect(mWidget, SIGNAL(widgetChanged(QWidget*)), cocos2d::MainWindow::instance(), SLOT(pushWidget(QWidget*)));
+    }
+
+    void DestroyWidget()
+    {
+        mWidget = 0;
     }
 
     // templated creator method to instantiate drivers
@@ -161,8 +169,9 @@ public:
         varT value = mValue;
         if (mGetter)
             mGetter(mNode, value);
+        varT lastValue = mValue;
         mValue = value;
-        if (mWidget && (force || mWidget->Compare(mValue, value)))
+        if (mWidget && (force || mWidget->Compare(lastValue, value)))
             mWidget->SetValue(value);
     }
 

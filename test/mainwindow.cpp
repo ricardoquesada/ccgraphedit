@@ -366,7 +366,7 @@ void MainWindow::performToolbarAction()
             if (!parent)
                 parent = MySceneEditor::instance()->GetRootNode();
 
-            node->setPosition(ccp(.5f * size.width, .5f * size.height));
+            node->setPosition(ccp(0, 0));
 
             Sprite* sprite = dynamic_cast<Sprite*>(node);
             if (sprite)

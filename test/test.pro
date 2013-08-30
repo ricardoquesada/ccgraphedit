@@ -236,7 +236,8 @@ mysceneeditor.h \
     exporterproject.h \
     importer.h \
     deviceframe.h \
-    importerproject.h
+    importerproject.h \
+    AutoSignalBlock.h
 
 FORMS += mainwindow.ui \
     dialogimportccb.ui
