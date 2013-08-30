@@ -123,6 +123,7 @@ public:
 
     void DestroyWidget()
     {
+        // we do not own this widget so we just delete our reference
         mWidget = 0;
     }
 

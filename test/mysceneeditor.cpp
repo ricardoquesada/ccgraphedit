@@ -184,6 +184,14 @@ void MySceneEditor::SetRootNode(Node* root)
     CC_SAFE_RELEASE(mRootNode);
     mRootNode = root;
     CC_SAFE_RETAIN(mRootNode);
+
+    // trick to make sure the frame node is always in front of the root node
+    if (mFrameNode)
+    {
+        mFrameNode->retain();
+        SetFrameNode(mFrameNode);
+        mFrameNode->release();
+    }
 }
 
 Node* MySceneEditor::GetRootNode() const

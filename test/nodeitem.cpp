@@ -72,21 +72,11 @@ void NodeItem::CreateWidgets(QTreeWidget* tree)
 
 void NodeItem::DestroyWidgets()
 {
-    // Only the item needs to be destroyed, the widget is owned by the tree widget once setItemWidget is called
-    tTreeWidgetItemsArray::iterator it(mTreeWidgetItemsArray.begin()), itEnd(mTreeWidgetItemsArray.end());
+    tNodeDrivers::iterator it(mNodeDrivers.begin()), itEnd(mNodeDrivers.end());
     for (; it != itEnd; ++it)
     {
-        QTreeWidgetItem* item = *it;
-        delete item;
-    }
-
-    {
-        tNodeDrivers::iterator it(mNodeDrivers.begin()), itEnd(mNodeDrivers.end());
-        for (; it != itEnd; ++it)
-        {
-            INodeDriver* driver = *it;
-            driver->DestroyWidget();
-        }
+        INodeDriver* driver = *it;
+        driver->DestroyWidget();
     }
 
     mTreeWidgetItemsArray.clear();
