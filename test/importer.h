@@ -8,6 +8,7 @@ namespace cocos2d {
     class StreamFormatted;
     class Point;
     class Size;
+    struct _ccColor3B;
 }
 
 class Importer
@@ -22,6 +23,7 @@ public:
     virtual bool ImportProperty(cocos2d::StreamFormatted& stream, bool* value) = 0;
     virtual bool ImportProperty(cocos2d::StreamFormatted& stream, cocos2d::Point* value) = 0;
     virtual bool ImportProperty(cocos2d::StreamFormatted& stream, cocos2d::Size* value) = 0;
+    virtual bool ImportProperty(cocos2d::StreamFormatted& stream, cocos2d::_ccColor3B* value) = 0;
     virtual bool ImportProperty(cocos2d::StreamFormatted& stream, std::string* value) = 0;
     virtual bool ImportProperty(cocos2d::StreamFormatted& stream, uint8_t* value) = 0;
 };

@@ -21,6 +21,7 @@ public:
     bool ExportProperty(cocos2d::StreamFormatted& stream, bool* value);
     bool ExportProperty(cocos2d::StreamFormatted& stream, cocos2d::Point* value);
     bool ExportProperty(cocos2d::StreamFormatted& stream, cocos2d::Size* value);
+    bool ExportProperty(cocos2d::StreamFormatted& stream, cocos2d::_ccColor3B* value);
     bool ExportProperty(cocos2d::StreamFormatted& stream, std::string* value);
     bool ExportProperty(cocos2d::StreamFormatted& stream, uint8_t* value);
 

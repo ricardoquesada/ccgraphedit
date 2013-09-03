@@ -85,6 +85,7 @@ public:
         , mItem(nullptr)
         , mWidget(nullptr)
         , mIncrement(1)
+        , mbPercentageToWorld(false)
     {}
 
     NodeDriverT(const setter_type& setter, const getter_type& getter, const char* name)
@@ -96,6 +97,7 @@ public:
         , mItem(nullptr)
         , mWidget(nullptr)
         , mIncrement(1)
+        , mbPercentageToWorld(false)
     {}
 
     // this has to be done each time it is added to the tree since the tree takes
@@ -129,10 +131,11 @@ public:
 
     // templated creator method to instantiate drivers
     template <class componentT = IComponent>
-    static NodeDriverT<widgetT, nodeT, varT>* create(const char* name, void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), float increment = 1)
+    static NodeDriverT<widgetT, nodeT, varT>* create(const char* name, void (*setter)(nodeT*, const varT&), void (*getter)(nodeT*, varT&), float increment = 1, bool convert = false)
     {
         instance_type* driver = new instance_type(setter, getter, name);
         driver->SetIncrement(increment);
+        driver->SetConvertPercentageToWorld(convert);
         return driver;
     }
 
@@ -141,6 +144,7 @@ public:
     {
         instance_type* driver = new instance_type(mSetter, mGetter, Name());
         driver->SetIncrement(mIncrement);
+        driver->SetConvertPercentageToWorld(mbPercentageToWorld);
         return driver;
     }
 
@@ -161,7 +165,8 @@ public:
     {
         if (mWidget)
             mValue = mWidget->Value();
-        mSetter(mNode, mValue);
+        varT value = PercentageToWorld(mValue);
+        mSetter(mNode, value);
     }
 
     // update cached value and widget from node
@@ -170,6 +175,7 @@ public:
         varT value = mValue;
         if (mGetter)
             mGetter(mNode, value);
+        value = WorldToPercentage(value);
         varT lastValue = mValue;
         mValue = value;
         if (mWidget && (force || mWidget->Compare(lastValue, value)))
@@ -205,8 +211,13 @@ public:
 
     void SetValue(const varT& value)
     {
-        mSetter(mNode, value);
+        mSetter(mNode, PercentageToWorld(value));
         mValue = value;
+    }
+
+    void SetConvertPercentageToWorld(bool convert)
+    {
+        mbPercentageToWorld = convert;
     }
 
     bool Export(cocos2d::StreamFormatted& stream, Exporter* exporter)
@@ -218,6 +229,18 @@ public:
     {
         return importer->ImportProperty(stream, &mValue);
     }
+
+#define ConvertDefault(T) \
+    T PercentageToWorld(const T& var) { return var; } \
+    T WorldToPercentage(const T& var) { return var; }
+
+    ConvertDefault(bool);
+    ConvertDefault(int);
+    ConvertDefault(float);
+    ConvertDefault(cocos2d::Point);
+    ConvertDefault(cocos2d::Size);
+    ConvertDefault(cocos2d::_ccColor3B);
+    ConvertDefault(std::string);
 
 protected:
 
@@ -248,4 +271,8 @@ protected:
 
     // (for spin boxes) amount to increment/decrement
     float mIncrement;
+
+    // if set, coords are stored as percentages but converted to/from
+    // world coordinates around the get/set routines
+    bool mbPercentageToWorld;
 };

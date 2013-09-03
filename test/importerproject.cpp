@@ -65,6 +65,14 @@ bool ImporterProject::ImportProperty(cocos2d::StreamFormatted& stream, cocos2d::
     return true;
 }
 
+bool ImporterProject::ImportProperty(cocos2d::StreamFormatted& stream, cocos2d::_ccColor3B* value)
+{
+    stream.read(value->r);
+    stream.read(value->g);
+    stream.read(value->b);
+    return true;
+}
+
 bool ImporterProject::ImportProperty(cocos2d::StreamFormatted& stream, std::string* value)
 {
     uint32_t length;

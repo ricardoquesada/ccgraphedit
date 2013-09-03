@@ -23,6 +23,7 @@ public:
     bool ImportProperty(cocos2d::StreamFormatted& stream, bool* value);
     bool ImportProperty(cocos2d::StreamFormatted& stream, cocos2d::Point* value);
     bool ImportProperty(cocos2d::StreamFormatted& stream, cocos2d::Size* value);
+    bool ImportProperty(cocos2d::StreamFormatted& stream, cocos2d::_ccColor3B* value);
     bool ImportProperty(cocos2d::StreamFormatted& stream, std::string* value);
     bool ImportProperty(cocos2d::StreamFormatted& stream, uint8_t* value);
 

@@ -60,6 +60,14 @@ bool ExporterProject::ExportProperty(cocos2d::StreamFormatted& stream, cocos2d::
     return true;
 }
 
+bool ExporterProject::ExportProperty(cocos2d::StreamFormatted& stream, cocos2d::_ccColor3B* value)
+{
+    stream.write(value->r);
+    stream.write(value->g);
+    stream.write(value->b);
+    return true;
+}
+
 bool ExporterProject::ExportProperty(cocos2d::StreamFormatted& stream, std::string* value)
 {
     uint32_t length = value->length();
