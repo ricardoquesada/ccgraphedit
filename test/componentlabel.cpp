@@ -1,6 +1,7 @@
 #include "componentlabel.h"
 #include "widgetmisc.h"
 #include "widgetSize.h"
+#include "widgetnumber.h"
 #include "nodedriver.h"
 
 USING_NS_CC;
@@ -9,6 +10,7 @@ void ComponentLabelTTF::RegisterDrivers()
 {
     ComponentSprite::RegisterDrivers();
     REGISTER_DRIVER("dimensions", widgetSize, LabelTTF, Size, setDimensions, getDimensions, 1);
+    REGISTER_DRIVER("font size", widgetFloat, LabelTTF, float, setFontSize, getFontSize, 1);
 
     {
         auto setter = [] (LabelTTF* node, const std::string& value)
