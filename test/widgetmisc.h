@@ -6,6 +6,7 @@
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QLineEdit>
 #include <QColorDialog>
 #include "cocos2d.h"
 
@@ -127,3 +128,58 @@ protected:
     QPushButton* mButton;
 };
 
+class widgetString
+    : public QWidget
+{
+    Q_OBJECT
+
+public:
+
+    widgetString(QWidget* parent)
+        : QWidget(parent)
+    {
+        QHBoxLayout* layout = new QHBoxLayout;
+        setLayout(layout);
+        mEdit = new QLineEdit;
+        layout->addWidget(mEdit);
+        connect(mEdit, SIGNAL(textChanged(QString)), this, SLOT(setString(QString)));
+    }
+
+    void SetIncrement(int)
+    {
+        // Does Nothing
+    }
+
+    const std::string& Value() const
+    {
+        return mValue;
+    }
+
+    void SetValue(const std::string& name, bool block = false)
+    {
+        mValue = name;
+        mEdit->setText(name.c_str());
+    }
+
+    bool Compare(const std::string& a, const std::string& b) const
+    {
+        return 0 == a.compare(b);
+    }
+
+signals:
+
+    void widgetChanged(QWidget* widget);
+
+public slots:
+
+    void setString(QString text)
+    {
+        mValue.assign(text.toUtf8());
+        emit widgetChanged(this);
+    }
+
+protected:
+
+    std::string mValue;
+    QLineEdit* mEdit;
+};

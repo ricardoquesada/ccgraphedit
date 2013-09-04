@@ -212,7 +212,8 @@ mysceneeditor.cpp \
     componentparticlesystem.cpp \
     exporterproject.cpp \
     importerproject.cpp \
-    componentlayer.cpp
+    componentlayer.cpp \
+    componentlabel.cpp
 
 HEADERS  += \
 mainwindow.h \
@@ -239,7 +240,8 @@ mysceneeditor.h \
     deviceframe.h \
     importerproject.h \
     AutoSignalBlock.h \
-    componentlayer.h
+    componentlayer.h \
+    componentlabel.h
 
 FORMS += mainwindow.ui \
     dialogimportccb.ui

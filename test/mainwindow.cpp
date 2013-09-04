@@ -12,6 +12,7 @@
 #include "componentnode.h"
 #include "componentsprite.h"
 #include "componentlayer.h"
+#include "componentlabel.h"
 #include "componentparticlesystem.h"
 #include "exporterproject.h"
 #include "importerproject.h"
@@ -86,6 +87,8 @@ bool MainWindow::Init()
     RegisterComponent(Node::kClassId, new ComponentNode, "Node");
     RegisterComponent(Sprite::kClassId, new ComponentSprite, "Sprite");
     RegisterComponent(Layer::kClassId, new ComponentLayer, "Layer");
+    RegisterComponent(LabelTTF::kClassId, new ComponentLabelTTF, "LabelTTF");
+    RegisterComponent(LabelBMFont::kClassId, new ComponentLabelBMF, "LabelBMF");
 
     // connect any signals and slots
     connect(MySceneEditor::instance(), SIGNAL(positionChanged(Node*, Point&)), this, SLOT(setNodePosition(Node*,Point&)));
