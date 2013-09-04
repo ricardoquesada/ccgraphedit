@@ -25,6 +25,14 @@ public:
 #define REGISTER_DRIVER(name, widgetT, classT, varT, setter, getter, increment) \
     AddDriver(NodeDriverT<widgetT, classT, varT>::create(name, SETTER(classT, varT, setter), GETTER(classT, varT, getter), increment))
 
+#define DECLARE_COMPONENT(x, y) \
+    class x \
+        : public y \
+    { \
+    public: \
+        void RegisterDrivers(); \
+    }
+
 class ComponentBase
     : public IComponent
 {

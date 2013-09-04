@@ -4,6 +4,8 @@
 #include "kazmath/vec3.h"
 #include "fileutil.h"
 
+//#define DEBUG_OUTLINE_FRAME_ORIGIN
+
 USING_NS_CC;
 
 IMPLEMENT_SINGLETON(MySceneEditor)
@@ -68,9 +70,11 @@ void MySceneEditor::mouseMoved(float x, float y, int buttons)
 
 void MySceneEditor::drawOverlay()
 {
+#ifndef DEBUG_OUTLINE_FRAME_ORIGIN
     // disallow drawing of the main scene nodes
-    //if (!IsChildOfRoot(mSelectedNode))
-    //    return;
+    if (!IsChildOfRoot(mSelectedNode))
+        return;
+#endif
 
     if (mSelectedNode)
     {
@@ -89,6 +93,7 @@ void MySceneEditor::drawOverlay()
         kmGLPopMatrix();
     }
 
+#ifdef DEBUG_OUTLINE_FRAME_ORIGIN
     if (mFrameNode)
     {
         Rect rc;
@@ -103,6 +108,7 @@ void MySceneEditor::drawOverlay()
 
         kmGLPopMatrix();
     }
+#endif
 }
 
 void MySceneEditor::drawOrigin(Node* node, const Point& origin, float size, bool scaled)

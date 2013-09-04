@@ -11,6 +11,7 @@
 #include "widgetpoint.h"
 #include "componentnode.h"
 #include "componentsprite.h"
+#include "componentlayer.h"
 #include "componentparticlesystem.h"
 #include "exporterproject.h"
 #include "importerproject.h"
@@ -84,7 +85,7 @@ bool MainWindow::Init()
     // register the components
     RegisterComponent(Node::kClassId, new ComponentNode, "Node");
     RegisterComponent(Sprite::kClassId, new ComponentSprite, "Sprite");
-    RegisterComponent(ParticleSystemQuad::kClassId, new ComponentParticleSystem, "Particle System");
+    RegisterComponent(Layer::kClassId, new ComponentLayer, "Layer");
 
     // connect any signals and slots
     connect(MySceneEditor::instance(), SIGNAL(positionChanged(Node*, Point&)), this, SLOT(setNodePosition(Node*,Point&)));

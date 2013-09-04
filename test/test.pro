@@ -211,7 +211,8 @@ mysceneeditor.cpp \
     componentnodergba.cpp \
     componentparticlesystem.cpp \
     exporterproject.cpp \
-    importerproject.cpp
+    importerproject.cpp \
+    componentlayer.cpp
 
 HEADERS  += \
 mainwindow.h \
@@ -237,7 +238,8 @@ mysceneeditor.h \
     importer.h \
     deviceframe.h \
     importerproject.h \
-    AutoSignalBlock.h
+    AutoSignalBlock.h \
+    componentlayer.h
 
 FORMS += mainwindow.ui \
     dialogimportccb.ui
