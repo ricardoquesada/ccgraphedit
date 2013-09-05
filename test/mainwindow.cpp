@@ -179,7 +179,6 @@ NodeItem* MainWindow::AddNode(Node* parent, uint32_t classId)
     NodeItem* nodeItem = new NodeItem;
 
     Node* node = component->Instantiate(classId);
-    qDebug("instatiated %p\n", node);
     if (!node)
     {
         QMessageBox::information(nullptr, QString("Error"), QString("Failed to instantiate node"), QMessageBox::Ok);
