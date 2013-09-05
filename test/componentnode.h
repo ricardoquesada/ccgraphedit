@@ -1,13 +1,5 @@
 
 #pragma once
-
 #include "componentbase.h"
-
-class ComponentNode
-    : public ComponentBase
-{
-public:
-    void RegisterDrivers();
-};
-
+DECLARE_COMPONENT(ComponentNode, ComponentBase, "New Node");
 

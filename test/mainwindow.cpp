@@ -46,8 +46,6 @@ USING_NS_CC_EXT;
 namespace
 {
     const uint32_t kNodeDriverPosition = fnv1_32("position");
-    const uint32_t kDriverHashTexture = fnv1_32("texture");
-    const char* kDefaultTextureName = "Icon-144.png";
 };
 
 IMPLEMENT_SINGLETON(MainWindow)
@@ -107,9 +105,8 @@ bool MainWindow::Init()
 
     // setup the basic scene and root node
     Node* scene = Director::sharedDirector()->getRunningScene();
-    Node* root = Node::create();
-    AddNode(scene, root, "root");
-    MySceneEditor::instance()->SetRootNode(root);
+    NodeItem* item = AddNode(scene, Node::kClassId);
+    MySceneEditor::instance()->SetRootNode(item->GetNode());
 
     // setup device frame combo box
     mDeviceCombo = new QComboBox;
@@ -151,7 +148,7 @@ void MainWindow::AddFiles(const char* root, const char* path, bool directory)
         FileUtils::sharedFileUtils()->addSearchPath(path);
 }
 
-NodeItem* MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
+NodeItem* MainWindow::AddNode(Node* parent, uint32_t classId)
 {
     if (!ui->hierarchy)
     {
@@ -159,24 +156,12 @@ NodeItem* MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
         return nullptr;
     }
 
-    {
-        tNodeToNodeItemMap::iterator it = mNodeToNodeItemMap.find(node);
-        if (it != mNodeToNodeItemMap.end())
-        {
-            QMessageBox::information(nullptr, QString("Error"), QString("Node cannot be added twice"), QMessageBox::Ok);
-            return nullptr;
-        }
-    }
-
-    IComponent* component = MainWindow::instance()->FindComponent(node->classId());
+    IComponent* component = MainWindow::instance()->FindComponent(classId);
     if (!component)
     {
         QMessageBox::information(nullptr, QString("Error"), QString("Component cannot be found to populate node item"), QMessageBox::Ok);
         return nullptr;
     }
-
-    if (parent)
-        parent->addChild(node);
 
     // Find the parent so that we can append to it in the tree view
     QTreeWidgetItem* parentItem;
@@ -193,10 +178,21 @@ NodeItem* MainWindow::AddNode(Node* parent, Node* node, const char* nodeName)
 
     NodeItem* nodeItem = new NodeItem;
 
+    Node* node = component->Instantiate(classId);
+    qDebug("instatiated %p\n", node);
+    if (!node)
+    {
+        QMessageBox::information(nullptr, QString("Error"), QString("Failed to instantiate node"), QMessageBox::Ok);
+        return nullptr;
+    }
+
+    if (parent)
+        parent->addChild(node);
+
     component->Populate(nodeItem, ui->properties, node);
 
     QTreeWidgetItem* sceneItem = new QTreeWidgetItem;
-    sceneItem->setText(0, QString(nodeName));
+    sceneItem->setText(0, nodeItem->Name());
 
     nodeItem->SetNode(node);
     nodeItem->SetSceneItem(sceneItem);
@@ -291,24 +287,6 @@ void MainWindow::dumpScene()
     DumpSceneGraph(Director::sharedDirector()->getRunningScene());
 }
 
-void MainWindow::importCCB()
-{
-    DialogImportCCB* dialog = new DialogImportCCB(this);
-    dialog->setModal(true);
-    dialog->show();
-    dialog->exec();
-
-    FileUtil::EnumerateDirectoryT(qPrintable(dialog->ccbPath()), 0, this, &MainWindow::AddFiles);
-    FileUtil::EnumerateDirectoryT(qPrintable(dialog->resourcesPath()), 0, this, &MainWindow::AddFiles);
-
-    CCBReader* ccbReader = new CCBReader(NodeLoaderLibrary::sharedNodeLoaderLibrary());
-    Node* node = ccbReader->readNodeGraphFromFile(qPrintable(dialog->ccbPath()));
-    if (node)
-    {
-        AddNode(0, node, "");
-    }
-}
-
 void MainWindow::selectNode()
 {
     Node* selectedNode = GetSelectedNodeInHierarchy();
@@ -361,43 +339,11 @@ void MainWindow::performToolbarAction()
         QVariant v = action->data();
         uint32_t classId = v.toInt();
 
-        Node* node = dynamic_cast<Node*>(CCClassRegistry::instance()->instantiateClass(classId));
-        if (node)
-        {
-            Size size = Director::sharedDirector()->getWinSize();
+        Node* parent = GetSelectedNodeInHierarchy();
+        if (!parent)
+            parent = MySceneEditor::instance()->GetRootNode();
 
-            Node* parent = GetSelectedNodeInHierarchy();
-            if (!parent)
-                parent = MySceneEditor::instance()->GetRootNode();
-
-            node->setPosition(ccp(0, 0));
-
-            Sprite* sprite = dynamic_cast<Sprite*>(node);
-            if (sprite)
-            {
-                Image* image = new Image;
-                image->autorelease();
-                if (image->initWithImageFile(kDefaultTextureName))
-                {
-                    Texture2D* texture = new Texture2D;
-                    if (texture->initWithImage(image))
-                    {
-                        sprite->setTexture(texture);
-                        sprite->setTextureRect(Rect(0, 0, texture->getPixelsWide(), texture->getPixelsHigh()));
-                    }
-                }
-            }
-
-            NodeItem* item = AddNode(parent, node, "New Node");
-            if (item)
-            {
-                // fill in the texture name since we cannot get it from the node in this case
-                typedef NodeDriverT<widgetTexture, Sprite, std::string> tTextureDriver;
-                tTextureDriver* textureDriver = dynamic_cast<tTextureDriver*>(item->FindDriverByHash(kDriverHashTexture));
-                if (textureDriver)
-                    textureDriver->SetValue(std::string(kDefaultTextureName));
-            }
-        }
+        AddNode(parent, classId);
     }
 }
 

@@ -108,21 +108,15 @@ NodeItem* ImporterProject::ImportNode(cocos2d::StreamFormatted& stream, Node* pa
     std::string name;
     ImportProperty(stream, &name);
 
-    // instantiate class
-    Node* node = dynamic_cast<Node*>(CCClassRegistry::instance()->instantiateClass(classId));
-    if (!node)
-    {
-        // logging
-        return nullptr;
-    }
-
     // add the node to the scene and create all drivers etc.
-    NodeItem* item = MainWindow::instance()->AddNode(parent, node, name.c_str());
+    NodeItem* item = MainWindow::instance()->AddNode(parent, classId);
     if (!item)
     {
         // logging
         return nullptr;
     }
+
+    Node* node = item->GetNode();
 
     // driver count
     uint32_t driverCount;

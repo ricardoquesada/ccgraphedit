@@ -3,6 +3,7 @@
 #include "stdint.h"
 #include <map>
 #include <vector>
+#include <string>
 
 class QWidget;
 class QTreeWidget;
@@ -52,6 +53,10 @@ public:
     typedef std::vector<INodeDriver*> tNodeDrivers;
     const tNodeDrivers& Drivers() const;
 
+    // set/get name
+    void SetName(const char* name);
+    const char* Name() const;
+
 protected:
 
     QTreeWidgetItem* mSceneItem;
@@ -72,4 +77,6 @@ protected:
 
     // array of drivers associated with this node
     tNodeDrivers mNodeDrivers;
+
+    std::string mName;
 };

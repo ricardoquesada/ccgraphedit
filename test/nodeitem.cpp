@@ -112,3 +112,13 @@ const NodeItem::tNodeDrivers& NodeItem::Drivers() const
 {
     return mNodeDrivers;
 }
+
+void NodeItem::SetName(const char* name)
+{
+    mName.assign(name);
+}
+
+const char* NodeItem::Name() const
+{
+    return mName.c_str();
+}

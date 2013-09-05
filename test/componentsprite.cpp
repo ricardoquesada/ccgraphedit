@@ -6,7 +6,34 @@
 #include "widgetnumber.h"
 #include "widgetTexture.h"
 
+namespace
+{
+    const char* kDefaultTextureName = "Icon-144.png";
+    const uint32_t kDriverHashTexture = fnv1_32("texture");
+}
+
 USING_NS_CC;
+
+Node* ComponentSprite::Instantiate(uint32_t classId)
+{
+    Sprite* sprite = dynamic_cast<Sprite*>(ComponentBase::Instantiate(classId));
+    if (!sprite)
+        return nullptr;
+
+    Image* image = new Image;
+    image->autorelease();
+    if (image->initWithImageFile(kDefaultTextureName))
+    {
+        Texture2D* texture = new Texture2D;
+        if (texture->initWithImage(image))
+        {
+            sprite->setTexture(texture);
+            sprite->setTextureRect(Rect(0, 0, texture->getPixelsWide(), texture->getPixelsHigh()));
+        }
+    }
+
+    return sprite;
+}
 
 void ComponentSprite::RegisterDrivers()
 {
@@ -34,4 +61,15 @@ void ComponentSprite::RegisterDrivers()
         }
     };
     AddDriver(NodeDriverT<widgetTexture, Sprite, std::string>::create("texture", setter, nullptr));
+}
+
+void ComponentSprite::Populate(NodeItem* nodeItem, QTreeWidget* tree, cocos2d::Node* node)
+{
+    ComponentBase::Populate(nodeItem, tree, node);
+
+    // fill in the texture name since we cannot get it from the node in this case
+    typedef NodeDriverT<widgetTexture, Sprite, std::string> tTextureDriver;
+    tTextureDriver* textureDriver = dynamic_cast<tTextureDriver*>(nodeItem->FindDriverByHash(kDriverHashTexture));
+    if (textureDriver)
+        textureDriver->SetValue(std::string(kDefaultTextureName));
 }

@@ -44,7 +44,7 @@ public:
 
     void AddFiles(const char* root, const char* path, bool directory);
 
-    NodeItem* AddNode(Node* parent, Node* node, const char* nodeName);
+    NodeItem* AddNode(Node* parent, uint32_t classId);
     void ClearScene();
 
     void RegisterNodeDriver(uint32_t driverId, INodeDriver* driver);
@@ -61,7 +61,6 @@ public slots:
     void saveProject();
     void loadProject();
     void dumpScene();
-    void importCCB();
     void selectNode();
 
     void setNodePosition(Node* node, Point& position);

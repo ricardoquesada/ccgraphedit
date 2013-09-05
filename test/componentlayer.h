@@ -1,7 +1,7 @@
 
 #pragma once
 #include "componentnode.h"
-DECLARE_COMPONENT(ComponentLayer, ComponentNode);
+DECLARE_COMPONENT(ComponentLayer, ComponentNode, "New Layer");
 
 
 

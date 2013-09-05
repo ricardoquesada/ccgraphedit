@@ -14,6 +14,7 @@ class INodeDriver;
 class IComponent
 {
 public:
+    virtual cocos2d::Node* Instantiate(uint32_t classId) = 0;
     virtual void Populate(NodeItem* nodeItem, QTreeWidget* tree, cocos2d::Node* node) = 0;
     virtual void RegisterDrivers() = 0;
     virtual INodeDriver* GetDriver(uint32_t id) = 0;
@@ -25,12 +26,18 @@ public:
 #define REGISTER_DRIVER(name, widgetT, classT, varT, setter, getter, increment) \
     AddDriver(NodeDriverT<widgetT, classT, varT>::create(name, SETTER(classT, varT, setter), GETTER(classT, varT, getter), increment))
 
-#define DECLARE_COMPONENT(x, y) \
+#define DECLARE_NEW_NODE_NAME(n) \
+    virtual const char* NewNodeName() const { \
+        return n; \
+    }
+
+#define DECLARE_COMPONENT(x, y, n) \
     class x \
         : public y \
     { \
     public: \
         void RegisterDrivers(); \
+        DECLARE_NEW_NODE_NAME(n) \
     }
 
 class ComponentBase
@@ -38,9 +45,11 @@ class ComponentBase
 {
 public:
 
+    cocos2d::Node* Instantiate(uint32_t classId);
     void Populate(NodeItem* nodeItem, QTreeWidget* tree, cocos2d::Node* node);
     void RegisterDrivers();
     INodeDriver* GetDriver(uint32_t id);
+    virtual const char* NewNodeName() const;
 
 protected:
 
